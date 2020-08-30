@@ -65,6 +65,11 @@
       .pointer {
         cursor: pointer;
       }
+
+      .ds-suggestion-item:hover {
+        background: rgba(69, 142, 225, 0.05);
+        cursor: pointer;
+      }
     </style>
   </head>
 
@@ -100,48 +105,10 @@
           </template>
         </v-navigation-drawer>
         <!-- 右侧 -->
-        <v-navigation-drawer
-          app
-          permanent
-          right
-          style="
-            height: 100vh;
-            top: 64px;
-            transform: translateX(0%);
-            width: 256px;
-            max-height: calc(100% - 64px);
-          "
-        >
-          <ul class="pt-8 mb-6 api-toc">
-            <li class="mb-4">
-              <h3 class="caption font-weight-bold grey--text">
-                {{curNamespace && curNamespace.name}}
-              </h3>
-            </li>
-            <template v-if="curNamespace">
-              <li
-                v-for="(api, j) in curNamespace.apis"
-                :class="{
-                  'mb-2': j + 1 !== curNamespace.apis.length,
-                  'primary--text': activedTocIndex === j,
-                  'text--disabled': activedTocIndex !== j
-                }"
-                :style="{
-                  borderColor: activedTocIndex === j ? 'currentColor' : undefined
-                }"
-              >
-                <a
-                  :href="`#api-item-${j}`"
-                  class="d-block font-weight-medium"
-                  @click.stop.prevent="goTo(j, `#api-item-${j}`)"
-                >
-                  <app-api-item :api="api" short :copy="false"></app-api-item>
-                </a>
-              </li>
-            </template>
-          </ul>
-        </v-navigation-drawer>
-
+        <app-api-toc
+          v-model="activedAPIIndex"
+          :namespace="curNamespace"
+        ></app-api-toc>
         <!-- 头部 -->
         <v-app-bar
           app
@@ -160,14 +127,15 @@
           <img src="./images/logo.svg" height="64px" style="margin-top: 7px" />
           <v-toolbar-title>Swagger UI</v-toolbar-title>
           <v-spacer></v-spacer>
-          <app-search></app-search>
+          <app-search :namespaces="namespaces"></app-search>
+          <v-spacer></v-spacer>
         </v-app-bar>
         <!-- 内容区 -->
         <v-main style="padding: 64px 256px 0px 300px">
           <v-container fluid>
             <app-api-items
               :apis="curNamespace && curNamespace.apis"
-              :actived-index="activedTocIndex"
+              :actived-index="activedAPIIndex"
             ></app-api-items>
           </v-container>
         </v-main>
@@ -204,6 +172,7 @@
     <script src="./components/search.js"></script>
     <script src="./components/namespace.js"></script>
     <script src="./components/description.js"></script>
+    <script src="./components/toc.js"></script>
     <script src="./components/apiItem.js"></script>
     <script src="./components/apiItems.js"></script>
     <script src="./components/response.js"></script>
@@ -214,7 +183,7 @@
         data: {
           tocs: [],
           activedIndex: 0,
-          activedTocIndex: 0,
+          activedAPIIndex: 0,
           info: {
             description: '',
             version: '',
@@ -231,11 +200,7 @@
             return this.namespaces[this.activedIndex];
           },
         },
-        watch: {
-          activedIndex() {
-            this.resetTocIndex();
-          },
-        },
+        watch: {},
         methods: {
           getSwaggerJSON() {
             fetch('./assets/swagger.json')
@@ -283,6 +248,7 @@
                       ...config,
                       produce: config.produces && config.produces[0],
                       url: '`' + url.replace(/\{/gi, '${') + '`',
+                      rawUrl: url,
                       method: method.toUpperCase(),
                       method_: method,
                       description: config.summary,
@@ -329,19 +295,9 @@
             this.types = types;
             console.log(this.types);
           },
-          goTo(index, id) {
-            this.activedTocIndex = index;
-            this.$vuetify.goTo(id);
-          },
-          handleSelect(activedIndex, activedTocIndex, id) {
+          handleSelect(activedIndex, activedAPIIndex) {
             this.activedIndex = activedIndex;
-            this.$nextTick(() => {
-              this.goTo(activedTocIndex, id);
-            });
-          },
-          resetTocIndex() {
-            this.$vuetify.goTo(0);
-            this.activedTocIndex = 0;
+            this.activedAPIIndex = activedAPIIndex;
           },
         },
         mounted() {

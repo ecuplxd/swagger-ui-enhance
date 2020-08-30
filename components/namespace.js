@@ -6,7 +6,7 @@ Vue.component('app-api-namespace', {
     mandatory
     color="indigo"
     v-model="activedIndex_"
-    @change="$emit('change', $event)"
+    @change="handleChange"
   >
     <v-menu
       v-for="(namespace, i) in namespaces"
@@ -33,7 +33,7 @@ Vue.component('app-api-namespace', {
           <v-list-item
             v-for="(api, index) in namespace.apis"
             :key="index"
-            @click="goTo(i, index, '#api-item-' + index)"
+            @click="goTo(i, index)"
           >
             <v-list-item-title>
               <app-api-item :api="api" :copy="false"></app-api-item>
@@ -70,9 +70,13 @@ Vue.component('app-api-namespace', {
     };
   },
   methods: {
-    goTo(activedIndex, apiIndex, id) {
+    handleChange(activedIndex) {
+      this.$emit('change', activedIndex);
+      this.goTo(activedIndex, 0);
+    },
+    goTo(activedIndex, apiIndex) {
       this.activedIndex_ = activedIndex;
-      this.$emit('select', activedIndex, apiIndex, id);
+      this.$emit('select', activedIndex, apiIndex);
     },
   },
 });
