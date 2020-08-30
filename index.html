@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+    <meta charset="UTF-8" />
+    <title>Swagger UI</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="./images/favicon-16x16.png"
+      sizes="16x16"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./images/favicon-32x32.png"
+      sizes="32x32"
+    />
+    <link href="./style/css.css" rel="stylesheet" />
+    <link href="./style/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="./style/vuetify.min.css" rel="stylesheet" />
+
+    <style>
+      html {
+        overflow-y: auto;
+      }
+
+      .v-application a {
+        color: #1976d2;
+        word-break: break-all;
+      }
+
+      .api-toc {
+        list-style-type: none !important;
+        margin: 0;
+        padding: 32px 0 0;
+        text-align: left;
+        width: 100%;
+      }
+
+      .api-toc li {
+        border-left: 2px solid transparent;
+        padding: 0 24px 0 8px;
+      }
+
+      .api-toc li a {
+        color: inherit;
+        font-size: 0.875rem;
+        font-weight: 400;
+        text-decoration: none;
+        transition: color 0.1s ease-in;
+      }
+
+      .code {
+        font-family: Consolas, 'Courier New', monospace;
+      }
+
+      .no-hover:hover {
+        background: none !important;
+      }
+
+      .pointer {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <v-app>
+        <!-- 左侧 -->
+        <v-navigation-drawer
+          app
+          permanent
+          style="
+            height: 100vh;
+            top: 64px;
+            transform: translateX(0%);
+            width: 300px;
+            max-height: calc(100% - 64px);
+          "
+        >
+          <app-api-description :info="info"></app-api-description>
+          <v-divider></v-divider>
+          <app-api-namespace
+            v-model="activedIndex"
+            @select="handleSelect"
+            :namespaces="namespaces"
+          ></app-api-namespace>
+          <template v-slot:append>
+            <v-divider></v-divider>
+            <v-row justify="center" no-gutters>
+              <v-col class="py-4 text-center" cols="12">
+                © {{ new Date().getFullYear() }} ecuplxd
+              </v-col>
+            </v-row>
+          </template>
+        </v-navigation-drawer>
+        <!-- 右侧 -->
+        <v-navigation-drawer
+          app
+          permanent
+          right
+          style="
+            height: 100vh;
+            top: 64px;
+            transform: translateX(0%);
+            width: 256px;
+            max-height: calc(100% - 64px);
+          "
+        >
+          <ul class="pt-8 mb-6 api-toc">
+            <li class="mb-4">
+              <h3 class="caption font-weight-bold grey--text">
+                {{curNamespace && curNamespace.name}}
+              </h3>
+            </li>
+            <template v-if="curNamespace">
+              <li
+                v-for="(api, j) in curNamespace.apis"
+                :class="{
+                  'mb-2': j + 1 !== curNamespace.apis.length,
+                  'primary--text': activedTocIndex === j,
+                  'text--disabled': activedTocIndex !== j
+                }"
+                :style="{
+                  borderColor: activedTocIndex === j ? 'currentColor' : undefined
+                }"
+              >
+                <a
+                  :href="`#api-item-${j}`"
+                  class="d-block font-weight-medium"
+                  @click.stop.prevent="goTo(j, `#api-item-${j}`)"
+                >
+                  <app-api-item :api="api" short :copy="false"></app-api-item>
+                </a>
+              </li>
+            </template>
+          </ul>
+        </v-navigation-drawer>
+
+        <!-- 头部 -->
+        <v-app-bar
+          app
+          clipped-left
+          clipped-right
+          flat
+          outlined
+          style="
+            height: 64px;
+            margin-top: 0px;
+            transform: translateY(0px);
+            left: 0px;
+            right: 0px;
+          "
+        >
+          <img src="./images/logo.svg" height="64px" style="margin-top: 7px" />
+          <v-toolbar-title>Swagger UI</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <app-search></app-search>
+        </v-app-bar>
+        <!-- 内容区 -->
+        <v-main style="padding: 64px 256px 0px 300px">
+          <v-container fluid>
+            <app-api-items
+              :apis="curNamespace && curNamespace.apis"
+              :actived-index="activedTocIndex"
+            ></app-api-items>
+          </v-container>
+        </v-main>
+      </v-app>
+    </div>
+
+    <script src="./utils/index.js"></script>
+    <script src="./lib/vue.js"></script>
+    <script>
+      Vue.mixin({
+        data: function () {
+          return {
+            colors: {
+              POST: '#49cc90',
+              GET: '#61affe',
+              PUT: '#fca130',
+              DELETE: '#f93e3e',
+            },
+            TYPE_MAP: {
+              string: 'string',
+              integer: 'number',
+              file: 'File',
+              boolean: 'boolean',
+              object: 'Object',
+              array: '[]',
+            },
+          };
+        },
+      });
+    </script>
+    <script src="./lib/vuetify.js"></script>
+    <script src="./components/copy.js"></script>
+    <script src="./components/type.js"></script>
+    <script src="./components/search.js"></script>
+    <script src="./components/namespace.js"></script>
+    <script src="./components/description.js"></script>
+    <script src="./components/apiItem.js"></script>
+    <script src="./components/apiItems.js"></script>
+    <script src="./components/response.js"></script>
+    <script>
+      new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+          tocs: [],
+          activedIndex: 0,
+          activedTocIndex: 0,
+          info: {
+            description: '',
+            version: '',
+            title: '',
+            host: '',
+            basePath: '',
+          },
+          namespacesMap: {},
+          namespaces: [],
+          type: {},
+        },
+        computed: {
+          curNamespace() {
+            return this.namespaces[this.activedIndex];
+          },
+        },
+        watch: {
+          activedIndex() {
+            this.resetTocIndex();
+          },
+        },
+        methods: {
+          getSwaggerJSON() {
+            fetch('./assets/swagger.json')
+              .then((res) => res.json())
+              .then((res) => {
+                console.log(res);
+                this.getInfo(res)
+                  .getNamespace(res.tags)
+                  .getNamespaceApis(res.paths)
+                  .getTypes(res.definitions);
+              });
+          },
+          getInfo(res) {
+            this.info = {
+              ...res.info,
+              host: res.host,
+              basePath: res.basePath,
+            };
+            return this;
+          },
+          getNamespace(tags) {
+            this.namespaces = tags.map((tag, index) => {
+              tag.apis = [];
+              this.namespacesMap[tag.name] = index;
+              return tag;
+            });
+            return this;
+          },
+          transformParameters(parameters = []) {
+            parameters.forEach((parameter) => {
+              let required = parameter.required ? '' : '?';
+              parameter.display = parameter.name + required;
+            });
+          },
+          getNamespaceApis(paths) {
+            for (const url in paths) {
+              if (paths.hasOwnProperty(url)) {
+                const methods = paths[url];
+                for (const method in methods) {
+                  if (methods.hasOwnProperty(method)) {
+                    const config = methods[method];
+                    const index = this.namespacesMap[config.tags[0]];
+                    this.transformParameters(config.parameters);
+                    this.namespaces[index].apis.push({
+                      ...config,
+                      produce: config.produces && config.produces[0],
+                      url: '`' + url.replace(/\{/gi, '${') + '`',
+                      method: method.toUpperCase(),
+                      method_: method,
+                      description: config.summary,
+                    });
+                  }
+                }
+              }
+            }
+            return this;
+          },
+          getTypes(definitions) {
+            let types = {};
+            for (const definition in definitions) {
+              if (definitions.hasOwnProperty(definition)) {
+                const config = definitions[definition];
+                types[definition] = {
+                  __required: {},
+                  __example: {},
+                  __refTypes: [],
+                };
+
+                config.required &&
+                  config.required.map((item) => {
+                    types[definition].__required[item] = true;
+                  });
+
+                for (const filed in config.properties) {
+                  if (config.properties.hasOwnProperty(filed)) {
+                    const filedConfig = config.properties[filed];
+                    const type = new TypeHelper(filedConfig);
+                    types[definition][filed] = type.type;
+                    types[definition].__example[filed] =
+                      filedConfig.example || type.type;
+                    if (type.refType) {
+                      types[definition].__refTypes.push(
+                        type.type.replace('[]', '')
+                      );
+                    }
+                  }
+                }
+              }
+            }
+
+            this.types = types;
+            console.log(this.types);
+          },
+          goTo(index, id) {
+            this.activedTocIndex = index;
+            this.$vuetify.goTo(id);
+          },
+          handleSelect(activedIndex, activedTocIndex, id) {
+            this.activedIndex = activedIndex;
+            this.$nextTick(() => {
+              this.goTo(activedTocIndex, id);
+            });
+          },
+          resetTocIndex() {
+            this.$vuetify.goTo(0);
+            this.activedTocIndex = 0;
+          },
+        },
+        mounted() {
+          this.getSwaggerJSON();
+        },
+      });
+    </script>
+  </body>
+</html>
