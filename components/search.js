@@ -36,7 +36,7 @@ Vue.component('app-search', {
         "
       ></div>
     </template>
-    <div class="ds-suggestions">
+    <div class="ds-suggestions code">
       <v-list
         dense
         two-line
@@ -46,7 +46,7 @@ Vue.component('app-search', {
         :key="i"
       >
         <v-subheader inset class="text-subtitle-2 ml-2">
-          <div v-html="namespace.name"></div>
+          <div style="font-size: 20px;" v-html="namespace.name"></div>
           <div v-html="namespace.description" class="text-caption ml-2"></div>
         </v-subheader>
         <v-divider class="ml-4"></v-divider>
@@ -60,8 +60,12 @@ Vue.component('app-search', {
           <v-list-item-avatar size="36" class="my-0 mr-2">
             <span style="font-size: 10px;" v-html="api.method"></span>
           </v-list-item-avatar>
-          <v-list-item-content class="py-0 pl-3 ds-suggestion-item" style="border-left: 1px solid rgba(0, 0, 0, 0.12);">
-            <v-list-item-title v-html="api.rawUrl"></v-list-item-title>
+          <v-list-item-content
+            class="py-2 pl-3 ds-suggestion-item"
+            style="border-left: 1px solid rgba(0, 0, 0, 0.12);"
+            @click="handleSelect(i, j)"
+          >
+            <v-list-item-title v-html="api.rawUrl" style="font-size: 16px; font-weight: bold;"></v-list-item-title>
             <v-list-item-subtitle v-html="api.description"></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -84,6 +88,7 @@ Vue.component('app-search', {
       showResult: false,
       tid: null,
       namespaces_: [],
+      matchedCount: 0,
     };
   },
   watch: {
@@ -100,12 +105,13 @@ Vue.component('app-search', {
     getMatched(string, type) {
       let style = 'color: #174d8c; background: rgba(143,187,237,.1);';
       if (type === 'title') {
-        style = 'box-shadow: inset 0 -2px 0 0 rgba(69,142,225,.8);';
+        style =
+          'padding-bottom: 2px; box-shadow: inset 0 -2px 0 0 rgba(69,142,225,.8);';
       }
       // TODO：保持原有大小写
       return string.replace(
         new RegExp(this.search, 'ig'),
-        `<span class="matched" style="${style}">${this.search}</span>`
+        `<span class="matched" style="${style}">$&</span>`
       );
     },
     filterNamespaces() {
@@ -126,9 +132,12 @@ Vue.component('app-search', {
             api.method.includes('span') ||
             api.rawUrl.includes('span') ||
             api.description.includes('span');
+          this.matchedCount += +api.matched;
         });
 
-        namespace.matched = namespace.apis.some((api) => api.matched);
+        if (!namespace.matched) {
+          namespace.matched = namespace.apis.some((api) => api.matched);
+        }
       });
       return namespaces;
     },
@@ -145,6 +154,11 @@ Vue.component('app-search', {
         this.showResult = this.search;
         this.tid = clearTimeout(this.tid);
       }, 500);
+    },
+    handleSelect(namespaceIndex, apiIndex) {
+      this.showResult = false;
+      this.search = '';
+      this.$emit('select', namespaceIndex, apiIndex);
     },
   },
 });

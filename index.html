@@ -92,8 +92,8 @@
           <v-divider></v-divider>
           <app-api-namespace
             v-model="activedIndex"
-            @select="handleSelect"
             :namespaces="namespaces"
+            @select="handleSelect"
           ></app-api-namespace>
           <template v-slot:append>
             <v-divider></v-divider>
@@ -127,7 +127,10 @@
           <img src="./images/logo.svg" height="64px" style="margin-top: 7px" />
           <v-toolbar-title>Swagger UI</v-toolbar-title>
           <v-spacer></v-spacer>
-          <app-search :namespaces="namespaces"></app-search>
+          <app-search
+            :namespaces="namespaces"
+            @select="handleSelect"
+          ></app-search>
           <v-spacer></v-spacer>
         </v-app-bar>
         <!-- 内容区 -->
