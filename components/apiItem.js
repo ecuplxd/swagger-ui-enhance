@@ -10,11 +10,11 @@ Vue.component('app-api-item', {
     :color="colors[api.method]"
     class="white--text"
   >
-    <span class="text-center" style="min-width: 40px;">{{api.method}}</span>
+    <span class="text-center code" style="min-width: 40px;">{{api.method}}</span>
   </v-chip>
-  <span v-if="!short" class="mx-1">{{copy ? api.url : api.rawUrl }}</span>
-  <app-api-copy v-if="copy" :clipboard-text="api.url" text="复制 URL"></app-api-copy>
-  <span class="mr-1">{{api.description}}</span>
+  <span v-if="!short" class="mx-1 code">{{copy ? api.url : api.rawUrl }}</span>
+  <app-api-copy v-if="copy" style="margin-left: -12px;" :clipboard-text="api.url" text="复制 URL"></app-api-copy>
+  <span>{{api.description}}</span>
   <app-api-copy v-if="copy" :clipboard-text="api.description" text="复制描述"></app-api-copy>
 </div>
   `,

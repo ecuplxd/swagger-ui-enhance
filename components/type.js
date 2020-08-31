@@ -9,7 +9,7 @@ Vue.component('app-api-type', {
     v-model="showTypeDetail"
     :close-on-content-click="false"
     :nudge-width="200"
-    :min-width="430"
+    :min-width="450"
     offset-y
   content-class="overflow-hidden"
   >
@@ -28,14 +28,26 @@ Vue.component('app-api-type', {
             color: #fff;
             overflow-y: auto;
           "
-          v-html="code"
+          v-html="codeString"
         ></pre>
       </v-list-item>
-      <v-card-actions class="d-flex justify-space-between">
-        <div class="d-flex align-center">
-          <v-switch v-model="removeQuestion" color="purple"></v-switch>
-          <span>Partial&lt;T&gt; 转为 T</span>
-        </div>
+      <v-card-actions class="d-flex justify-space-between align-center">
+        <v-switch
+          class="mt-0"
+          v-model="removeQuestion"
+          hide-details
+          color="purple"
+          label="Partial&lt;T&gt; 转为 T"
+          :disabled="showSample"
+        ></v-switch>
+        <v-switch
+          class="mt-0"
+          v-model="showSample"
+          hide-details
+          color="purple"
+          disabled
+          label="示例">
+        </v-switch>
         <div>
           <v-btn text @click="showTypeDetail = false">关闭</v-btn>
           <app-api-copy
@@ -48,12 +60,6 @@ Vue.component('app-api-type', {
       </v-card-actions>
     </v-card>
   </v-menu>
-  <v-icon
-    v-if="refType"
-    class="pointer"
-    title="查看 Sample Value"
-    x-small
-  >mdi-more</v-icon>
 </div>
 `,
   props: {
@@ -74,8 +80,11 @@ Vue.component('app-api-type', {
       }
       return '';
     },
-    code() {
-      return this.removeQuestion ? this.noQuestionModelCode : this.modelCode;
+    codeString() {
+      if (this.showSample) {
+        return this.code.mock;
+      }
+      return this.removeQuestion ? this.code.noQuestion : this.code.raw;
     },
   },
   data() {
@@ -84,21 +93,30 @@ Vue.component('app-api-type', {
       refType: false,
       showTypeDetail: false,
       removeQuestion: false,
-      modelCode: '',
-      noQuestionModelCode: '',
+      showSample: false,
+      code: {
+        raw: '',
+        noQuestion: '',
+        mock: '',
+      },
       typeID: this.genID(),
     };
   },
   watch: {
     showTypeDetail(show) {
-      if (show && !this.modelCode) {
+      if (show && !this.code.raw) {
         const types = this.$root.types;
-        this.modelCode = TypeHelper.getExports(this.type, types);
+        this.code.raw = TypeHelper.getExports(this.type, types);
       }
     },
     removeQuestion(remove) {
-      if (remove && !this.noQuestionModelCode) {
-        this.noQuestionModelCode = this.modelCode.replace(/\?/gi, '');
+      if (remove && !this.code.noQuestion) {
+        this.code.noQuestion = this.code.raw.replace(/\?/gi, '');
+      }
+    },
+    showSample(show) {
+      if (show && !this.code.mock) {
+        this.code.mock = this.genMock();
       }
     },
   },
@@ -107,5 +125,10 @@ Vue.component('app-api-type', {
     this.type = type.type;
     this.refType = type.refType;
   },
-  methods: {},
+  methods: {
+    // TODO
+    genMock() {
+      return '';
+    },
+  },
 });

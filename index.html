@@ -75,12 +75,14 @@
         overflow: hidden !important;
       }
 
-      .toast .success {
+      .toast.small > div {
+        min-width: initial !important;
         min-height: initial !important;
       }
 
-      .toast .success .v-snack__content {
+      .toast.small > div > div {
         line-height: initial !important;
+        padding: 4px !important;
       }
     </style>
   </head>
@@ -162,12 +164,13 @@
           <v-container fluid>
             <v-snackbar
               v-model="copySuccess"
-              dark
               top
-              :timeout="3000"
-              class="toast"
-              >复制成功</v-snackbar
+              color="#66BB6A"
+              :timeout="1500"
+              class="toast small"
             >
+              <v-icon class="mx-2" small>mdi-check</v-icon>复制成功
+            </v-snackbar>
             <app-api-items
               :apis="curNamespace && curNamespace.apis"
               :actived-index="activedAPIIndex"

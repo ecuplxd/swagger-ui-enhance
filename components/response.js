@@ -31,7 +31,7 @@ Vue.component('app-api-response', {
           <tbody class="code">
             <template v-for="(response, name) in responses">
               <tr :key="name">
-                <td style="min-width: 160px">
+                <td style="min-width: 70px;">
                   <div>{{ name }}</div>
                 </td>
                 <td>
@@ -42,7 +42,7 @@ Vue.component('app-api-response', {
                 </td>
               </tr>
               <tr v-if="response.headers" class="no-hover">
-                <td colspan="2">
+                <td colspan="3">
                   <v-simple-table>
                     <thead>
                       <tr>
@@ -53,7 +53,7 @@ Vue.component('app-api-response', {
                     </thead>
                     <tbody>
                       <tr v-for="(value, header) in response.headers" :key="header">
-                        <td style="min-width: 160px">
+                        <td style="min-width: 150px">
                           <div>{{ header }}</div>
                         </td>
                         <td>
