@@ -20,9 +20,7 @@ Vue.component('app-search', {
     :max-height="500"
     v-model="showResult"
     allow-overflow
-    :close-on-click="false"
     :close-on-content-click="false"
-    :z-index="100"
     bottom
   >
     <template v-slot:activator="{ on, attrs }">
@@ -51,7 +49,8 @@ Vue.component('app-search', {
         </v-subheader>
         <v-divider class="ml-4"></v-divider>
         <v-list-item
-          style="min-height: 55px;"
+          style="
+            min-height: 55px;"
             class="ml-8"
             v-show="api.matched"
             :key="j"

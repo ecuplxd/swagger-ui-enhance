@@ -1,28 +1,21 @@
 Vue.component('app-api-copy', {
   name: 'apiCopy',
   template: `
-<v-tooltip v-model="show" top :open-on-hover="false">
-  <template v-slot:activator="{ on, attrs }">
-    <v-btn
-      :color="color"
-      :text="!isIcon"
-      :icon="isIcon"
-      v-bind="attrs"
-      v-on="on"
-    >
-      <v-icon
-        :title="text"
-        v-if="isIcon"
-        i18n-title
-        x-small
-        class="v-icon notranslate mdi mdi-content-copy"
-        @click.stop.prevent="copy"
-      >mdi-content-copy</v-icon>
-      <slot v-if="!isIcon"></slot>
-    </v-btn>
-  </template>
-  <span i18n-text>已复制</span>
-</v-tooltip>
+<v-btn
+  :color="color"
+  :text="!isIcon"
+  :icon="isIcon"
+  @click.stop.prevent="copy"
+>
+  <v-icon
+    :title="text"
+    v-if="isIcon"
+    i18n-title
+    x-small
+    class="v-icon notranslate mdi mdi-content-copy"
+  >mdi-content-copy</v-icon>
+  <slot v-if="!isIcon"></slot>
+</v-btn>
     `,
   props: {
     text: {
@@ -49,6 +42,12 @@ Vue.component('app-api-copy', {
         return 'icon';
       },
     },
+    clipboardText: {
+      type: String,
+    },
+    target: {
+      type: String,
+    },
   },
   computed: {
     isIcon() {
@@ -62,10 +61,19 @@ Vue.component('app-api-copy', {
   },
   methods: {
     copy() {
-      this.show = true;
-      setTimeout(() => {
-        this.show = false;
-      }, 1000);
+      this.copyToClip();
+      this.$root.copySuccess = true;
+    },
+    copyToClip() {
+      const el = document.createElement('textarea');
+      const value =
+        this.clipboardText || document.getElementById(this.target).innerText;
+      el.value = value;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      el.style.display = 'none';
+      document.body.removeChild(el);
     },
   },
 });

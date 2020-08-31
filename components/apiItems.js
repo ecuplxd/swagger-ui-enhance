@@ -15,13 +15,10 @@ Vue.component('app-api-items', {
       :key="i"
       :style="'border: 1px solid ' + colors[api.method]"
     >
-      <v-expansion-panel-header
-        class="py-2 px-4"
-        :style="'border-bottom: 1px solid ' + colors[api.method]"
-      >
+      <v-expansion-panel-header class="py-2 px-4">
         <app-api-item :api="api"></app-api-item>
       </v-expansion-panel-header>
-      <v-expansion-panel-content>
+      <v-expansion-panel-content :style="'border-top: 1px solid ' + colors[api.method]">
         <v-row align="start" justify="start">
           <v-col cols="6" class="px-0 pb-0">
             <v-card outlined>
@@ -52,7 +49,7 @@ Vue.component('app-api-items', {
                             <div>{{ parameter.description}}</div>
                           </td>
                         </tr>
-                        <tr v-if="api.parameters.length === 0">
+                        <tr v-if="!api.parameters || api.parameters.length === 0">
                           <td class="text-center text--disabled" colspan="2" i18n-text>没有参数</td>
                         </tr>
                       </tbody>

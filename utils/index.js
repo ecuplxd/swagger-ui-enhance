@@ -8,6 +8,7 @@ function createHightlight(name, key) {
     class: '#569cd6',
     id: '#9cdcfe',
     type: '#4ec9b0',
+    undefined: '#4ec9b0',
     text: '#ce9178',
     '{': '#d4d4d4',
     ':': '#d4d4d4',
@@ -15,6 +16,7 @@ function createHightlight(name, key) {
     '[]': '#d4d4d4',
     ' | ': '#d4d4d4',
     '}': '#d4d4d4',
+    '?': '#d4d4d4',
   };
 
   let result = '';
@@ -87,16 +89,18 @@ class TypeHelper {
           `  ${createHightlight(key, 'id')}${createHightlight(
             required
           )}${createHightlight(':')} ${createHightlight(
-            type[key],
+            '' + type[key],
             'type'
           )}${createHightlight(';')}`
         );
       }
     }
-    exports.push(createHightlight('}' + '\n'));
+    exports.push(createHightlight('}') + '\n');
 
     exports.push(
-      ...type.__refTypes.map((item) => TypeHelper.getExports(item, types))
+      ...type.__refTypes
+        .filter((item) => item !== name) // Note: 处理循环引用
+        .map((item) => TypeHelper.getExports(item, types))
     );
 
     return exports.join('\n');

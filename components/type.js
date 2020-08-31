@@ -9,8 +9,9 @@ Vue.component('app-api-type', {
     v-model="showTypeDetail"
     :close-on-content-click="false"
     :nudge-width="200"
-    :min-width="400"
+    :min-width="430"
     offset-y
+  content-class="overflow-hidden"
   >
     <template v-slot:activator="{ on, attrs }">
       <a v-bind="attrs" v-on="on">{{type}}</a>
@@ -18,21 +19,31 @@ Vue.component('app-api-type', {
     <v-card>
       <v-list-item class="pa-0">
         <pre
-          ref="code"
+          :id="typeID"
           class="code pa-4"
-          style="background: rgb(51, 51, 51); color: #fff; width: 100%;"
-          :data-code="exportText"
-          v-html="exportText"
+          style="
+            width: 100%;
+            max-height: 550px;
+            background: rgb(51, 51, 51);
+            color: #fff;
+            overflow-y: auto;
+          "
+          v-html="code"
         ></pre>
       </v-list-item>
       <v-card-actions class="d-flex justify-space-between">
         <div class="d-flex align-center">
           <v-switch v-model="removeQuestion" color="purple"></v-switch>
-          <span>移除 Partial&lt;T&gt;</span>
+          <span>Partial&lt;T&gt; 转为 T</span>
         </div>
         <div>
           <v-btn text @click="showTypeDetail = false">关闭</v-btn>
-          <app-api-copy type="text" color="primary" @click="menu = false">复制</app-api-copy>
+          <app-api-copy
+            type="text"
+            color="primary"
+            @click="menu = false"
+            :target="typeID"
+          >复制</app-api-copy>
         </div>
       </v-card-actions>
     </v-card>
@@ -63,30 +74,31 @@ Vue.component('app-api-type', {
       }
       return '';
     },
+    code() {
+      return this.removeQuestion ? this.noQuestionModelCode : this.modelCode;
+    },
   },
   data() {
     return {
       type: '',
       refType: false,
       showTypeDetail: false,
-      exportText: '',
       removeQuestion: false,
+      modelCode: '',
+      noQuestionModelCode: '',
+      typeID: this.genID(),
     };
   },
   watch: {
     showTypeDetail(show) {
-      if (show) {
+      if (show && !this.modelCode) {
         const types = this.$root.types;
-        this.exportText = TypeHelper.getExports(this.type, types);
+        this.modelCode = TypeHelper.getExports(this.type, types);
       }
     },
     removeQuestion(remove) {
-      const code = this.$refs.code;
-      const text = code.getAttribute('data-code');
-      if (remove) {
-        code.innerHTML = text.replace(/\?/gi, '');
-      } else {
-        code.innerHTML = text;
+      if (remove && !this.noQuestionModelCode) {
+        this.noQuestionModelCode = this.modelCode.replace(/\?/gi, '');
       }
     },
   },

@@ -74,8 +74,11 @@ Vue.component('app-api-toc', {
   methods: {
     goTo(index) {
       this.activedIndex_ = index;
-      this.$vuetify.goTo('#api-item-' + index);
-      this.$emit('change', index);
+      const id = 'api-item-' + index;
+      if (document.getElementById(id)) {
+        this.$vuetify.goTo('#' + id);
+        this.$emit('change', index);
+      }
     },
   },
 });

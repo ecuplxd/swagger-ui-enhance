@@ -70,6 +70,18 @@
         background: rgba(69, 142, 225, 0.05);
         cursor: pointer;
       }
+
+      .overflow-hidden {
+        overflow: hidden !important;
+      }
+
+      .toast .success {
+        min-height: initial !important;
+      }
+
+      .toast .success .v-snack__content {
+        line-height: initial !important;
+      }
     </style>
   </head>
 
@@ -88,8 +100,20 @@
             max-height: calc(100% - 64px);
           "
         >
-          <app-api-description :info="info"></app-api-description>
-          <v-divider></v-divider>
+          <template v-slot:prepend>
+            <app-api-description :info="info"></app-api-description>
+            <v-divider></v-divider>
+            <v-text-field
+              v-model="searchNamespace"
+              prepend-inner-icon="mdi-magnify"
+              placeholder="搜索"
+              dense
+              flat
+              hide-details
+              solo
+            ></v-text-field>
+            <v-divider></v-divider>
+          </template>
           <app-api-namespace
             v-model="activedIndex"
             :namespaces="namespaces"
@@ -136,6 +160,14 @@
         <!-- 内容区 -->
         <v-main style="padding: 64px 256px 0px 300px">
           <v-container fluid>
+            <v-snackbar
+              v-model="copySuccess"
+              dark
+              top
+              :timeout="3000"
+              class="toast"
+              >复制成功</v-snackbar
+            >
             <app-api-items
               :apis="curNamespace && curNamespace.apis"
               :actived-index="activedAPIIndex"
@@ -156,6 +188,7 @@
               GET: '#61affe',
               PUT: '#fca130',
               DELETE: '#f93e3e',
+              PATCH: '#50e3c2',
             },
             TYPE_MAP: {
               string: 'string',
@@ -166,6 +199,11 @@
               array: '[]',
             },
           };
+        },
+        methods: {
+          genID() {
+            return Math.random().toString(36).substr(2);
+          },
         },
       });
     </script>
@@ -185,8 +223,8 @@
         vuetify: new Vuetify(),
         data: {
           tocs: [],
-          activedIndex: 0,
-          activedAPIIndex: 0,
+          activedIndex: -1,
+          activedAPIIndex: -1,
           info: {
             description: '',
             version: '',
@@ -197,14 +235,38 @@
           namespacesMap: {},
           namespaces: [],
           type: {},
+          searchNamespace: '',
+          copySuccess: false,
         },
         computed: {
           curNamespace() {
             return this.namespaces[this.activedIndex];
           },
         },
-        watch: {},
+        watch: {
+          activedIndex(newIndex) {
+            sessionStorage.setItem('activedIndex', newIndex);
+          },
+          activedAPIIndex(newIndex) {
+            sessionStorage.setItem('activedAPIIndex', newIndex);
+          },
+          searchNamespace() {
+            this.filterNamespace();
+          },
+        },
         methods: {
+          restoreIndex() {
+            this.activedIndex = +sessionStorage.getItem('activedIndex');
+            this.activedAPIIndex = +sessionStorage.getItem('activedAPIIndex');
+            return this;
+          },
+          filterNamespace() {
+            this.namespaces.forEach((namespace) => {
+              namespace.matched =
+                namespace.name.includes(this.searchNamespace) ||
+                namespace.description.includes(this.searchNamespace);
+            });
+          },
           getSwaggerJSON() {
             fetch('./assets/swagger.json')
               .then((res) => res.json())
@@ -213,7 +275,8 @@
                 this.getInfo(res)
                   .getNamespace(res.tags)
                   .getNamespaceApis(res.paths)
-                  .getTypes(res.definitions);
+                  .getTypes(res.definitions)
+                  .restoreIndex();
               });
           },
           getInfo(res) {
@@ -227,6 +290,7 @@
           getNamespace(tags) {
             this.namespaces = tags.map((tag, index) => {
               tag.apis = [];
+              tag.matched = true;
               this.namespacesMap[tag.name] = index;
               return tag;
             });
@@ -297,6 +361,7 @@
 
             this.types = types;
             console.log(this.types);
+            return this;
           },
           handleSelect(activedIndex, activedAPIIndex) {
             this.activedIndex = activedIndex;

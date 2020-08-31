@@ -16,7 +16,7 @@ Vue.component('app-api-namespace', {
       open-on-hover
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-list-item link class="pr-0">
+        <v-list-item link class="pr-0" v-show="namespace.matched">
           <v-list-item-content>
             <v-list-item-title>{{ namespace.name }} </v-list-item-title>
             <v-list-item-subtitle>
@@ -61,6 +61,11 @@ Vue.component('app-api-namespace', {
       default() {
         return 0;
       },
+    },
+  },
+  watch: {
+    activedIndex(newIndex) {
+      this.activedIndex_ = newIndex;
     },
   },
   data() {
