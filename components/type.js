@@ -2,64 +2,71 @@ Vue.component('app-api-type', {
   name: 'apiType',
   template: `
 <div>
-  <span>{{id}}</span>
-  <v-menu
-    v-if="refType"
-    open-on-hover
-    v-model="showTypeDetail"
-    :close-on-content-click="false"
-    :nudge-width="200"
-    :min-width="450"
-    offset-y
-  content-class="overflow-hidden"
-  >
-    <template v-slot:activator="{ on, attrs }">
-      <a v-bind="attrs" v-on="on">{{type}}</a>
-    </template>
-    <v-card>
-      <v-list-item class="pa-0">
-        <pre
-          :id="typeID"
-          class="code pa-4"
-          style="
-            width: 100%;
-            max-height: 550px;
-            background: rgb(51, 51, 51);
-            color: #fff;
-            overflow-y: auto;
-          "
-          v-html="codeString"
-        ></pre>
-      </v-list-item>
-      <v-card-actions class="d-flex justify-space-between align-center">
-        <v-switch
-          class="mt-0"
-          v-model="removeQuestion"
-          hide-details
-          color="purple"
-          label="Partial&lt;T&gt; 转为 T"
-          :disabled="showSample"
-        ></v-switch>
-        <v-switch
-          class="mt-0"
-          v-model="showSample"
-          hide-details
-          color="purple"
-          disabled
-          label="示例">
-        </v-switch>
-        <div>
-          <v-btn text @click="showTypeDetail = false">关闭</v-btn>
-          <app-api-copy
-            type="text"
-            color="primary"
-            @click="menu = false"
-            :target="typeID"
-          >复制</app-api-copy>
-        </div>
-      </v-card-actions>
-    </v-card>
-  </v-menu>
+  <span :id="parameterID">
+    <span>{{id}}</span>
+    <v-menu
+      v-if="refType"
+      v-model="showTypeDetail"
+      :open-on-hover="openOnHover"
+      :close-on-click="false"
+      :close-on-content-click="false"
+      :nudge-width="200"
+      :min-width="450"
+      offset-y
+      content-class="overflow-hidden"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <a v-bind="attrs" v-on="on">{{type}}</a>
+      </template>
+      <v-card>
+        <v-list-item class="pa-0">
+          <pre
+            :id="typeID"
+            class="code pa-4"
+            style="
+              width: 100%;
+              max-height: 550px;
+              background: rgb(51, 51, 51);
+              color: #fff;
+              overflow-y: auto;
+            "
+            v-html="codeString"
+          ></pre>
+        </v-list-item>
+        <v-card-actions class="d-flex justify-space-between align-center">
+          <v-switch
+            class="mt-0"
+            v-model="removeQuestion"
+            hide-details
+            color="purple"
+            label="Partial&lt;T&gt; 转为 T"
+            :disabled="showSample"
+          ></v-switch>
+          <v-switch
+            class="mt-0"
+            v-model="showSample"
+            hide-details
+            color="purple"
+            label="示例">
+          </v-switch>
+          <div>
+            <v-btn text @click="showTypeDetail = false">关闭</v-btn>
+            <app-api-copy
+              type="text"
+              color="primary"
+              @copy="showTypeDetail = false"
+              :target="typeID"
+            >复制</app-api-copy>
+          </div>
+        </v-card-actions>
+      </v-card>
+    </v-menu>
+  </span>
+  <app-api-copy
+    v-if="id"
+    :target="parameterID"
+    style="margin-left: -12px;"
+  ></app-api-copy>
 </div>
 `,
   props: {
@@ -94,16 +101,19 @@ Vue.component('app-api-type', {
       showTypeDetail: false,
       removeQuestion: false,
       showSample: false,
+      openOnHover: true,
       code: {
         raw: '',
         noQuestion: '',
         mock: '',
       },
       typeID: this.genID(),
+      parameterID: this.genID(),
     };
   },
   watch: {
     showTypeDetail(show) {
+      this.openOnHover = !show;
       if (show && !this.code.raw) {
         const types = this.$root.types;
         this.code.raw = TypeHelper.getExports(this.type, types);

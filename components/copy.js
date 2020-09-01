@@ -74,6 +74,7 @@ Vue.component('app-api-copy', {
       document.execCommand('copy');
       el.style.display = 'none';
       document.body.removeChild(el);
+      this.$emit('copy');
     },
   },
 });

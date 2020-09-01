@@ -305,28 +305,36 @@
               parameter.display = parameter.name + required;
             });
           },
+          iterObj(obj, cb) {
+            return Object.keys(obj)
+              .sort()
+              .map((key) => cb.call(null, key, obj[key]));
+          },
           getNamespaceApis(paths) {
-            for (const url in paths) {
-              if (paths.hasOwnProperty(url)) {
-                const methods = paths[url];
-                for (const method in methods) {
-                  if (methods.hasOwnProperty(method)) {
-                    const config = methods[method];
-                    const index = this.namespacesMap[config.tags[0]];
-                    this.transformParameters(config.parameters);
-                    this.namespaces[index].apis.push({
-                      ...config,
-                      produce: config.produces && config.produces[0],
-                      url: '`' + url.replace(/\{/gi, '${') + '`',
-                      rawUrl: url,
-                      method: method.toUpperCase(),
-                      method_: method,
-                      description: config.summary,
-                    });
-                  }
-                }
-              }
-            }
+            let apis = [];
+            this.iterObj(paths, (url, methods) => {
+              this.iterObj(methods, (method, config) => {
+                config = {
+                  ...config,
+                  produce: config.produces && config.produces[0],
+                  url: '`' + url.replace(/\{/gi, '${') + '`',
+                  rawUrl: url,
+                  method: method.toUpperCase(),
+                  method_: method,
+                  description: config.summary,
+                };
+                apis.push(config);
+              });
+            });
+
+            apis.forEach((api) => {
+              this.transformParameters(api.parameters);
+              api.tags.forEach((tag) => {
+                const index = this.namespacesMap[tag];
+                this.namespaces[index].apis.push(api);
+              });
+            });
+
             return this;
           },
           getTypes(definitions) {
