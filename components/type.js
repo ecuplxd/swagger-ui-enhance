@@ -34,27 +34,30 @@ Vue.component('app-api-type', {
           ></pre>
         </v-list-item>
         <v-card-actions class="d-flex justify-space-between align-center">
-          <v-switch
-            class="mt-0"
-            v-model="removeQuestion"
-            hide-details
-            color="purple"
-            label="Partial&lt;T&gt; 转为 T"
-            :disabled="showSample"
-          ></v-switch>
-          <v-switch
-            class="mt-0"
-            v-model="showSample"
-            hide-details
-            color="purple"
-            label="示例">
-          </v-switch>
+          <div class="d-flex">
+            <v-switch
+              class="mt-0 mr-4"
+              v-model="removeQuestion"
+              hide-details
+              color="purple"
+              label="Partial&lt;T&gt; 转 T"
+              :disabled="showSample"
+            ></v-switch>
+            <v-switch
+              class="mt-0"
+              v-model="showSample"
+              hide-details
+              color="purple"
+              label="示例">
+            </v-switch>
+          </div>
           <div>
-            <v-btn text @click="showTypeDetail = false">关闭</v-btn>
+            <v-btn class="pa-0" text @click="close">关闭（ESC）</v-btn>
             <app-api-copy
+              class="pa-0"
               type="text"
               color="primary"
-              @copy="showTypeDetail = false"
+              @copy="close"
               :target="typeID"
             >复制</app-api-copy>
           </div>
@@ -134,11 +137,15 @@ Vue.component('app-api-type', {
     const type = new TypeHelper(this.parameter);
     this.type = type.type;
     this.refType = type.refType;
+    this.listenerKey(27, this.close);
   },
   methods: {
     // TODO
     genMock() {
       return '';
+    },
+    close() {
+      this.showTypeDetail = false;
     },
   },
 });

@@ -14,6 +14,8 @@
 
 ![search](./images/search.png 'search')
 
+![search](./images/search.gif 'search')
+
 ## TypeHover
 
 ![typeHover](./images/typeHover.png 'typeHover')

@@ -5,12 +5,13 @@ Vue.component('app-search', {
   <v-text-field
     v-model="search"
     prepend-inner-icon="mdi-magnify"
-    placeholder='搜索 API（"/" 激活搜索框）'
+    placeholder='搜索 API（"/" 激活，"↑" "↓" 切换，"→" 选择）'
     dense
     flat
     hide-details
     rounded
     solo
+    ref="searchEl"
     @blur="onBlur"
     @focus="onFocus"
     @keydown.esc="onEsc"
@@ -50,18 +51,22 @@ Vue.component('app-search', {
         <v-divider class="ml-4"></v-divider>
         <v-list-item
           style="
-            min-height: 55px;"
-            class="ml-8"
-            v-show="api.matched"
-            :key="j"
-            v-for="(api, j) in namespace.apis"
-          >
+            min-height: 55px;
+          "
+          class="ml-8"
+          v-show="api.matched"
+          :key="j"
+          v-for="(api, j) in namespace.apis"
+        >
           <v-list-item-avatar size="36" class="my-0 mr-2">
             <span style="font-size: 10px;" v-html="api.method"></span>
           </v-list-item-avatar>
           <v-list-item-content
             class="py-2 pl-3 ds-suggestion-item"
             style="border-left: 1px solid rgba(0, 0, 0, 0.12);"
+            :class="{actived: api.index_ === activedSearchIndex}"
+            :data-namespace="i"
+            :data-api="j"
             @click="handleSelect(i, j)"
           >
             <v-list-item-title v-html="api.rawUrl" style="font-size: 16px; font-weight: bold;"></v-list-item-title>
@@ -88,6 +93,8 @@ Vue.component('app-search', {
       tid: null,
       namespaces_: [],
       matchedCount: 0,
+      activedSearchIndex: 0,
+      matchedElClass: '.ds-suggestion-item.actived',
     };
   },
   watch: {
@@ -96,10 +103,12 @@ Vue.component('app-search', {
     },
   },
   methods: {
-    onBlur() {},
-
-    onEsc() {},
-
+    onBlur() {
+      this.reset();
+    },
+    onEsc() {
+      this.$refs.searchEl.blur();
+    },
     onFocus() {},
     getMatched(string, type) {
       let style = 'color: #174d8c; background: rgba(143,187,237,.1);';
@@ -115,7 +124,7 @@ Vue.component('app-search', {
     },
     filterNamespaces() {
       let namespaces = JSON.parse(JSON.stringify(this.namespaces));
-      namespaces.forEach((namespace) => {
+      namespaces.forEach((namespace, i) => {
         namespace.name = this.getMatched(namespace.name, 'title');
         namespace.description = this.getMatched(namespace.description);
 
@@ -123,15 +132,16 @@ Vue.component('app-search', {
           namespace.name.includes('span') ||
           namespace.description.includes('span');
 
-        namespace.apis.forEach((api) => {
+        namespace.apis.forEach((api, j) => {
           api.method = this.getMatched(api.method);
           api.rawUrl = this.getMatched(api.rawUrl);
           api.description = this.getMatched(api.description);
+
           api.matched =
             api.method.includes('span') ||
             api.rawUrl.includes('span') ||
             api.description.includes('span');
-          this.matchedCount += +api.matched;
+          api.index_ = api.matched ? this.matchedCount++ : -1;
         });
 
         if (!namespace.matched) {
@@ -142,22 +152,61 @@ Vue.component('app-search', {
     },
     doSearch() {
       if (!this.search) {
-        this.showResult = false;
+        this.reset();
         return;
       }
       if (this.tid) {
         return;
       }
       this.tid = setTimeout(() => {
+        this.reset();
         this.namespaces_ = this.filterNamespaces();
-        this.showResult = this.search;
+        this.showResult = !!this.matchedCount;
         this.tid = clearTimeout(this.tid);
       }, 500);
     },
     handleSelect(namespaceIndex, apiIndex) {
-      this.showResult = false;
-      this.search = '';
+      this.reset(true);
       this.$emit('select', namespaceIndex, apiIndex);
     },
+    reset(reseetSearch) {
+      this.activedSearchIndex = 0;
+      this.matchedCount = 0;
+      this.search = reseetSearch ? '' : this.search;
+      this.showResult = false;
+    },
+    updateActivedSearchIndex(dir) {
+      const delta = dir === 'up' ? -1 : 1;
+      const index = (this.activedSearchIndex + delta) % this.matchedCount;
+      this.activedSearchIndex = index > -1 ? index : this.matchedCount - 1;
+      this.scrollToActivedItem();
+    },
+    scrollToActivedItem() {
+      this.$nextTick(() => {
+        const el = document.querySelector(this.matchedElClass);
+        el.scrollIntoView({
+          behavior: 'auto',
+          block: 'nearest',
+          inline: 'nearest',
+        });
+      });
+    },
+  },
+  mounted() {
+    this.listenerKey(191, () => this.$refs.searchEl.focus());
+    this.listenerKey(38, () => this.updateActivedSearchIndex('up'));
+    this.listenerKey(40, () => this.updateActivedSearchIndex('down'));
+    // 右方向键
+    this.listenerKey(39, () => {
+      if (this.showResult) {
+        const el = document.querySelector(this.matchedElClass);
+        if (!el) {
+          return;
+        }
+        const namespaceIndex = +el.getAttribute('data-namespace');
+        const apiIndex = +el.getAttribute('data-api');
+        this.handleSelect(namespaceIndex, apiIndex);
+      }
+    });
   },
 });

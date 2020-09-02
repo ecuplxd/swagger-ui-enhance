@@ -66,6 +66,7 @@
         cursor: pointer;
       }
 
+      .ds-suggestion-item.actived,
       .ds-suggestion-item:hover {
         background: rgba(69, 142, 225, 0.05);
         cursor: pointer;
@@ -206,6 +207,13 @@
         methods: {
           genID() {
             return Math.random().toString(36).substr(2);
+          },
+          listenerKey(code, cb) {
+            this.$nextTick(() =>
+              document.addEventListener('keyup', (e) => {
+                e.keyCode === code && cb.call(this);
+              })
+            );
           },
         },
       });
