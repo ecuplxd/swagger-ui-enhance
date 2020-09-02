@@ -3,8 +3,8 @@ Vue.component('app-api-items', {
   template: `
 <div>
   <div class="text-right pb-4">
-    <v-btn @click="all" class="mr-2">展开全部</v-btn>
-    <v-btn @click="none" class="mr-2">收起全部</v-btn>
+    <v-btn @click="all" tile outlined class="mr-2" color="primary">展开全部</v-btn>
+    <v-btn @click="none" tile outlined class="mr-2" color="primary">收起全部</v-btn>
   </div>
   <v-expansion-panels flat multiple v-model="panel">
     <v-expansion-panel
@@ -43,7 +43,7 @@ Vue.component('app-api-items', {
                         >
                           <td style="width: 50%;">
                             <app-api-type :parameter="parameter"></app-api-type>
-                            <div class="text--disabled">({{ parameter.in }})</div>
+                            <div class="text--disabled" style="line-height: initial;">({{ parameter.in }})</div>
                           </td>
                           <td>
                             <div>{{ parameter.description}}</div>

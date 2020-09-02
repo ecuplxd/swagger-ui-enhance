@@ -104,7 +104,10 @@
           "
         >
           <template v-slot:prepend>
-            <app-api-description :info="info"></app-api-description>
+            <app-api-description
+              :info="info"
+              :projects="[info]"
+            ></app-api-description>
             <v-divider></v-divider>
             <v-text-field
               v-model="searchNamespace"
@@ -153,6 +156,20 @@
         >
           <img src="./images/logo.svg" height="64px" style="margin-top: 7px" />
           <v-toolbar-title>Swagger UI</v-toolbar-title>
+          <v-responsive
+            :max-width="400"
+            class="mr-auto mr-md-4 transition-swing"
+          >
+            <v-text-field
+              dense
+              outlined
+              single-line
+              hide-details
+              hide-details
+              class="ml-4"
+              placeholder="通过 URL 导入已有 Swagger API"
+            ></v-text-field>
+          </v-responsive>
           <v-spacer></v-spacer>
           <app-search
             :namespaces="namespaces"
@@ -245,9 +262,10 @@
           },
           namespacesMap: {},
           namespaces: [],
-          type: {},
+          types: {},
           searchNamespace: '',
           copySuccess: false,
+          projects: [],
         },
         computed: {
           curNamespace() {

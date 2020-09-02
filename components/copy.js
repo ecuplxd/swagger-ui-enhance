@@ -8,9 +8,9 @@ Vue.component('app-api-copy', {
   @click.stop.prevent="copy"
   height="24"
   width="24"
+  :title="text"
 >
   <v-icon
-    :title="text"
     v-if="isIcon"
     i18n-title
     x-small

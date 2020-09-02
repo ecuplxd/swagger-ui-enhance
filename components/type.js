@@ -52,7 +52,6 @@ Vue.component('app-api-type', {
             </v-switch>
           </div>
           <div>
-            <v-btn class="pa-0" text @click="close">关闭（ESC）</v-btn>
             <app-api-copy
               class="pa-0"
               type="text"
@@ -60,6 +59,7 @@ Vue.component('app-api-type', {
               @copy="close"
               :target="typeID"
             >复制</app-api-copy>
+            <v-btn class="pa-0" text @click="close">关闭（ESC）</v-btn>
           </div>
         </v-card-actions>
       </v-card>
@@ -116,7 +116,7 @@ Vue.component('app-api-type', {
   },
   watch: {
     showTypeDetail(show) {
-      this.openOnHover = !show;
+      // this.openOnHover = !show;
       if (show && !this.code.raw) {
         const types = this.$root.types;
         this.code.raw = TypeHelper.getExports(this.type, types);

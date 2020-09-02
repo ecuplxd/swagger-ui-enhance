@@ -11,7 +11,6 @@ Vue.component('app-api-response', {
         <div>
           <v-select
             dense
-            hide-details
             style="max-width: 160px"
             v-model="produce"
             :items="produces"

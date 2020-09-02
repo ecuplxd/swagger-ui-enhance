@@ -53,12 +53,12 @@ Vue.component('app-search', {
           style="
             min-height: 55px;
           "
-          class="ml-8"
+          class="ml-8 pl-4"
           v-show="api.matched"
           :key="j"
           v-for="(api, j) in namespace.apis"
         >
-          <v-list-item-avatar size="36" class="my-0 mr-2">
+          <v-list-item-avatar size="40" class="my-0 mr-2">
             <span style="font-size: 10px;" v-html="api.method"></span>
           </v-list-item-avatar>
           <v-list-item-content
@@ -109,7 +109,9 @@ Vue.component('app-search', {
     onEsc() {
       this.$refs.searchEl.blur();
     },
-    onFocus() {},
+    onFocus() {
+      this.doSearch();
+    },
     getMatched(string, type) {
       let style = 'color: #174d8c; background: rgba(143,187,237,.1);';
       if (type === 'title') {
@@ -165,6 +167,7 @@ Vue.component('app-search', {
         this.tid = clearTimeout(this.tid);
       }, 500);
     },
+    // Debug
     handleSelect(namespaceIndex, apiIndex) {
       this.reset(true);
       this.$emit('select', namespaceIndex, apiIndex);
@@ -191,13 +194,7 @@ Vue.component('app-search', {
         });
       });
     },
-  },
-  mounted() {
-    this.listenerKey(191, () => this.$refs.searchEl.focus());
-    this.listenerKey(38, () => this.updateActivedSearchIndex('up'));
-    this.listenerKey(40, () => this.updateActivedSearchIndex('down'));
-    // 右方向键
-    this.listenerKey(39, () => {
+    selectActivedItem() {
       if (this.showResult) {
         const el = document.querySelector(this.matchedElClass);
         if (!el) {
@@ -207,6 +204,15 @@ Vue.component('app-search', {
         const apiIndex = +el.getAttribute('data-api');
         this.handleSelect(namespaceIndex, apiIndex);
       }
-    });
+    },
+  },
+  mounted() {
+    this.listenerKey(191, () => this.$refs.searchEl.focus());
+    this.listenerKey(38, () => this.updateActivedSearchIndex('up'));
+    this.listenerKey(40, () => this.updateActivedSearchIndex('down'));
+    // 右方向键
+    this.listenerKey(39, () => this.selectActivedItem());
+    // 回车
+    this.listenerKey(13, () => this.selectActivedItem());
   },
 });
