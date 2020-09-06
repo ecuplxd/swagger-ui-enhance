@@ -2,24 +2,33 @@ Vue.component('app-api-item', {
   name: 'apiItem',
   template: `
 <div>
-  <v-chip
+  <v-btn
     v-if="!short"
     small
-    label
-    style="flex-shrink: 0; flex: initial"
+    tile
+    depressed
+    min-width="60"
+    height="25"
     :color="colors[api.method]"
-    class="white--text"
+    class="px-0 white--text code"
   >
-    <span class="text-center code" style="min-width: 40px;">{{api.method}}</span>
-  </v-chip>
-  <span v-if="!short" class="mx-1 code">{{copy ? api.url : api.rawUrl }}</span>
+    {{api.method}}
+  </v-btn>
+  <span
+    v-if="!short"
+    class="mx-1 v-list-item__title code"
+    style="font-size: 16px;"
+  >{{copy ? api.url : api.rawUrl }}</span>
   <app-api-copy
     v-if="copy"
     style="margin-left: -12px;"
     :clipboard-text="api.url"
     text="复制 URL"
   ></app-api-copy>
-  <span>{{api.description}}</span>
+  <span
+    class="font-weight-regular break-word v-list-item__subtitle"
+    :style="style"
+  >{{api.description}}</span>
   <app-api-copy
     v-if="copy"
     :clipboard-text="api.description"
@@ -48,6 +57,10 @@ Vue.component('app-api-item', {
     },
   },
   data() {
-    return {};
+    return {
+      style: {
+        color: this.short ? '' : 'rgba(0, 0, 0, 0.6)',
+      },
+    };
   },
 });

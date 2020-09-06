@@ -5,18 +5,23 @@ Vue.component('app-api-response', {
   <v-list-item>
     <v-list-item-content>
       <v-list-item-title
-        class="d-flex justify-space-between align-center text--primary font-weight-bold"
+        class="d-flex justify-space-between align-center font-weight-medium"
       >
         <span i18n-text>响应体</span>
-        <div>
-          <v-select
-            dense
-            style="max-width: 160px"
-            v-model="produce"
-            :items="produces"
-          >
-          </v-select>
-        </div>
+        <v-select
+          dense
+          style="
+            max-width: 160px;
+            margin: 0 0 2px 0;
+            position: relative;
+            bottom: 4px;
+          "
+          class="font-weight-regular"
+          v-model="produce_"
+          hide-details
+          :items="produces"
+        >
+        </v-select>
       </v-list-item-title>
       <v-simple-table>
         <template v-slot:default>
@@ -95,7 +100,9 @@ Vue.component('app-api-response', {
     },
   },
   data() {
-    return {};
+    return {
+      produce_: this.produce,
+    };
   },
   methods: {},
 });

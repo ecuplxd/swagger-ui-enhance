@@ -15,7 +15,7 @@ Vue.component('app-api-toc', {
 >
   <ul class="pt-8 mb-6 api-toc">
     <li class="mb-4">
-      <h3 class="caption font-weight-bold grey--text">
+      <h3 class="text-overview font-weight-medium">
         {{namespace && namespace.name}}
       </h3>
     </li>
@@ -25,7 +25,7 @@ Vue.component('app-api-toc', {
         :class="{
           'mb-2': i + 1 !== namespace.apis.length,
           'primary--text': activedIndex_ === i,
-          'text--disabled': activedIndex_ !== i
+          'text--secondary': activedIndex_ !== i
         }"
         :style="{
           borderColor: activedIndex_ === i ? 'currentColor' : undefined
@@ -36,7 +36,11 @@ Vue.component('app-api-toc', {
           class="d-block font-weight-medium"
           @click.stop.prevent="goTo(i)"
         >
-          <app-api-item :api="api" short :copy="false"></app-api-item>
+          <app-api-item
+            :api="api"
+            short
+            :copy="false"
+          ></app-api-item>
         </a>
       </li>
     </template>
@@ -76,8 +80,8 @@ Vue.component('app-api-toc', {
       this.activedIndex_ = index;
       const id = 'api-item-' + index;
       if (document.getElementById(id)) {
-        this.$vuetify.goTo('#' + id);
         this.$emit('change', index);
+        this.$vuetify.goTo('#' + id);
       }
     },
   },

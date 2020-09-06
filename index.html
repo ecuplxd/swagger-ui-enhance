@@ -31,6 +31,12 @@
       .v-application a {
         color: #1976d2;
         word-break: break-all;
+        white-space: normal;
+      }
+
+      .break-word {
+        word-break: break-all;
+        white-space: normal;
       }
 
       .api-toc {
@@ -105,9 +111,16 @@
         >
           <template v-slot:prepend>
             <app-api-description
-              :info="info"
-              :projects="[info]"
+              v-if="curProject"
+              :info="curProject.info"
+              :projects="projects"
+              @select="handleSelectProject"
             ></app-api-description>
+            <app-api-import
+              :by-url="false"
+              by-local
+              @success="parseProject"
+            ></app-api-import>
             <v-divider></v-divider>
             <v-text-field
               v-model="searchNamespace"
@@ -121,8 +134,8 @@
             <v-divider></v-divider>
           </template>
           <app-api-namespace
-            v-model="activedIndex"
-            :namespaces="namespaces"
+            v-model="index.namespace"
+            :namespaces="curNamespaces"
             @select="handleSelect"
           ></app-api-namespace>
           <template v-slot:append>
@@ -136,7 +149,7 @@
         </v-navigation-drawer>
         <!-- 右侧 -->
         <app-api-toc
-          v-model="activedAPIIndex"
+          v-model="index.api"
           :namespace="curNamespace"
         ></app-api-toc>
         <!-- 头部 -->
@@ -152,29 +165,17 @@
             transform: translateY(0px);
             left: 0px;
             right: 0px;
+            z-index: 7;
           "
         >
           <img src="./images/logo.svg" height="64px" style="margin-top: 7px" />
           <v-toolbar-title>Swagger UI</v-toolbar-title>
-          <v-responsive
-            :max-width="400"
-            class="mr-auto mr-md-4 transition-swing"
-          >
-            <v-text-field
-              dense
-              outlined
-              single-line
-              hide-details
-              hide-details
-              class="ml-4"
-              placeholder="通过 URL 导入已有 Swagger API"
-            ></v-text-field>
-          </v-responsive>
+          <app-api-import @success="parseProject"></app-api-import>
           <v-spacer></v-spacer>
-          <app-search
-            :namespaces="namespaces"
+          <app-api-search
+            :namespaces="curNamespaces"
             @select="handleSelect"
-          ></app-search>
+          ></app-api-search>
           <v-spacer></v-spacer>
         </v-app-bar>
         <!-- 内容区 -->
@@ -191,7 +192,9 @@
             </v-snackbar>
             <app-api-items
               :apis="curNamespace && curNamespace.apis"
-              :actived-index="activedAPIIndex"
+              :actived-index="index.api"
+              :force-select="forceSelect"
+              @index-change="handleApiIndexChange($event)"
             ></app-api-items>
           </v-container>
         </v-main>
@@ -245,79 +248,118 @@
     <script src="./components/apiItem.js"></script>
     <script src="./components/apiItems.js"></script>
     <script src="./components/response.js"></script>
+    <script src="./components/import.js"></script>
     <script>
       new Vue({
         el: '#app',
         vuetify: new Vuetify(),
         data: {
           tocs: [],
-          activedIndex: -1,
-          activedAPIIndex: -1,
-          info: {
-            description: '',
-            version: '',
-            title: '',
-            host: '',
-            basePath: '',
+          index: {
+            project: 0,
+            namespace: -1,
+            api: -1,
           },
           namespacesMap: {},
-          namespaces: [],
           types: {},
           searchNamespace: '',
           copySuccess: false,
           projects: [],
+          forceSelect: +new Date(),
         },
         computed: {
+          curProject() {
+            return this.projects[this.index.project] || {};
+          },
+          curNamespaces() {
+            return this.curProject.namespaces || [];
+          },
           curNamespace() {
-            return this.namespaces[this.activedIndex];
+            return this.curNamespaces[this.index.namespace];
           },
         },
         watch: {
-          activedIndex(newIndex) {
-            sessionStorage.setItem('activedIndex', newIndex);
-          },
-          activedAPIIndex(newIndex) {
-            sessionStorage.setItem('activedAPIIndex', newIndex);
+          index: {
+            namespace(namespace) {
+              this.setIndex(this.index.project, namespace, this.index.api);
+            },
+            api(api) {
+              this.setIndex(this.index.project, this.index.namespace, api);
+            },
           },
           searchNamespace() {
             this.filterNamespace();
           },
         },
         methods: {
+          setIndex(project, namespace, api) {
+            sessionStorage.setItem('project', project);
+            sessionStorage.setItem('activedIndex', namespace);
+            sessionStorage.setItem('activedAPIIndex', api);
+          },
+          handleApiIndexChange(index) {
+            if (index !== this.index.api) {
+              // this.activedAPIIndex = index;
+            }
+            this.setIndex(this.index.namespace, index);
+          },
           restoreIndex() {
-            this.activedIndex = +sessionStorage.getItem('activedIndex');
-            this.activedAPIIndex = +sessionStorage.getItem('activedAPIIndex');
+            this.index.namespace = +sessionStorage.getItem('activedIndex');
+            this.index.api = +sessionStorage.getItem('activedAPIIndex');
             return this;
           },
           filterNamespace() {
-            this.namespaces.forEach((namespace) => {
+            this.curNamespaces.forEach((namespace) => {
               namespace.matched =
                 namespace.name.includes(this.searchNamespace) ||
                 namespace.description.includes(this.searchNamespace);
             });
           },
-          getSwaggerJSON() {
+          loadProjects() {
             fetch('./assets/swagger.json')
               .then((res) => res.json())
-              .then((res) => {
-                console.log(res);
-                this.getInfo(res)
-                  .getNamespace(res.tags)
-                  .getNamespaceApis(res.paths)
-                  .getTypes(res.definitions)
-                  .restoreIndex();
+              .then((config) => {
+                this.parseProject(config);
               });
           },
-          getInfo(res) {
-            this.info = {
-              ...res.info,
-              host: res.host,
-              basePath: res.basePath,
-            };
+          parseProject(project) {
+            console.log(project);
+
+            if (this.setProjects(project)) {
+              return this;
+            }
+
+            this.getProjectInfo(project)
+              .getNamespace(project)
+              .getNamespaceApis(project)
+              .getTypes(project.definitions)
+              .restoreIndex(this.projects.length, 0, 0);
+
             return this;
           },
-          getNamespace(tags) {
-            this.namespaces = tags.map((tag, index) => {
+          setProjects(project) {
+            const { title, version } = project.info;
+            const id = encodeURIComponent(title + '|' + version);
+
+            if (this.projects.find((project) => project.id === id)) {
+              alert(`${title} ${version} 已存在`);
+              return true;
+            }
+
+            project.id = id;
+            project.info.id = id;
+            this.projects.push(project);
+            sessionStorage.setItem('PROJECTS', JSON.stringify(this.projects));
+            return false;
+          },
+          getProjectInfo(project) {
+            project.info.host = project.host;
+            project.info.basePath = project.basePath;
+            return this;
+          },
+          getNamespace(project) {
+            this.namespacesMap = {};
+            project.namespaces = project.tags.map((tag, index) => {
               tag.apis = [];
               tag.matched = true;
               this.namespacesMap[tag.name] = index;
@@ -336,9 +378,9 @@
               .sort()
               .map((key) => cb.call(null, key, obj[key]));
           },
-          getNamespaceApis(paths) {
+          getNamespaceApis(project) {
             let apis = [];
-            this.iterObj(paths, (url, methods) => {
+            this.iterObj(project.paths, (url, methods) => {
               this.iterObj(methods, (method, config) => {
                 config = {
                   ...config,
@@ -357,7 +399,7 @@
               this.transformParameters(api.parameters);
               api.tags.forEach((tag) => {
                 const index = this.namespacesMap[tag];
-                this.namespaces[index].apis.push(api);
+                project.namespaces[index].apis.push(api);
               });
             });
 
@@ -400,13 +442,23 @@
             console.log(this.types);
             return this;
           },
-          handleSelect(activedIndex, activedAPIIndex) {
-            this.activedIndex = activedIndex;
-            this.activedAPIIndex = activedAPIIndex;
+          handleSelect(namespace, api, forceSelect) {
+            forceSelect = forceSelect || false;
+            this.index.namespace = namespace;
+            this.index.api = api;
+            if (forceSelect) {
+              this.forceSelect = +new Date();
+            }
+          },
+          handleSelectProject(project) {
+            this.setIndex(project, 0, 0);
+            this.index.project = project;
+            this.index.namespace = 0;
+            this.index.api = 0;
           },
         },
         mounted() {
-          this.getSwaggerJSON();
+          this.loadProjects();
         },
       });
     </script>
