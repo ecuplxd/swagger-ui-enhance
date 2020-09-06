@@ -66,7 +66,7 @@ Vue.component('app-api-type', {
     </v-menu>
   </span>
   <app-api-copy
-    v-if="id"
+    v-if="id || refType"
     :target="parameterID"
     style="margin-left: -12px;"
   ></app-api-copy>

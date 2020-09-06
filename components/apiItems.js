@@ -6,7 +6,7 @@ Vue.component('app-api-items', {
     <v-btn @click="all" tile outlined class="mr-2" color="primary">展开全部</v-btn>
     <v-btn @click="none" tile outlined class="mr-2" color="primary">收起全部</v-btn>
   </div>
-  <v-expansion-panels flat multiple v-model="panel">
+  <v-expansion-panels flat multiple :value="panel">
     <v-expansion-panel
       v-for="(api, i) in apis"
       class="mb-2"
@@ -15,7 +15,7 @@ Vue.component('app-api-items', {
       :key="i"
       :style="'border: 1px solid ' + colors[api.method]"
     >
-      <v-expansion-panel-header class="py-2 px-4">
+      <v-expansion-panel-header class="py-2 px-4" @click="indexChange(i)">
         <app-api-item :api="api"></app-api-item>
       </v-expansion-panel-header>
       <v-expansion-panel-content :style="'border-top: 1px solid ' + colors[api.method]">
@@ -24,9 +24,30 @@ Vue.component('app-api-items', {
             <v-card outlined>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title class="d-flex justify-space-between align-center text--primary font-weight-bold">
+                  <v-list-item-title
+                    class="d-flex justify-space-between align-center font-weight-medium"
+                  >
                     <span i18n-text>请求参数</span>
-                    <v-btn small outlined i18n-text>发起请求</v-btn>
+                    <span>
+                      <v-btn small tile outlined i18n-text color="primary">
+                        发起请求
+                      </v-btn>
+                      <v-btn
+                        small
+                        tile
+                        outlined
+                        color="primary"
+                        class="pa-0"
+                        min-width="24"
+                        title="历史记录"
+                        style="
+                          border-left: 0;
+                          margin-left: -4px;
+                        "
+                      >
+                        <v-icon size="16">mdi-history</v-icon>
+                      </v-btn>
+                    </span>
                   </v-list-item-title>
                   <v-simple-table>
                     <template v-slot:default>
@@ -82,6 +103,9 @@ Vue.component('app-api-items', {
     activedIndex: {
       type: Number,
     },
+    forceSelect: {
+      type: Number,
+    },
   },
   watch: {
     apis(newValue) {
@@ -90,6 +114,9 @@ Vue.component('app-api-items', {
     },
     activedIndex(newIndex) {
       this.expandedApi(newIndex);
+    },
+    forceSelect() {
+      this.expandedApi(this.activedIndex);
     },
   },
   data: function () {
@@ -108,6 +135,9 @@ Vue.component('app-api-items', {
       let panel = Array(this.apis.length).fill(-1);
       panel[index] = index;
       this.panel = panel;
+    },
+    indexChange(index) {
+      this.$emit('index-change', index);
     },
   },
 });

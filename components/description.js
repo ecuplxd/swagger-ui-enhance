@@ -15,6 +15,7 @@ Vue.component('app-api-description', {
         text
         v-bind="attrs"
         v-on="on"
+        title="点击切换 API 集"
       >
         <span
           class="subtitle-1 text-capitalize font-weight-light hidden-sm-and-down"
@@ -27,8 +28,8 @@ Vue.component('app-api-description', {
 
     <v-list dense nav>
       <template v-for="(project, i) in projects">
-        <v-list-item :key="i" @click="selecProject(project)">
-          <v-list-item-title v-text="project.title" />
+        <v-list-item :key="i" @click="selecProject(project, i)">
+          <v-list-item-title v-text="project.info.title + ' ' + project.info.version" />
         </v-list-item>
       </template>
     </v-list>
@@ -68,17 +69,18 @@ Vue.component('app-api-description', {
       return `${this.info.host}${this.info.basePath}`;
     },
     url() {
-      return `https://${this.shortUrl}swagger.json`;
+      return `https://${this.shortUrl}/swagger.json`;
     },
   },
   data: function () {
-    return {
-      project: this.info,
-    };
+    return {};
   },
   methods: {
-    selecProject(project) {
-      this.project = project;
+    selecProject(project, index) {
+      if (project.id === this.info.id) {
+        return;
+      }
+      this.$emit('select', index);
     },
   },
 });

@@ -35,9 +35,7 @@ Vue.component('app-api-namespace', {
             :key="index"
             @click="goTo(i, index)"
           >
-            <v-list-item-title>
-              <app-api-item :api="api" :copy="false"></app-api-item>
-            </v-list-item-title>
+            <app-api-item :api="api" :copy="false"></app-api-item>
           </v-list-item>
         </v-list-item-group>
       </v-list>

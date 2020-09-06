@@ -1,11 +1,11 @@
-Vue.component('app-search', {
-  name: 'search',
+Vue.component('app-api-search', {
+  name: 'apiSearch',
   template: `
 <v-responsive :max-width="450" class="mr-auto mr-md-4 transition-swing">
   <v-text-field
     v-model="search"
     prepend-inner-icon="mdi-magnify"
-    placeholder='搜索 API（"/" 激活，"↑" "↓" 切换，"→" 选择）'
+    placeholder='搜索 API（"/" 激活，"↑" "↓" 切换，"→/回车" 选择）'
     dense
     flat
     hide-details
@@ -44,7 +44,7 @@ Vue.component('app-search', {
         v-show="namespace.matched"
         :key="i"
       >
-        <v-subheader inset class="text-subtitle-2 ml-2">
+        <v-subheader inset class="text-subtitle-2 ml-2 code">
           <div style="font-size: 20px;" v-html="namespace.name"></div>
           <div v-html="namespace.description" class="text-caption ml-2"></div>
         </v-subheader>
@@ -69,7 +69,7 @@ Vue.component('app-search', {
             :data-api="j"
             @click="handleSelect(i, j)"
           >
-            <v-list-item-title v-html="api.rawUrl" style="font-size: 16px; font-weight: bold;"></v-list-item-title>
+            <v-list-item-title v-html="api.rawUrl" style="font-size: 16px;"></v-list-item-title>
             <v-list-item-subtitle v-html="api.description"></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -104,7 +104,10 @@ Vue.component('app-search', {
   },
   methods: {
     onBlur() {
-      this.reset();
+      // Trick: 当鼠标点击结果项，首先触发完 blur 会执行 reset 导致元素被隐藏，handleSelect 无法执行
+      // setTimeout(() => {
+      //   this.reset();
+      // }, 500);
     },
     onEsc() {
       this.$refs.searchEl.blur();
@@ -167,15 +170,14 @@ Vue.component('app-search', {
         this.tid = clearTimeout(this.tid);
       }, 500);
     },
-    // Debug
     handleSelect(namespaceIndex, apiIndex) {
+      this.$emit('select', namespaceIndex, apiIndex, true);
       this.reset(true);
-      this.$emit('select', namespaceIndex, apiIndex);
     },
-    reset(reseetSearch) {
+    reset(resetSearch) {
       this.activedSearchIndex = 0;
       this.matchedCount = 0;
-      this.search = reseetSearch ? '' : this.search;
+      this.search = resetSearch ? '' : this.search;
       this.showResult = false;
     },
     updateActivedSearchIndex(dir) {
