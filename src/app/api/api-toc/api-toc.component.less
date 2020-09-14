@@ -1,0 +1,19 @@
+@import "src/styles/color.less";
+
+ul,
+li {
+  list-style: none;
+  padding: 0;
+}
+
+ul {
+  li {
+    border-left: 2px solid transparent;
+    cursor: pointer;
+
+    &.actived {
+      color: @primary;
+      border-color: @primary;
+    }
+  }
+}

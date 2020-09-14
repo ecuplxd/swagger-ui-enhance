@@ -1,0 +1,73 @@
+<button
+  #button
+  mat-icon-button
+  [matMenuTriggerFor]="levelOne"
+  #levelOneTrigger="matMenuTrigger"
+  appStopClick
+  (mouseenter)="buttonEnter(levelOneTrigger)"
+  (mouseleave)="buttonLeave(levelOneTrigger, button)"
+  (menuOpened)="handleMenuOpen()"
+>
+  <mat-icon>more_vert</mat-icon>
+</button>
+
+<mat-menu
+  #levelOne="matMenu"
+  class="scroll"
+  [hasBackdrop]="false"
+  [class]="!showSubMenu ? 'api-summary-panel' : ''"
+>
+  <div
+    (mouseenter)="menuenter()"
+    (mouseleave)="menuLeave(levelOneTrigger, button)"
+  >
+    <mat-nav-list class="pt-0" *ngIf="!showSubMenu">
+      <mat-list-item
+        *ngFor="let apiItem of apiItems; let i = index"
+        (click)="selectApi(i)"
+      >
+        <app-api-info
+          [api]="apiItem.__info"
+          [copyable]="false"
+          [twoLine]="true"
+        ></app-api-info>
+      </mat-list-item>
+    </mat-nav-list>
+
+    <ng-container *ngIf="showSubMenu">
+      <ng-container *ngFor="let method of methods">
+        <div
+          mat-menu-item
+          #levelTwoTrigger="matMenuTrigger"
+          [matMenuTriggerFor]="levelTwo"
+        >
+          <app-api-method [method]="method"></app-api-method>
+        </div>
+
+        <mat-menu
+          #levelTwo="matMenu"
+          class="api-summary-panel scroll"
+          [hasBackdrop]="false"
+        >
+          <mat-nav-list
+            class="pt-0"
+            (mouseenter)="menu2enter()"
+            (mouseleave)="menu2Leave(levelOneTrigger, levelTwoTrigger, button)"
+          >
+            <mat-list-item
+              *ngFor="let api of groups.get(method)"
+              (click)="selectApi(api.__index)"
+            >
+              <app-api-info
+                [api]="api.__info"
+                [copyable]="false"
+                [showMethod]="false"
+                [twoLine]="true"
+              ></app-api-info>
+            </mat-list-item>
+          </mat-nav-list>
+        </mat-menu>
+      </ng-container>
+    </ng-container>
+  </div>
+</mat-menu>

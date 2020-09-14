@@ -1,0 +1,21 @@
+<div class="api-action">
+  <button
+    mat-stroked-button
+    color="primary"
+    class="outlined px-12"
+    appStopClick
+    (click)="request()"
+  >
+    发起请求
+  </button>
+
+  <button
+    mat-stroked-button
+    color="primary"
+    class="outlined px-2 history"
+    appStopClick
+    (click)="request(true)"
+  >
+    <mat-icon class="f-21">history</mat-icon>
+  </button>
+</div>

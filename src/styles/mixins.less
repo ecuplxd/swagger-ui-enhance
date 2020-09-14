@@ -1,0 +1,60 @@
+@import "color.less";
+
+@scroll-color: rgba(0, 0, 0, 0.26);
+
+.scroll {
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: @scroll-color;
+  }
+}
+
+.hidden-x {
+  overflow-x: hidden !important;
+}
+
+.hidden-y {
+  overflow-y: hidden !important;
+}
+
+button.outlined {
+  line-height: 27px;
+  border-radius: 0 !important;
+  border-color: @primary-selected !important;
+}
+
+button {
+  min-width: initial !important;
+}
+
+.no-hover:hover {
+  background: none !important;
+}
+
+.border {
+  border: 1px solid @border-color;
+}
+
+.hidden {
+  display: none !important;
+}
+
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+
+  tr:hover {
+    background: @table-hover;
+  }
+
+  th {
+    color: @table-head;
+  }
+}

@@ -1,0 +1,41 @@
+@import "src/styles/flex.less";
+@import "src/styles/color.less";
+
+:host {
+  .flex;
+  .flex-column;
+}
+
+.search {
+  padding: 6px 12px;
+
+  input {
+    .flex-1;
+    border: 0;
+    outline: 0;
+
+    &:focus,
+    &:active {
+      border: 0 !important;
+    }
+  }
+}
+
+mat-list-item {
+  height: 60px !important;
+
+  &.selected {
+    color: @primary-selected;
+    background-color: @primary-bg;
+
+    &:hover {
+      background-color: @primary-hover;
+    }
+  }
+}
+
+.project-namespaces {
+  /deep/ .mat-list-item-content {
+    padding-right: 0 !important;
+  }
+}

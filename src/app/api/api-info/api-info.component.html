@@ -1,0 +1,32 @@
+<app-api-method
+  class="method mr-10"
+  [method]="api.method"
+  [showMethod]="showMethod"
+></app-api-method>
+
+<div class="flex-1 inline-flex api-info">
+  <span *ngIf="showUrl" class="inline-flex align-center" style="min-width: 0">
+    <span
+      class="mx-1 code f-16 title text-ellipsis"
+      [title]="copyable ? api.urlForCopy : api.url"
+      [class.mr-8]="!copyable"
+      *appCopy="copyable; value: api.urlForCopy; title: '复制 URL'"
+    >
+      {{ copyable ? api.urlForCopy : api.url }}
+    </span>
+  </span>
+
+  <span
+    *ngIf="showDescription"
+    class="inline-flex align-center"
+    style="min-width: 0"
+  >
+    <span
+      class="sub-title text-ellipsis"
+      [title]="api.description"
+      *appCopy="copyable; value: api.description; title: '复制描述'"
+    >
+      {{ api.description }}
+    </span>
+  </span>
+</div>

@@ -1,0 +1,110 @@
+<div class="y-center justify-between mb-10 header">
+  <span class="f-16">响应体</span>
+
+  <!-- <mat-form-field>
+    <mat-select
+      [(value)]="produce"
+      (selectionChange)="handleSelectChange($event)"
+    >
+      <mat-option *ngFor="let produce of produces" [value]="produce">
+        {{ produce }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field> -->
+</div>
+
+<div class="flex-1 border">
+  <table class="f-14">
+    <thead>
+      <tr class="no-hover">
+        <th class="pa-8 text-left" style="width: 50px">响应码</th>
+
+        <th class="pa-8 text-left">结果</th>
+
+        <th class="pa-8 text-left" style="width: 200px">描述</th>
+      </tr>
+    </thead>
+
+    <tbody class="code">
+      <tr class="no-hover">
+        <td colspan="3">
+          <mat-divider></mat-divider>
+        </td>
+      </tr>
+
+      <ng-container
+        *ngFor="let response of responses | keyvalue; let last = last"
+      >
+        <tr>
+          <td class="pa-8">
+            <div>{{ response.key }}</div>
+          </td>
+
+          <td class="pa-8">
+            <app-api-type [parameter]="response.value"></app-api-type>
+          </td>
+
+          <td class="pa-8">
+            <div>{{ response.value.description }}</div>
+          </td>
+        </tr>
+
+        <ng-container *ngIf="response.value.headers">
+          <tr class="no-hover">
+            <td colspan="3">
+              <mat-divider></mat-divider>
+            </td>
+          </tr>
+
+          <tr class="no-hover">
+            <td colspan="3" class="px-16">
+              <table style="border: 0">
+                <thead>
+                  <tr class="no-hover">
+                    <th class="pa-8 text-left">响应头</th>
+
+                    <th class="pa-8 text-left">描述</th>
+
+                    <th class="pa-8 text-left">类型</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <ng-container
+                    *ngFor="let header of response.value.headers | keyvalue"
+                  >
+                    <tr class="no-hover">
+                      <td colspan="3">
+                        <mat-divider></mat-divider>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="pa-8" style="min-width: 150px">
+                        <div>{{ header.key }}</div>
+                      </td>
+
+                      <td class="pa-8">
+                        <div>{{ header.value.description }}</div>
+                      </td>
+
+                      <td class="pa-8">
+                        <div>{{ types[header.value.type] }}</div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+
+        <tr class="no-hover" *ngIf="!last">
+          <td colspan="3">
+            <mat-divider></mat-divider>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>

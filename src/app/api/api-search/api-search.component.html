@@ -1,0 +1,59 @@
+<div class="search-container flex">
+  <input
+    #inputRef
+    class="pl-5"
+    [(ngModel)]="keyword"
+    (focus)="handleFocus()"
+    (blur)="handleBlur()"
+    placeholder='搜索 API（"/" 激活，"↑" "↓" 切换，"→/回车" 选择）'
+  />
+
+  <!-- 触发搜索 -->
+  <div
+    class="triggle"
+    #triggle="matMenuTrigger"
+    [matMenuTriggerFor]="menu"
+  ></div>
+</div>
+
+<mat-menu #menu="matMenu" class="api-search-panel scroll hidden-x">
+  <div class="search-result code">
+    <mat-list
+      *ngFor="let namespace of namespaces; let i = index"
+      class="pt-0"
+      [class.hidden]="!namespace.matched"
+    >
+      <div class="ml-8 pl-8 header">
+        <span class="f-20" [innerHTML]="namespace.name"></span>
+        <span class="sub-title ml-8" [innerHTML]="namespace.description"></span>
+      </div>
+
+      <mat-divider class="ml-16 mb-2"></mat-divider>
+
+      <div
+        *ngFor="let api of namespace.apiItems; let j = index"
+        class="ml-32 pl-16 flex align-center justify-start suggestions"
+        [class.hidden]="!api.__matched"
+      >
+        <div
+          class="xy-center f-14 left mr-8 method"
+          [innerHTML]="api.__info.method"
+        ></div>
+
+        <div
+          class="right flex-1 suggestion-item"
+          [class.actived]="api.__matchedIndex === activedSearchIndex"
+          [attr.data-namespace]="i"
+          [attr.data-api]="j"
+          (click)="handleSelect(i, j)"
+        >
+          <div class="f-16" [innerHTML]="api.__info.url"></div>
+          <div
+            class="sub-title f-13"
+            [innerHTML]="api.__info.description"
+          ></div>
+        </div>
+      </div>
+    </mat-list>
+  </div>
+</mat-menu>

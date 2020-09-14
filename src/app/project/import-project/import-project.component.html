@@ -1,0 +1,34 @@
+<div *ngIf="byUrl" class="y-center">
+  <input
+    #inputRef
+    (focus)="inputRef.select()"
+    class="update-url pl-5"
+    [(ngModel)]="url"
+    placeholder="通过 URL 导入已有 API"
+  />
+
+  <button
+    (click)="fetchFile()"
+    mat-stroked-button
+    color="primary"
+    class="ml-8 px-2 outlined"
+  >
+    <mat-icon title="更新" class="f-21">refresh</mat-icon>
+  </button>
+</div>
+
+<div *ngIf="byLocal" class="input-by-local">
+  <input
+    title="点击导入本地 JSON 文件"
+    class="file-input"
+    type="file"
+    accept="application/json"
+    #fileInput
+    (change)="parseFile($event)"
+    *ngIf="!destroy"
+  />
+
+  <button mat-mini-fab color="primary" title="点击导入本地 JSON 文件">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

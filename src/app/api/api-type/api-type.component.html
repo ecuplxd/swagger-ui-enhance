@@ -1,0 +1,24 @@
+<div class="inline-flex align-start">
+  <span
+    class="inline-flex align-center"
+    [class]="parameterID"
+    *appCopy="!!(id || refType); selector: parameterID"
+  >
+    <pre class="ma-0 code f-14" *ngIf="enumType">{{ id }}</pre>
+    <span *ngIf="!enumType">{{ id }}</span>
+
+    <app-hover-menu
+      *ngIf="refType"
+      menuClass="api-type-hover-panel hidden-x hidden-y"
+      #menu
+      (opened)="lazyGetType()"
+    >
+      <a class="ref-type-name" trigger>{{ type }}</a>
+      <app-api-type-hover
+        menuContent
+        [code]="menu.open ? code : ''"
+        (closeMenu)="menu.close()"
+      ></app-api-type-hover>
+    </app-hover-menu>
+  </span>
+</div>

@@ -1,0 +1,18 @@
+@import "src/styles/flex.less";
+
+:host {
+  .flex-1;
+  .inline-flex;
+  .align-center;
+  margin-right: 10px;
+
+  .method {
+    flex-shrink: 0;
+  }
+
+  &.two-line {
+    .api-info {
+      flex-direction: column;
+    }
+  }
+}

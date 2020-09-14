@@ -1,0 +1,95 @@
+@width: 25px;
+@height: 25px;
+@white: #fff;
+
+:host {
+  mat-dialog-content {
+    max-height: initial !important;
+    overflow: hidden;
+  }
+}
+
+.border {
+  border: 1px solid #ccc;
+}
+
+.focus {
+  outline: #3f51b5 1px solid;
+  border: 1px solid transparent;
+}
+
+.header {
+  height: 48px;
+  line-height: 48px;
+  background-color: #3f51b5;
+  border-bottom: 1px solid #3f51b5;
+  opacity: 0.95;
+  color: @white;
+}
+
+.url {
+  border-bottom: 1px solid #d1d1d1;
+  box-shadow: -1px 1px 2px rgba(0, 0, 0, 0.1);
+  background: #f0f0f0;
+
+  .url-container {
+    padding: 5px 10px;
+    .border;
+    background: @white;
+
+    .url-segments {
+      .url-segment-item {
+        position: relative;
+
+        &.only-one-url {
+          min-width: 300px;
+          height: @height;
+          padding: 0 5px;
+          .border;
+          line-height: @height;
+
+          &:hover {
+            .focus;
+          }
+        }
+
+        .url-input {
+          .border;
+        }
+
+        .url-value {
+          min-width: 80px;
+          height: @height;
+          border: 1px solid transparent;
+          line-height: @height;
+          font-weight: 400;
+
+          &:focus {
+            .focus;
+          }
+        }
+      }
+    }
+
+    .action {
+      width: @width + 2;
+      height: @height + 2;
+
+      .send-icon {
+        transform: rotate(-45deg);
+      }
+    }
+  }
+}
+
+/deep/ .api-request-panel {
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 0;
+  }
+}
+
+.api-info {
+  flex: initial;
+}

@@ -1,0 +1,58 @@
+<div class="y-center justify-between mb-10 header">
+  <span class="f-16">请求参数</span>
+</div>
+
+<div class="flex-1 border">
+  <table class="f-14">
+    <thead>
+      <tr class="no-hover">
+        <th class="pa-8 text-left">
+          <div class="inline-flex align-center">
+            <span
+              *appCopy="true; selector: copyItemClass; title: '复制所有字段'"
+            >
+              字段名
+            </span>
+          </div>
+        </th>
+
+        <th class="pa-8 text-left">描述</th>
+      </tr>
+    </thead>
+
+    <tbody class="code">
+      <tr class="no-hover">
+        <td colspan="2">
+          <mat-divider></mat-divider>
+        </td>
+      </tr>
+
+      <ng-container *ngFor="let parameter of parameters; let last = last">
+        <tr>
+          <td style="width: 50%" class="pa-8">
+            <app-api-type
+              [class]="copyItemClass"
+              [parameter]="parameter"
+            ></app-api-type>
+
+            <div class="text--disabled">({{ parameter.in }})</div>
+          </td>
+
+          <td class="pa-8" style="vertical-align: top">
+            <div>{{ parameter.description }}</div>
+          </td>
+        </tr>
+
+        <tr class="no-hover" *ngIf="!last">
+          <td colspan="2">
+            <mat-divider></mat-divider>
+          </td>
+        </tr>
+      </ng-container>
+
+      <tr *ngIf="!parameters || parameters.length === 0">
+        <td class="pa-8 text-center text--disabled" colspan="2">没有参数</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

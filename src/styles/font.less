@@ -1,0 +1,56 @@
+@import "color.less";
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.sub-title {
+  .f-14;
+  .fw-normal;
+  color: @sub-title;
+}
+
+.code {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.title {
+  font-weight: 500;
+}
+
+.fw-normal {
+  font-weight: normal;
+}
+
+.generate-font-size(36);
+
+.generate-font-size(@n, @i: 12) when (@i =< @n) {
+  .f-@{i} {
+    font-size: (1px * @i);
+  }
+  .generate-font-size(@n, (@i + 1));
+}
+
+.text--disabled {
+  color: rgba(0, 0, 0, 0.38) !important;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}

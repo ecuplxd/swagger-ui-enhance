@@ -1,0 +1,14 @@
+<div class="mb-24 pt-32 pl-24 toc">
+  <h3 class="mb-16 fw-normal">{{ title }}</h3>
+  <ul>
+    <li
+      class="sub-title mt-8 pr-24 pl-8"
+      *ngFor="let api of apiItems; let i = index"
+      [class.actived]="i === activedIndex"
+      (click)="scrollTo(i)"
+      [id]="idPrefix + i"
+    >
+      {{ api.__info.description }}
+    </li>
+  </ul>
+</div>

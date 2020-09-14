@@ -1,0 +1,49 @@
+<mat-dialog-content *ngIf="apiItem" class="pa-0 ma-0">
+  <div class="url pa-5 xy-center">
+    <app-api-info
+      cdkFocusInitial
+      class="api-info"
+      [api]="apiItem.__info"
+      [showMethod]="false"
+      [showUrl]="false"
+      [copyable]="false"
+    ></app-api-info>
+
+    <div class="y-center url-container">
+      <app-api-method
+        class="mr-10"
+        [method]="apiItem.__info.method"
+      ></app-api-method>
+
+      <div class="url-segments y-center">
+        <div
+          class="url-segment-item mr-10"
+          *ngFor="let url of urlParams"
+          [class.only-one-url]="urlParams.length === 1"
+        >
+          <span class="url-path f-16" *ngIf="!url.name">{{ url.path }}</span>
+
+          <div class="url-input y-center pr-5" *ngIf="url.name">
+            <input type="text" class="url-value px-5" [(ngModel)]="url.value" />
+
+            <span class="url-name ml-5 sub-title">{{ url.name }}</span>
+          </div>
+        </div>
+      </div>
+
+      <button color="primary" class="outlined action px-2" mat-stroked-button>
+        <mat-icon class="send-icon f-21 mb-4 ml-2">send</mat-icon>
+      </button>
+    </div>
+
+    <button class="ml-5" title="关闭" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="editors flex" *ngIf="editorSize.width">
+    <app-editor [size]="editorSize" [value]="types"></app-editor>
+
+    <app-editor [size]="editorSize"></app-editor>
+  </div>
+</mat-dialog-content>

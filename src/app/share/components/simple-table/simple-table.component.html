@@ -1,0 +1,31 @@
+<table class="f-14">
+  <thead>
+    <tr class="no-hover">
+      <th class="pa-8 text-left" *ngFor="let header of headers">
+        {{ header }}
+      </th>
+    </tr>
+  </thead>
+
+  <tbody class="code">
+    <tr class="no-hover">
+      <td [attr.colSpan]="headers.length">
+        <mat-divider></mat-divider>
+      </td>
+    </tr>
+
+    <ng-container *ngFor="let data of datas">
+      <tr>
+        <td class="pa-8" *ngFor="let key of keys">
+          {{ data[key] }}
+        </td>
+      </tr>
+    </ng-container>
+
+    <tr class="no-hover">
+      <td colspan="3">
+        <mat-divider></mat-divider>
+      </td>
+    </tr>
+  </tbody>
+</table>

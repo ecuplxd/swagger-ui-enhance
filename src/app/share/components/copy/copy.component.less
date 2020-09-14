@@ -1,0 +1,18 @@
+@import "src/styles/flex.less";
+@import "src/styles/color.less";
+
+:host {
+  .inline-flex;
+  .align-center;
+  cursor: pointer;
+}
+
+/deep/ .copy-snack-bar {
+  .inline-flex;
+  .align-center;
+  .justify-center;
+  min-width: initial !important;
+  min-height: initial !important;
+  height: 32px;
+  color: @white;
+}

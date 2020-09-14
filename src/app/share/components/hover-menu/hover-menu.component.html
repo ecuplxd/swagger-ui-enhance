@@ -1,0 +1,21 @@
+<div
+  [matMenuTriggerFor]="menu"
+  #menuTrigger="matMenuTrigger"
+  (mouseenter)="openMenu(menuTrigger)"
+  (mouseleave)="closeMenu(menuTrigger)"
+>
+  <ng-content select="[trigger]"></ng-content>
+</div>
+
+<mat-menu #menu="matMenu" [hasBackdrop]="false" [class]="menuClass">
+  <ng-template matMenuContent>
+    <div
+      appStopClick
+      [stopPropagation]="!closeOnContentClick"
+      (mouseenter)="openMenu(menuTrigger)"
+      (mouseleave)="closeMenu(menuTrigger)"
+    >
+      <ng-content select="[menuContent]"></ng-content>
+    </div>
+  </ng-template>
+</mat-menu>

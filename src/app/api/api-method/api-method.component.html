@@ -1,0 +1,10 @@
+<button
+  *ngIf="showMethod"
+  mat-flat-button
+  class="white f-12 inline-flex align-center justify-center method"
+  [style]="{
+    backgroundColor: colors[method]
+  }"
+>
+  {{ method | uppercase }}
+</button>

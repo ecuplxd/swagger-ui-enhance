@@ -1,0 +1,10 @@
+<mat-form-field>
+  <mat-select
+    [(value)]="selected"
+    (selectionChange)="handleSelectChange($event)"
+  >
+    <mat-option *ngFor="let project of projects; let i = index" [value]="i">
+      {{ project.display }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
