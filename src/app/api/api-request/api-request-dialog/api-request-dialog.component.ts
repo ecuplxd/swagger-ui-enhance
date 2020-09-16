@@ -1,6 +1,13 @@
-import { Component, HostListener, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { StoreService, TypeService } from 'src/app/share/service';
+import { EditorComponent } from 'src/app/share/components';
+import { ProxyService, StoreService, TypeService } from 'src/app/share/service';
 import { ApiItem, ApiParameters, ApiUrl, Size } from '../../api.model';
 
 @Component({
@@ -9,6 +16,8 @@ import { ApiItem, ApiParameters, ApiUrl, Size } from '../../api.model';
   styleUrls: ['./api-request-dialog.component.less'],
 })
 export class ApiRequestDialogComponent implements OnInit {
+  @ViewChild('queryEditor') queryEditor!: EditorComponent;
+
   apiItem!: ApiItem;
 
   editorSize: Size = {
@@ -22,6 +31,8 @@ export class ApiRequestDialogComponent implements OnInit {
 
   types = '';
 
+  response = '';
+
   refTypes: string[] = [];
 
   // TODO：优化
@@ -33,11 +44,14 @@ export class ApiRequestDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) data: { apiItem: ApiItem; editorSize: Size },
     private typeService: TypeService,
-    private store: StoreService
+    private store: StoreService,
+    private proxy: ProxyService
   ) {
+    this.apiItem = data.apiItem;
     this.getEditorSize(data.editorSize);
     this.parseUrl(this.apiItem.__info.url);
     this.groupParams();
+    this.getResponseType();
   }
 
   ngOnInit(): void {}
@@ -68,9 +82,25 @@ export class ApiRequestDialogComponent implements OnInit {
     }
   }
 
+  getResponseType(): void {
+    const param = (this.apiItem.responses[200] as unknown) as ApiParameters;
+    if (!param) {
+      return;
+    }
+
+    const typeName = this.typeService.getType(param);
+    if (this.typeService.refType) {
+      const projectId = this.store.getCurProjectId();
+      this.response =
+        '// 返回类型\n' + this.typeService.getExports(projectId, typeName);
+    }
+  }
+
   // TODO：优化
   groupParams(): void {
-    const parameters = this.apiItem.parameters;
+    const parameters: ApiParameters[] = JSON.parse(
+      JSON.stringify(this.apiItem.parameters)
+    );
     if (!parameters) {
       return;
     }
@@ -130,10 +160,12 @@ export class ApiRequestDialogComponent implements OnInit {
       stringify = stringify
         .replace(/"([^"]+)":/g, '$1:')
         .replace(/\uFFFF/g, '\\"')
+        // tslint:disable-next-line: quotemark
         .replace(/"/g, "'")
         .replace(/'(__undefined__)'/g, 'undefined');
 
-      this.types += `const query: Query = ${stringify}\n\n`;
+      this.types += `// Query start\nconst query: Query = ${stringify}\n`;
+      this.types += '// Query end\n\n';
     }
 
     if (bodyTypes) {
@@ -142,10 +174,12 @@ export class ApiRequestDialogComponent implements OnInit {
       stringify = stringify
         .replace(/"([^"]+)":/g, '$1:')
         .replace(/\uFFFF/g, '\\"')
+        // tslint:disable-next-line: quotemark
         .replace(/"/g, "'")
         .replace(/'(__undefined__)'/g, 'undefined');
 
-      this.types += `const body: Body = ${stringify}\n\n`;
+      this.types += `// Body start\nconst body: Body = ${stringify}\n`;
+      this.types += '// Body end\n\n';
     }
 
     if (queryTypes) {
@@ -174,5 +208,61 @@ export class ApiRequestDialogComponent implements OnInit {
     };
 
     this.editorSize = JSON.parse(JSON.stringify(size));
+  }
+
+  getText(text: string | undefined, type: string): string {
+    if (text === undefined) {
+      return '{}';
+    }
+
+    const start = text.indexOf(` ${type} = `);
+
+    if (start === -1) {
+      return '{}';
+    }
+
+    const end = text.indexOf(`// ${type} end`);
+    const offset = ` ${type} = `.length;
+    const result = text.substring(start + offset, end);
+
+    return result;
+  }
+
+  createResponse(): string {
+    return '';
+  }
+
+  eval(tex: string): Object {
+    return new Function('return ' + tex)();
+  }
+
+  doRequest(): void {
+    let url = this.urlParams.map((item) => item.value || item.path).join('');
+
+    const method = this.apiItem.__info.method;
+    const project = this.store.getCurPorject();
+
+    url = 'https://' + project.host + '/tdc/hamurapi' + url;
+
+    const responseInfo: string[] = [
+      '// Request URL',
+      '// ' + url + '\n',
+      '// Server response',
+    ];
+
+    const text = this.queryEditor.editor.getModel()?.getValue();
+    const query = this.eval(this.getText(text, 'Query'));
+    const body = this.eval(this.getText(text, 'Body'));
+    const header = this.eval(this.getText(text, 'Header'));
+
+    this.proxy.proxy(url, method, query, body, header).subscribe(
+      (res) => {
+        responseInfo.push('// code: 200\n');
+        responseInfo.push('// Response body：');
+        responseInfo.push('const res = ' + JSON.stringify(res, null, 2));
+        this.response = responseInfo.join('\n');
+      },
+      (error) => {}
+    );
   }
 }

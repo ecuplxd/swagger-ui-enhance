@@ -1,7 +1,6 @@
 <mat-dialog-content *ngIf="apiItem" class="pa-0 ma-0">
   <div class="url pa-5 xy-center">
     <app-api-info
-      cdkFocusInitial
       class="api-info"
       [api]="apiItem.__info"
       [showMethod]="false"
@@ -31,7 +30,14 @@
         </div>
       </div>
 
-      <button color="primary" class="outlined action px-2" mat-stroked-button>
+      <button
+        cdkFocusInitial
+        color="primary"
+        class="outlined action px-2"
+        mat-stroked-button
+        title="发送请求"
+        (click)="doRequest()"
+      >
         <mat-icon class="send-icon f-21 mb-4 ml-2">send</mat-icon>
       </button>
     </div>
@@ -42,8 +48,8 @@
   </div>
 
   <div class="editors flex" *ngIf="editorSize.width">
-    <app-editor [size]="editorSize" [value]="types"></app-editor>
+    <app-editor #queryEditor [size]="editorSize" [value]="types"></app-editor>
 
-    <app-editor [size]="editorSize"></app-editor>
+    <app-editor [size]="editorSize" [value]="response"></app-editor>
   </div>
 </mat-dialog-content>

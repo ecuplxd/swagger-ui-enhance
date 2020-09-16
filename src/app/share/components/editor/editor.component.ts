@@ -43,6 +43,13 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 100);
   }
 
+  @Input() set resize(flag: boolean) {
+    if (flag) {
+      console.log('resize');
+      this.updateContainerSize('true');
+    }
+  }
+
   @Output() format = new EventEmitter<string>();
 
   editor!: monaco.editor.IStandaloneCodeEditor;

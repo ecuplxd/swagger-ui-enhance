@@ -43,6 +43,7 @@ export class ProxyService {
   proxy(
     url: string,
     method: ApiMethod,
+    query: Object = {},
     body: Object = {},
     headers: Object = {}
   ): Observable<Object> {

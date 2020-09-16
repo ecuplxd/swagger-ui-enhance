@@ -66,6 +66,10 @@ export class StoreService {
     return this.projectSubject.asObservable();
   }
 
+  getCurPorject(): Project {
+    return this.data.project;
+  }
+
   getCurProjectId(): string {
     return this.data.project.id;
   }
@@ -209,7 +213,8 @@ export class StoreService {
         api.responses
       );
 
-      api.tags.forEach((tag: string) => {
+      const tags = api.tags || [];
+      tags.forEach((tag: string) => {
         const index = this.namespacesMap.get(tag);
 
         if (index !== undefined) {
@@ -221,7 +226,7 @@ export class StoreService {
     return this;
   }
 
-  transformResponses(responses: ApiResponses): this {
+  transformResponses(responses: ApiResponses = {}): this {
     this.iterObj(responses, (code: number, value: ApiResponsesValue) => {
       value.code = +code;
 

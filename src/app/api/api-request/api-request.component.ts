@@ -27,12 +27,7 @@ export class ApiRequestComponent implements OnInit {
 
   constructor(public dialog: MatDialog) {}
 
-  ngOnInit(): void {
-    // for debug
-    if (this.apiItem.__info.method === 'delete') {
-      // this.request();
-    }
-  }
+  ngOnInit(): void {}
 
   getDialogSize(): Size {
     const width = window.innerWidth;

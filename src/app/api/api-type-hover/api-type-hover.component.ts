@@ -21,6 +21,8 @@ export class ApiTypeHoverComponent implements OnInit {
     if (!this.code && value) {
       this._code = value;
       this.codeString = value;
+    } else {
+      this.resize = !!value;
     }
   }
   get code(): string {
@@ -40,6 +42,8 @@ export class ApiTypeHoverComponent implements OnInit {
   mockCode = '';
 
   codeString = '';
+
+  resize!: boolean;
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent): void {

@@ -8,7 +8,7 @@
       (click)="changeActivedIndex(i)"
       [id]="idPrefix + i + '-toc'"
     >
-      {{ api.__info.description }}
+      {{ api.__info.description || '该 API 缺少描述' }}
     </li>
   </ul>
 </div>
