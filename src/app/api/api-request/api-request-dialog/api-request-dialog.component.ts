@@ -35,12 +35,12 @@ export class ApiRequestDialogComponent implements OnInit {
     private typeService: TypeService,
     private store: StoreService
   ) {
-    this.apiItem = JSON.parse(JSON.stringify(data.apiItem));
-
     this.getEditorSize(data.editorSize);
     this.parseUrl(this.apiItem.__info.url);
     this.groupParams();
   }
+
+  ngOnInit(): void {}
 
   parseUrl(url: string): void {
     let index = 0;
@@ -91,7 +91,7 @@ export class ApiRequestDialogComponent implements OnInit {
         param.display = `  ${param.display}: ${typeName};`;
 
         if (this.typeService.refType) {
-          const projectId = this.store.getCurProject().id;
+          const projectId = this.store.getCurProjectId();
           const mock = {};
 
           this.refTypes.push(
@@ -130,7 +130,7 @@ export class ApiRequestDialogComponent implements OnInit {
       stringify = stringify
         .replace(/"([^"]+)":/g, '$1:')
         .replace(/\uFFFF/g, '\\"')
-        .replace(/"/g, '\'')
+        .replace(/"/g, "'")
         .replace(/'(__undefined__)'/g, 'undefined');
 
       this.types += `const query: Query = ${stringify}\n\n`;
@@ -142,7 +142,7 @@ export class ApiRequestDialogComponent implements OnInit {
       stringify = stringify
         .replace(/"([^"]+)":/g, '$1:')
         .replace(/\uFFFF/g, '\\"')
-        .replace(/"/g, '\'')
+        .replace(/"/g, "'")
         .replace(/'(__undefined__)'/g, 'undefined');
 
       this.types += `const body: Body = ${stringify}\n\n`;
@@ -175,6 +175,4 @@ export class ApiRequestDialogComponent implements OnInit {
 
     this.editorSize = JSON.parse(JSON.stringify(size));
   }
-
-  ngOnInit(): void {}
 }

@@ -54,7 +54,7 @@ export class ApiTypeComponent implements OnInit {
 
   lazyGetType(): void {
     if (this.refType && !this.code) {
-      const projectId = this.store.getCurProject().id;
+      const projectId = this.store.getCurProjectId();
       this.code = this.typeService.getExports(projectId, this.type);
     }
   }

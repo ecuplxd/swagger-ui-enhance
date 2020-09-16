@@ -5,6 +5,7 @@ import { MatAccordion } from '@angular/material/expansion';
 import { ApiItem } from '../api.model';
 import { StoreService } from 'src/app/share/service';
 import { COLORS } from 'src/app/share/const';
+import { StoreData } from 'src/app/share/store.model';
 
 @Component({
   selector: 'app-api-list',
@@ -14,17 +15,19 @@ import { COLORS } from 'src/app/share/const';
 export class ApiListComponent implements OnInit {
   @ViewChild(MatAccordion) accordion!: MatAccordion;
 
-  get apiItems(): ApiItem[] {
-    return this.store.getCurNamespaceApiItems();
-  }
+  apiItems: ApiItem[] = [];
 
-  get expandeds(): boolean[] {
-    return this.store.expandeds;
-  }
+  expandeds: boolean[] = [];
 
   colors = COLORS;
 
   constructor(private store: StoreService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.getData$().subscribe((data: StoreData) => {
+      this.apiItems = data.apiItems;
+      this.expandeds = data.expandeds;
+      this.expandeds[data.index.apiIndex] = true;
+    });
+  }
 }

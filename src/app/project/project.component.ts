@@ -11,19 +11,19 @@ import { Project } from './project.model';
 export class ProjectComponent implements OnInit {
   projects: Project[] = [];
 
-  get project(): Project {
-    return this.store.getCurProject();
-  }
+  project: Project = {} as Project;
 
-  get selected(): number {
-    return this.store.projectIndex;
-  }
+  selected!: number;
 
-  constructor(private store: StoreService) {
-    this.projects = this.store.projects;
-  }
+  constructor(private store: StoreService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.getData$().subscribe((data) => {
+      this.projects = data.projects;
+      this.project = data.project;
+      this.selected = data.index.projectIndex;
+    });
+  }
 
   handleProjectChange(projectIndex: number): void {
     this.store.dispatch('CHANGE_INDEX', {

@@ -1,5 +1,6 @@
 <div *ngIf="byUrl" class="y-center">
   <input
+    [title]="url"
     #inputRef
     (focus)="inputRef.select()"
     class="update-url pl-5"
@@ -12,8 +13,15 @@
     mat-stroked-button
     color="primary"
     class="ml-8 px-2 outlined"
+    [class.loading]="loading"
+    [disabled]="loading || !url"
   >
-    <mat-icon title="更新" class="f-21">refresh</mat-icon>
+    <mat-icon
+      class="f-21 inline-flex import-icon align-center justify-center"
+      title="导入或进行更新"
+    >
+      refresh
+    </mat-icon>
   </button>
 </div>
 

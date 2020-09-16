@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { StoreService } from 'src/app/share/service';
+import { StoreData } from 'src/app/share/store.model';
 
 @Component({
   selector: 'app-import-project',
@@ -21,13 +22,26 @@ export class ImportProjectComponent implements OnInit {
 
   destroy = false;
 
+  loading = false;
+
+  demoUrl = 'https://petstore.swagger.io/v2/swagger.json';
+
   constructor(private store: StoreService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.byUrl) {
+      this.store.getData$().subscribe((data: StoreData) => {
+        if (Object.keys(data.project).length === 0) {
+          this.url = this.demoUrl;
+        } else {
+          this.url = data.project.updateUrl;
+        }
+      });
+    }
+  }
 
   // tslint:disable-next-line: no-any
   parseFile(event: Event): void {
-    console.log(111);
     const target = event.target as HTMLInputElement;
     const files = target.files;
 
@@ -48,6 +62,9 @@ export class ImportProjectComponent implements OnInit {
       return;
     }
 
-    this.store.fetchProject(this.url);
+    this.loading = true;
+    this.store.fetchProject(this.url, () => {
+      this.loading = false;
+    });
   }
 }

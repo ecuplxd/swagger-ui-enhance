@@ -28,6 +28,7 @@ import {
   TypeService,
   CopyService,
   MenuPositionService,
+  ProxyService,
 } from './service';
 
 import { CopyDirective, StopClickDirective } from './directives';
@@ -45,6 +46,7 @@ const services = [
   HightlightService,
   CopyService,
   MenuPositionService,
+  ProxyService,
 ];
 
 const directives = [
@@ -70,10 +72,7 @@ const matModules = [
   MatIconModule,
   MatSelectModule,
   MatListModule,
-  MatGridListModule,
   MatMenuModule,
-  MatCardModule,
-  MatTableModule,
   MatSlideToggleModule,
   ClipboardModule,
   MatSnackBarModule,

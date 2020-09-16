@@ -8,35 +8,45 @@ import { ApiItem } from '../api.model';
   styleUrls: ['./api-toc.component.less'],
 })
 export class ApiTocComponent implements OnInit {
-  get title(): string {
-    return this.store.getCurNamespace().name;
-  }
+  title = '';
 
-  get apiItems(): ApiItem[] {
-    return this.store.getCurNamespaceApiItems();
-  }
+  apiItems: ApiItem[] = [];
 
-  get activedIndex(): number {
-    return this.store.apiIndex;
-  }
+  activedIndex!: number;
 
+  // TODO
   idPrefix = 'api-item-';
 
   constructor(private store: StoreService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.getData$().subscribe((data) => {
+      this.title = data.namespace.name;
+      this.apiItems = data.apiItems;
+      this.activedIndex = data.index.apiIndex;
+      // bugfix
+      // this.scrollTo(data.index.apiIndex);
+    });
+  }
 
   changeActivedIndex(index: number): void {
+    if (index === this.activedIndex) {
+      return;
+    }
+
     this.store.dispatch('CHANGE_INDEX', {
       apiIndex: index,
     });
   }
 
   scrollTo(index: number): void {
-    this.changeActivedIndex(index);
     const el = document.getElementById(this.idPrefix + index);
     if (el) {
-      el.scrollIntoView();
+      el.scrollIntoView({
+        behavior: 'auto',
+        block: 'nearest',
+        inline: 'nearest',
+      });
     }
   }
 }

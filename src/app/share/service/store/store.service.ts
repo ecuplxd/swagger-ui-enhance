@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 import { TypeService } from '../type/type.service';
 
@@ -16,13 +15,10 @@ import {
   ApiResponsesValue,
   ApiResponseHeaderValue,
 } from 'src/app/api/api.model';
-import {
-  StorePayload,
-  StoreObject,
-  StoreCache,
-  StoreData,
-} from '../../store.model';
+import { StoreIndex, StoreObject, StoreData } from '../../store.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ProxyService } from '../proxy/proxy.service';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,54 +28,58 @@ export class StoreService {
 
   private DUMP_KEY = 'SWAGGER_UI_ENHANCE';
 
-  // tslint:disable-next-line: variable-name
-  private _projects: Project[] = [];
-
-  public get projects(): Project[] {
-    return this._projects;
-  }
-
-  // tslint:disable-next-line: variable-name
-  private _expandeds: boolean[] = [true];
-
-  public get expandeds(): boolean[] {
-    return this._expandeds;
-  }
-
   private namespacesMap: Map<string, number> = new Map();
 
-  private index: StorePayload = {
-    projectIndex: 0,
-    namespaceIndex: 0,
-    apiIndex: 0,
+  private data: StoreData = {
+    projects: [],
+    project: {} as Project,
+    namespaces: [],
+    namespace: {} as ProjectNamesapce,
+    apiItems: [],
+    index: {
+      projectIndex: 0,
+      namespaceIndex: 0,
+      apiIndex: 0,
+    },
+    expandeds: [true],
   };
 
-  private cache: StoreCache = {} as StoreCache;
-
-  get projectIndex(): number {
-    return this.index.projectIndex;
-  }
-
-  get namespaceIndex(): number {
-    return this.index.namespaceIndex;
-  }
-
-  get apiIndex(): number {
-    return this.index.apiIndex;
-  }
+  private projectSubject = new Subject<StoreData>();
 
   constructor(
-    private http: HttpClient,
     private typeService: TypeService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private proxy: ProxyService
   ) {
-    // this.store.fetchProject('assets/api-docs.json');
     this.loadDumpsData();
+    setTimeout(() => {
+      this.send();
+    }, 0);
   }
 
-  fetchProject(url: string): void {
-    this.http.get(url).subscribe((res) => {
-      this.importProject(res as Project);
+  private send(): this {
+    this.projectSubject.next(this.data);
+    return this;
+  }
+
+  getData$(): Observable<StoreData> {
+    return this.projectSubject.asObservable();
+  }
+
+  getCurProjectId(): string {
+    return this.data.project.id;
+  }
+
+  getCurNamespaces(): ProjectNamesapce[] {
+    return this.data.namespaces;
+  }
+
+  fetchProject(url: string, cb?: Function): void {
+    this.proxy.proxy(url, 'get').subscribe((res) => {
+      this.importProject(res as Project, url);
+      if (cb) {
+        cb.call(null);
+      }
     });
   }
 
@@ -96,7 +96,11 @@ export class StoreService {
     });
   }
 
-  importProject(project: Project): this {
+  importProject(project: Project, updateUrl?: string): this {
+    if (updateUrl) {
+      project.updateUrl = updateUrl;
+    }
+
     this.transformProject(project);
     this.selectProject(project);
 
@@ -108,8 +112,9 @@ export class StoreService {
   }
 
   selectProject(project: Project): this {
-    const projects = this.projects;
-    const projectIndex = projects.findIndex((item) => item.id === project.id);
+    const projectIndex = this.data.projects.findIndex(
+      (item) => item.id === project.id
+    );
 
     if (projectIndex === -1 || this.projectExit) {
       return this;
@@ -145,25 +150,25 @@ export class StoreService {
     return this;
   }
 
-  getNamespaceFromTags(project: Project): this {
-    return this;
+  getNamespaceFromTags(project: Project): ProjectTag[] {
+    const tags = new Set<string>();
+    this.iterObj(project.paths, (_1: string, methods: StoreObject) => {
+      this.iterObj(methods, (_2: ApiMethod, api: ApiItem) => {
+        api.tags.forEach((tag: string) => tags.add(tag));
+      });
+    });
+    return Array.from(tags).map((tag) => {
+      return {
+        name: tag,
+        description: '--',
+      };
+    });
   }
 
   getNamespace(project: Project): this {
     this.namespacesMap.clear();
     if (!project.tags) {
-      const tags = new Set<string>();
-      this.iterObj(project.paths, (_1: string, methods: StoreObject) => {
-        this.iterObj(methods, (_2: ApiMethod, api: ApiItem) => {
-          api.tags.forEach((tag: string) => tags.add(tag));
-        });
-      });
-      project.tags = Array.from(tags).map((tag) => {
-        return {
-          name: tag,
-          description: '--',
-        };
-      });
+      project.tags = this.getNamespaceFromTags(project);
     }
     project.namespaces = project.tags.map((tag: ProjectTag, index: number) => {
       this.namespacesMap.set(tag.name, index);
@@ -249,7 +254,7 @@ export class StoreService {
   }
 
   filterNamespace(keyword: string): this {
-    this.getCurNamespaces().filter((namespace) => {
+    this.data.namespaces.filter((namespace) => {
       namespace.matched =
         namespace.name.includes(keyword) ||
         namespace.description.includes(keyword);
@@ -270,85 +275,67 @@ export class StoreService {
 
   addProject(project: Project): this {
     // 检测 project 是否已经存在
-    this.projectExit = this.projects.some((item) => project.id === item.id);
+    const projects = this.data.projects;
 
-    let index = this.projects.findIndex((item) => item.id === project.id);
-    index = index !== -1 ? index : this.projects.length;
+    this.projectExit = projects.some((item) => project.id === item.id);
 
-    this.projects[index] = project;
+    let index = projects.findIndex((item) => item.id === project.id);
+    index = index !== -1 ? index : projects.length;
+
+    projects[index] = project;
     this.dumpsData();
 
     if (this.projectExit) {
-      this.toastMessage('导入的 API 配置已经存在');
+      this.toastMessage('导入的 API 配置已经存在，更新成功。');
     }
 
     return this;
   }
 
   removeProject(index: number): this {
-    this.projects.splice(index, 1);
-
+    this.data.projects.splice(index, 1);
     return this;
   }
 
-  getCurProject(useCache = true): Project {
-    if (useCache && this.cache.project) {
-      return this.cache.project;
+  updateData(newIndexs: Partial<StoreIndex>): this {
+    const { projects, index } = this.data;
+
+    ['projectIndex', 'namespaceIndex', 'apiIndex']
+      .map((key) => [key, newIndexs[key]])
+      .filter(
+        (keyIndexs) =>
+          keyIndexs[1] !== undefined &&
+          keyIndexs[1] !== index[keyIndexs[0] as string]
+      )
+      .forEach((keyIndex) => {
+        const key = keyIndex[0] as string;
+        const newIndex = keyIndex[1] as number;
+
+        index[key] = newIndex;
+      });
+
+    const project = projects[index.projectIndex] || {};
+    const namespaces = project.namespaces || [];
+    const namespace = namespaces[index.namespaceIndex] || {};
+
+    this.data.project = project;
+    this.data.namespaces = namespaces;
+    this.data.namespace = namespace;
+    this.data.apiItems = namespace.apiItems || [];
+
+    if (newIndexs.apiIndex !== undefined) {
+      this.data.expandeds = [];
+      this.data.expandeds[newIndexs.apiIndex] = true;
     }
 
-    return this.projects[this.projectIndex] || ({} as Project);
-  }
-
-  getCurNamespaces(): ProjectNamesapce[] {
-    return this.cache.namespaces || this.getCurProject().namespaces || [];
-  }
-
-  getCurNamespace(): ProjectNamesapce {
-    return (
-      this.cache.namespace ||
-      this.getCurNamespaces()[this.namespaceIndex] ||
-      ({} as ProjectNamesapce)
-    );
-  }
-
-  getCurNamespaceApiItems(): ApiItem[] {
-    return this.cache.apiItems || this.getCurNamespace().apiItems || [];
-  }
-
-  updateCache(): this {
-    const project = this.getCurProject(false);
-    const namespaces = project.namespaces;
-    const namespace = namespaces[this.index.namespaceIndex];
-
-    this.cache = {
-      project,
-      namespaces,
-      namespace,
-      apiItems: namespace.apiItems,
-    };
-
-    this._expandeds = namespace.apiItems.map(
-      (_, index) => index === this.index.apiIndex
-    );
-
+    this.send();
     this.dumpsData();
 
     return this;
   }
 
-  dispatch(name: string, payload: Partial<StorePayload> = {}): this {
-    switch (name) {
-      case 'CHANGE_INDEX':
-        this.index = {
-          ...this.index,
-          ...payload,
-        };
-        break;
-      default:
-        break;
-    }
-
-    this.updateCache();
+  dispatch(name: string, payload: Partial<StoreIndex> = {}): this {
+    this.updateData(payload);
 
     return this;
   }
@@ -358,26 +345,21 @@ export class StoreService {
 
     if (configString) {
       const config: StoreData = JSON.parse(configString);
-      this._projects = config.projects.map((project) =>
+      this.data.projects = config.projects.map((project) =>
         this.transformProject(project)
       );
-      this.cache = config.cache;
-      this.index = config.index;
-      this._expandeds = config.expandeds;
+      this.data = config;
     }
+
+    this.dispatch('CHANGE_INDEX', {
+      ...this.data.index,
+    });
 
     return this;
   }
 
   dumpsData(): this {
-    const data: StoreData = {
-      projects: this.projects,
-      cache: this.cache,
-      index: this.index,
-      expandeds: this.expandeds,
-    };
-
-    localStorage.setItem(this.DUMP_KEY, JSON.stringify(data));
+    localStorage.setItem(this.DUMP_KEY, JSON.stringify(this.data));
 
     return this;
   }

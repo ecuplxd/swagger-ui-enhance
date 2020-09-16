@@ -11,7 +11,7 @@ import {
 import { ProjectNamesapce } from '../project.model';
 import { StoreService } from 'src/app/share/service';
 import { fromEvent } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-namespaces',
@@ -29,13 +29,15 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
 
   keyword = '';
 
-  get activedIndex(): number {
-    return this.store.namespaceIndex;
-  }
+  activedIndex!: number;
 
   constructor(private store: StoreService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.getData$().subscribe((data) => {
+      this.activedIndex = data.index.namespaceIndex;
+    });
+  }
 
   ngAfterViewInit(): void {
     this.initSearch();
@@ -44,8 +46,9 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
   initSearch(): void {
     fromEvent(this.inputRef.nativeElement as HTMLInputElement, 'input')
       .pipe(
+        filter(() => !!this.keyword),
         debounceTime(500),
-        filter(() => !!this.keyword)
+        distinctUntilChanged()
       )
       .subscribe(() => {
         this.filterNamespaces();

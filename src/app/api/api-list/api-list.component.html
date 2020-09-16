@@ -31,6 +31,7 @@
 <mat-accordion multi hideToggle>
   <mat-expansion-panel
     *ngFor="let apiItem of apiItems; let i = index"
+    [id]="'api-item-' + i"
     class="my-10"
     [(expanded)]="expandeds[i]"
     [style]="{

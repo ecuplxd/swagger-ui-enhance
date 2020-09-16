@@ -29,6 +29,11 @@ button.outlined {
   border-color: @primary-selected !important;
 }
 
+button[disabled="true"] {
+  border-color: currentColor !important;
+  cursor: not-allowed;
+}
+
 button {
   min-width: initial !important;
 }
@@ -56,5 +61,20 @@ table {
 
   th {
     color: @table-head;
+  }
+}
+
+.loading {
+  mat-icon {
+    position: relative;
+    bottom: 1px;
+    cursor: not-allowed;
+    animation: loading-rotate 1s linear infinite;
+  }
+}
+
+@keyframes loading-rotate {
+  to {
+    transform: rotate(1turn);
   }
 }

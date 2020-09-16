@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { fromEvent } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { ProjectNamesapce } from 'src/app/project/project.model';
 import { StoreService } from 'src/app/share/service';
 import { ApiMethod } from '../api.model';
@@ -66,14 +66,15 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   initSearch(): void {
     fromEvent(this.inputRef.nativeElement as HTMLInputElement, 'input')
       .pipe(
-        debounceTime(250),
         filter(() => {
           if (!this.keyword) {
             this.hideSearchResult();
             return false;
           }
           return true;
-        })
+        }),
+        debounceTime(250),
+        distinctUntilChanged()
       )
       .subscribe(() => {
         this.search();
@@ -179,6 +180,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    // bugfix
     el.scrollIntoView({
       behavior: 'auto',
       block: 'nearest',
