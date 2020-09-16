@@ -41,9 +41,6 @@ function serverStatic(pathname, res) {
 }
 
 function proxyRequest(target, req, res) {
-  // https://172.26.0.65/tdc/hamurapi/v2/api-docs?group=io.transwarp.tdc
-  // http://127.0.0.1:8080/tdc/hamurapi/v2/api-docs?group=io.transwarp.tdc
-  // ?url=https://172.26.0.65/tdc/hamurapi/v2/api-docs?group=io.transwarp.tdc
   proxy.web(req, res, {
     target,
     secure: false,
