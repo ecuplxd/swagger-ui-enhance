@@ -9,37 +9,36 @@
     ></app-api-info>
 
     <div class="y-center url-container">
-      <app-api-method
-        class="mr-10"
-        [method]="apiItem.__info.method"
-      ></app-api-method>
+      <div
+        class="url-segments y-center mr-10 px-5"
+        [class.only-one-url]="urlParams.length === 1"
+      >
+        <div class="y-center flex-1 py-1">
+          <div class="url-segment-item" *ngFor="let url of urlParams">
+            <span class="url-path f-16" *ngIf="!url.name">{{ url.path }}</span>
 
-      <div class="url-segments y-center">
-        <div
-          class="url-segment-item mr-10"
-          *ngFor="let url of urlParams"
-          [class.only-one-url]="urlParams.length === 1"
-        >
-          <span class="url-path f-16" *ngIf="!url.name">{{ url.path }}</span>
+            <div class="url-input y-center pr-5" *ngIf="url.name">
+              <input
+                type="text"
+                class="url-value px-5"
+                [(ngModel)]="url.value"
+              />
 
-          <div class="url-input y-center pr-5" *ngIf="url.name">
-            <input type="text" class="url-value px-5" [(ngModel)]="url.value" />
-
-            <span class="url-name ml-5 sub-title">{{ url.name }}</span>
+              <span class="url-name ml-5 sub-title">{{ url.name }}</span>
+            </div>
           </div>
         </div>
+
+        <mat-icon title="选择历史记录" class="icon select-history"
+          >arrow_drop_down</mat-icon
+        >
       </div>
 
-      <button
-        cdkFocusInitial
-        color="primary"
-        class="outlined action px-2"
-        mat-stroked-button
+      <app-api-method
+        [method]="apiItem.__info.method"
         title="发送请求"
         (click)="doRequest()"
-      >
-        <mat-icon class="send-icon f-21 mb-4 ml-2">send</mat-icon>
-      </button>
+      ></app-api-method>
     </div>
 
     <button class="ml-5" title="关闭" mat-icon-button mat-dialog-close>

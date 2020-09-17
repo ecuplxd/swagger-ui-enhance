@@ -8,6 +8,7 @@ import {
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EditorComponent } from 'src/app/share/components';
 import { ProxyService, StoreService, TypeService } from 'src/app/share/service';
+import { ObjectObject } from 'src/app/share/share.model';
 import { ApiItem, ApiParameters, ApiUrl, Size } from '../../api.model';
 
 @Component({
@@ -26,8 +27,6 @@ export class ApiRequestDialogComponent implements OnInit {
   };
 
   urlParams: ApiUrl[] = [];
-
-  bodyParams: ApiParameters[] = [];
 
   types = '';
 
@@ -51,7 +50,7 @@ export class ApiRequestDialogComponent implements OnInit {
     this.getEditorSize(data.editorSize);
     this.parseUrl(this.apiItem.__info.url);
     this.groupParams();
-    this.getResponseType();
+    // this.getResponseType();
   }
 
   ngOnInit(): void {}
@@ -92,7 +91,7 @@ export class ApiRequestDialogComponent implements OnInit {
     if (this.typeService.refType) {
       const projectId = this.store.getCurProjectId();
       this.response =
-        '// 返回类型\n' + this.typeService.getExports(projectId, typeName);
+        '/* 返回类型 */\n' + this.typeService.getExports(projectId, typeName);
     }
   }
 
@@ -101,22 +100,22 @@ export class ApiRequestDialogComponent implements OnInit {
     const parameters: ApiParameters[] = JSON.parse(
       JSON.stringify(this.apiItem.parameters)
     );
+
     if (!parameters) {
       return;
     }
 
-    // tslint:disable-next-line: no-any
-    const queryMock: any = {};
-    // tslint:disable-next-line: no-any
-    const bodyMock: any = {};
+    const mocks: ObjectObject = {
+      query: {},
+      body: {},
+      header: {},
+    };
 
-    // parse header
     parameters
-      .filter((param) => param.in !== 'path' && param.in !== 'header')
+      .filter((param) => param.in !== 'path')
       .forEach((param) => {
         const name = param.name;
         const typeName = this.typeService.getType(param as ApiParameters);
-        const inQuery = param.in === 'query';
 
         param.display = `  ${param.display}: ${typeName};`;
 
@@ -128,67 +127,45 @@ export class ApiRequestDialogComponent implements OnInit {
             this.typeService.getExports(projectId, typeName, mock)
           );
 
-          if (inQuery) {
-            queryMock[name] = mock;
-          } else {
-            bodyMock[name] = mock;
-          }
+          mocks[param.in][name] = mock;
         } else {
           const mockData = this.typeService.mock(typeName);
-
-          if (inQuery) {
-            queryMock[name] = mockData;
-          } else {
-            bodyMock[name] = mockData;
-          }
+          mocks[param.in][name] = mockData;
         }
       });
 
-    const queryTypes: string = parameters
-      .filter((param) => param.in === 'query')
-      .map((param) => param.display)
-      .join('\n');
+    console.log(mocks);
 
-    const bodyTypes = parameters
-      .filter((param) => param.in === 'body')
-      .map((param) => param.display)
-      .join('\n');
+    ['Header', 'Query', 'Body']
+      .map((kind) => {
+        const kindLower = kind.toLowerCase();
+        const type = parameters
+          .filter((param) => param.in === kindLower)
+          .map((param) => param.display)
+          .join('\n');
 
-    if (queryTypes) {
-      let stringify = JSON.stringify(queryMock, null, 2);
+        if (type) {
+          let stringify = JSON.stringify(mocks[kindLower], null, 2);
+          stringify = stringify
+            .replace(/"([^"]+)":/g, '$1:')
+            .replace(/\uFFFF/g, '\\"')
+            // tslint:disable-next-line: quotemark
+            .replace(/"/g, "'")
+            .replace(/'(__undefined__)'/g, 'undefined');
 
-      stringify = stringify
-        .replace(/"([^"]+)":/g, '$1:')
-        .replace(/\uFFFF/g, '\\"')
-        // tslint:disable-next-line: quotemark
-        .replace(/"/g, "'")
-        .replace(/'(__undefined__)'/g, 'undefined');
+          this.types += `/* ${kind} start */\nconst ${kindLower}: ${kind} = ${stringify}\n`;
+          this.types += `/* ${kind} end */\n\n\n`;
+        }
 
-      this.types += `// Query start\nconst query: Query = ${stringify}\n`;
-      this.types += '// Query end\n\n';
-    }
-
-    if (bodyTypes) {
-      let stringify = JSON.stringify(bodyMock, null, 2);
-
-      stringify = stringify
-        .replace(/"([^"]+)":/g, '$1:')
-        .replace(/\uFFFF/g, '\\"')
-        // tslint:disable-next-line: quotemark
-        .replace(/"/g, "'")
-        .replace(/'(__undefined__)'/g, 'undefined');
-
-      this.types += `// Body start\nconst body: Body = ${stringify}\n`;
-      this.types += '// Body end\n\n';
-    }
-
-    if (queryTypes) {
-      this.types += `export class Query {\n${queryTypes}\n}\n\n`;
-    }
-
-    if (bodyTypes) {
-      this.types += `export class Body {\n${bodyTypes}\n}\n\n`;
-    }
+        return {
+          name: kind,
+          type,
+        };
+      })
+      .filter((item) => item.type)
+      .forEach((item) => {
+        this.types += `export class ${item.name} {\n${item.type}\n}\n\n`;
+      });
 
     this.types += this.refTypes.join('\n');
   }
@@ -221,7 +198,7 @@ export class ApiRequestDialogComponent implements OnInit {
       return '{}';
     }
 
-    const end = text.indexOf(`// ${type} end`);
+    const end = text.indexOf(`/* ${type} end */`);
     const offset = ` ${type} = `.length;
     const result = text.substring(start + offset, end);
 
@@ -242,7 +219,7 @@ export class ApiRequestDialogComponent implements OnInit {
     const method = this.apiItem.__info.method;
     const project = this.store.getCurPorject();
 
-    url = 'https://' + project.host + '/tdc/hamurapi' + url;
+    url = 'https://' + project.host + url;
 
     const responseInfo: string[] = [
       '// Request URL',
@@ -254,6 +231,9 @@ export class ApiRequestDialogComponent implements OnInit {
     const query = this.eval(this.getText(text, 'Query'));
     const body = this.eval(this.getText(text, 'Body'));
     const header = this.eval(this.getText(text, 'Header'));
+
+    console.log(query, body, header);
+    return;
 
     this.proxy.proxy(url, method, query, body, header).subscribe(
       (res) => {

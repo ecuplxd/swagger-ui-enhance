@@ -1,4 +1,5 @@
 import { ApiMethod } from 'src/app/api/api.model';
+import { StringObject } from './share.model';
 
 export const COLORS: {
   [key in ApiMethod]?: string;
@@ -10,7 +11,7 @@ export const COLORS: {
   patch: '#50e3c2',
 };
 
-export const TYPE_MAP: { [key: string]: string } = {
+export const TYPE_MAP: StringObject = {
   string: 'string',
   integer: 'number',
   file: 'File',

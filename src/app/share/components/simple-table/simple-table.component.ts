@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Any } from '../../share.model';
 
 @Component({
   selector: 'app-simple-table',
@@ -10,8 +11,7 @@ export class SimpleTableComponent implements OnInit {
 
   @Input() keys: string[] = [];
 
-  // tslint:disable-next-line: no-any
-  @Input() datas: any[] = [];
+  @Input() datas: Any[] = [];
 
   constructor() {}
 

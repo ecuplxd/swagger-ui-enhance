@@ -15,7 +15,12 @@ import {
   ApiResponsesValue,
   ApiResponseHeaderValue,
 } from 'src/app/api/api.model';
-import { StoreIndex, StoreObject, StoreData } from '../../store.model';
+import {
+  StoreIndex,
+  AnyObject,
+  StoreData,
+  StoreIndexKey,
+} from '../../share.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProxyService } from '../proxy/proxy.service';
 import { Observable, Subject } from 'rxjs';
@@ -156,7 +161,7 @@ export class StoreService {
 
   getNamespaceFromTags(project: Project): ProjectTag[] {
     const tags = new Set<string>();
-    this.iterObj(project.paths, (_1: string, methods: StoreObject) => {
+    this.iterObj(project.paths, (_1: string, methods: AnyObject) => {
       this.iterObj(methods, (_2: ApiMethod, api: ApiItem) => {
         api.tags.forEach((tag: string) => tags.add(tag));
       });
@@ -190,7 +195,7 @@ export class StoreService {
 
     const apiItems: ApiItem[] = [];
 
-    this.iterObj(project.paths, (url: string, methods: StoreObject) => {
+    this.iterObj(project.paths, (url: string, methods: AnyObject) => {
       this.iterObj(methods, (method: ApiMethod, api: ApiItem) => {
         api = {
           ...api,
@@ -252,7 +257,7 @@ export class StoreService {
     return this;
   }
 
-  iterObj(obj: StoreObject, cb: Function): StoreObject[] {
+  iterObj(obj: AnyObject, cb: Function): AnyObject[] {
     return Object.keys(obj)
       .sort()
       .map((key) => cb.call(null, key, obj[key]));
@@ -306,14 +311,14 @@ export class StoreService {
     const { projects, index } = this.data;
 
     ['projectIndex', 'namespaceIndex', 'apiIndex']
-      .map((key) => [key, newIndexs[key]])
+      .map((key) => [key, newIndexs[key as StoreIndexKey]])
       .filter(
         (keyIndexs) =>
           keyIndexs[1] !== undefined &&
-          keyIndexs[1] !== index[keyIndexs[0] as string]
+          keyIndexs[1] !== index[keyIndexs[0] as StoreIndexKey]
       )
       .forEach((keyIndex) => {
-        const key = keyIndex[0] as string;
+        const key = keyIndex[0] as StoreIndexKey;
         const newIndex = keyIndex[1] as number;
 
         index[key] = newIndex;

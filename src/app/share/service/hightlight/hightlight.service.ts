@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { StringObject } from '../../share.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HightlightService {
-  colors: { [key: string]: string } = {
+  colors: StringObject = {
     export: '#c586c0',
     class: '#569cd6',
     id: '#9cdcfe',

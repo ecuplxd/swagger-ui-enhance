@@ -1,3 +1,11 @@
+import {
+  Any,
+  AnyObject,
+  BoolObject,
+  GObject,
+  StringsObject,
+} from '../share/share.model';
+
 export interface ApiItem {
   consumes: string[];
   description: string;
@@ -5,7 +13,7 @@ export interface ApiItem {
   parameters: ApiParameters[];
   produces: string[];
   responses: ApiResponses;
-  security: ApiSecurity[];
+  security: StringsObject[];
   summary: string;
   tags: string[];
 
@@ -47,10 +55,6 @@ export type ApiMethod =
   | 'copy'
   | 'trace';
 
-export interface ApiSecurity {
-  [key: string]: string[];
-}
-
 export interface ApiParameters {
   collectionFormat?: string;
   description?: string;
@@ -84,9 +88,7 @@ export interface ApiResponsesValue {
   display: string;
 }
 
-export interface ApiResponseHeader {
-  [key: string]: ApiResponseHeaderValue;
-}
+export type ApiResponseHeader = GObject<ApiResponseHeaderValue>;
 
 export interface ApiResponseHeaderValue {
   header: string;
@@ -108,24 +110,15 @@ export interface Item {
   $ref: string;
 }
 
-export interface ApiType {
-  [key: string]: ApiTypeValue;
-}
+export type ApiType = GObject<ApiTypeValue>;
 
 export interface ApiTypeValue {
-  // tslint:disable-next-line: no-any
-  [key: string]: any;
-  // tslint:disable-next-line: no-any
-  __example: any; // ApiType
+  [key: string]: Any;
+  __example: Any; // ApiType
   __refTypes: string[];
   __refMap2Key: Map<string, string>;
-  __required: ApiTypeRequired;
-  // tslint:disable-next-line: no-any
-  __mock: { [key: string]: any };
-}
-
-export interface ApiTypeRequired {
-  [key: string]: boolean;
+  __required: BoolObject;
+  __mock: AnyObject;
 }
 
 export interface Size {

@@ -7,6 +7,7 @@ import {
 } from '@angular/cdk/overlay';
 import { Injectable } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Any } from '../../share.model';
 import {
   MenuPositionValue,
   ConvertedPosition,
@@ -20,12 +21,10 @@ export class MenuPositionService {
   constructor() {}
 
   recalculateMenu(menuTrigger: MatMenuTrigger): void {
-    // tslint:disable-next-line: no-any
-    const overlayRef: OverlayRef = (menuTrigger as any)._overlayRef;
+    const overlayRef: OverlayRef = (menuTrigger as Any)._overlayRef;
     const overlayConfig = overlayRef.getConfig();
 
-    // tslint:disable-next-line: no-any
-    (overlayConfig.positionStrategy as any)._isInitialRender = true;
+    (overlayConfig.positionStrategy as Any)._isInitialRender = true;
 
     this.setPosition(
       menuTrigger,

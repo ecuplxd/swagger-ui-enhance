@@ -1,4 +1,5 @@
 import { ApiMethod, ApiItem, Schema, Item } from 'src/app/api/api.model';
+import { GObject } from '../share/share.model';
 
 export interface Project {
   updateUrl: string; // 用于更新
@@ -16,9 +17,7 @@ export interface Project {
   namespaces: ProjectNamesapce[];
 }
 
-export interface ProjectDefinition {
-  [key: string]: ProjectDefinitionValue;
-}
+export type ProjectDefinition = GObject<ProjectDefinitionValue>;
 
 export interface ProjectDefinitionValue {
   properties: PropertieItem;
@@ -26,9 +25,7 @@ export interface ProjectDefinitionValue {
   type: string;
 }
 
-export interface PropertieItem {
-  [key: string]: PropertieItemValue;
-}
+export type PropertieItem = GObject<PropertieItemValue>;
 
 export interface PropertieItemValue {
   type: string;
@@ -58,9 +55,7 @@ export interface ProjectNamesapce extends ProjectTag {
   matched?: boolean;
 }
 
-export interface ProjectPath {
-  [key: string]: ProjectPathValue;
-}
+export type ProjectPath = GObject<ProjectPathValue>;
 
 export type ProjectPathValue = {
   [key in ApiMethod]: ApiItem;

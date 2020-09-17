@@ -1,5 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Any } from 'src/app/share/share.model';
 import { ApiItem, Size } from '../api.model';
 import { ApiRequestDialogComponent } from './api-request-dialog/api-request-dialog.component';
 
@@ -11,8 +12,7 @@ import { ApiRequestDialogComponent } from './api-request-dialog/api-request-dial
 export class ApiRequestComponent implements OnInit {
   @Input() apiItem!: ApiItem;
 
-  // tslint:disable-next-line: no-any
-  dialogRef!: MatDialogRef<ApiRequestDialogComponent, any>;
+  dialogRef!: MatDialogRef<ApiRequestDialogComponent, Any>;
 
   html: HTMLHtmlElement = document.getElementsByTagName('html')[0];
 

@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Directive, TemplateRef } from '@angular/core';
 import { CopyComponent } from '../components/copy/copy.component';
+import { Any } from '../share.model';
 
 @Directive({
   selector: '[appCopy]',
@@ -21,8 +22,7 @@ export class CopyDirective implements OnInit, OnDestroy {
   @Input() appCopySelector!: string;
 
   constructor(
-    // tslint:disable-next-line: no-any
-    private templateRef: TemplateRef<any>,
+    private templateRef: TemplateRef<Any>,
     private viewContainer: ViewContainerRef,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {}

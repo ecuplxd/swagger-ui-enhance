@@ -10,7 +10,7 @@ import {
   ApiTypeValue,
 } from 'src/app/api/api.model';
 import { TYPE_MAP } from '../../const';
-import { StoreObject } from '../../store.model';
+import { Any, AnyObject } from '../../share.model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +26,7 @@ export class TypeService {
 
   constructor() {}
 
-  getExports(projectId: string, name: string, mock: StoreObject = {}): string {
+  getExports(projectId: string, name: string, mock: AnyObject = {}): string {
     const noArrayName = name.replace('[]', '');
 
     const type: ApiTypeValue = this.getProjectTypes(projectId)[noArrayName];
@@ -67,7 +67,8 @@ export class TypeService {
 
   getTypeName(ref: string): string {
     this.refType = ref.startsWith('#');
-    return ref.substr(ref.lastIndexOf('/') + 1);
+    const type = ref.substr(ref.lastIndexOf('/') + 1);
+    return decodeURIComponent(type).trim();
   }
 
   isArray(type: string): boolean {
@@ -111,8 +112,8 @@ export class TypeService {
             const filedConfig = config.properties[filed];
             const type = this.getType(filedConfig);
             types[definition][filed] = type;
-
             types[definition].__example[filed] = filedConfig.example || type;
+
             if (this.refType) {
               refTypes.add(type.replace('[]', ''));
               types[definition].__refMap2Key.set(type.replace('[]', ''), filed);
@@ -125,6 +126,7 @@ export class TypeService {
     }
 
     this.types.set(projectId, types);
+    console.log(this.types);
 
     return this;
   }
@@ -195,23 +197,18 @@ export class TypeService {
   }
 
   // TODO：是否有社区方案
-  // tslint:disable-next-line: no-any
-  mock(type: string): any {
+  mock(type: string): Any {
     // enum
     if (type && type.includes('|')) {
       return type.trim().split('|').filter(Boolean)[0].trim().replace(/'/g, '');
     }
 
-    const isClass = type && /[A-Z]/.test(type[0]);
+    // const isClass = type && /[A-Z]/.test(type[0]);
+    // 中文[]
+    const typeSplits = type.split('[]');
 
-    if (isClass) {
-      const typeSplits = type.split('[]');
-
-      if (typeSplits[1] !== undefined) {
-        return [{}];
-      }
-
-      return {};
+    if (typeSplits[0] !== 'string' && typeSplits[1] !== undefined) {
+      return [{}];
     }
 
     switch (type) {
@@ -230,7 +227,7 @@ export class TypeService {
       case null:
         return null;
       default:
-        return type;
+        return {};
     }
   }
 }

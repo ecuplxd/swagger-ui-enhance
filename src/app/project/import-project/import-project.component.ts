@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { StoreService } from 'src/app/share/service';
-import { StoreData } from 'src/app/share/store.model';
+import { StoreData } from 'src/app/share/share.model';
 
 @Component({
   selector: 'app-import-project',
@@ -40,7 +40,6 @@ export class ImportProjectComponent implements OnInit {
     }
   }
 
-  // tslint:disable-next-line: no-any
   parseFile(event: Event): void {
     const target = event.target as HTMLInputElement;
     const files = target.files;

@@ -44,7 +44,6 @@ export class ApiTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // tslint:disable-next-line: no-any
     this.type = this.typeService.getType(
       this.parameter as ApiParameters | PropertieItemValue
     );

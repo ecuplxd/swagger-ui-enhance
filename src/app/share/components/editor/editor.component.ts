@@ -1,9 +1,9 @@
 import {
   Component,
   Input,
-  OnDestroy,
   OnInit,
   AfterViewInit,
+  OnDestroy,
   Output,
   EventEmitter,
 } from '@angular/core';
@@ -60,6 +60,8 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   MAX_WIDTH = 500;
   LINE_HEIGHT = 20;
 
+  formated = false;
+
   constructor(private idService: IdService) {
     this.editorId = this.idService.genID();
   }
@@ -89,7 +91,10 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
         },
       });
 
-      this.formatCode();
+      // TODO：优化
+      setTimeout(() => {
+        this.formatCode();
+      }, 1000);
 
       this.updateValue = (value: string = '') => {
         this.editor.setValue(value);
@@ -99,17 +104,20 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   formatCode(): void {
-    setTimeout(() => {
-      this.editor
-        .getAction('editor.action.formatDocument')
-        .run()
-        .then(() => {
-          const model = this.editor.getModel();
-          if (model) {
-            this.format.emit(model.getValue());
-          }
-        });
-    }, 100);
+    if (this.formated) {
+      return;
+    }
+
+    this.editor
+      .getAction('editor.action.formatDocument')
+      .run()
+      .then(() => {
+        const model = this.editor.getModel();
+        this.formated = true;
+        if (model) {
+          this.format.emit(model.getValue());
+        }
+      });
   }
 
   tryInitEditorFail(): boolean {
