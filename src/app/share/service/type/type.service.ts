@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import {
-  PropertieItemValue,
-  ProjectDefinition,
-} from 'src/app/project/project.model';
-import {
-  Schema,
-  ApiType,
   ApiParameters,
+  ApiType,
   ApiTypeValue,
+  Schema,
 } from 'src/app/api/api.model';
+import {
+  ProjectDefinition,
+  PropertieItemValue,
+} from 'src/app/project/project.model';
 import { TYPE_MAP } from '../../const';
 import { Any, AnyObject } from '../../share.model';
 
@@ -26,11 +26,17 @@ export class TypeService {
 
   constructor() {}
 
-  getExports(projectId: string, name: string, mock: AnyObject = {}): string {
+  getExports(
+    projectId: string,
+    name: string,
+    mock: AnyObject = {},
+    visits?: Set<string>
+  ): string {
     const noArrayName = name.replace('[]', '');
-
     const type: ApiTypeValue = this.getProjectTypes(projectId)[noArrayName];
     const exports = [`export class ${noArrayName} {`];
+
+    visits = visits || new Set<string>();
 
     for (const key in type) {
       if (type.hasOwnProperty(key) && !key.startsWith('__')) {
@@ -41,10 +47,13 @@ export class TypeService {
       }
     }
 
+    visits.add(noArrayName);
+
     exports.push('}\n');
     exports.push(
-      ...type.__refTypes
+      ...Array.from(new Set(type.__refTypes))
         .filter((item: string) => item !== noArrayName) // Note: 处理循环引用
+        .filter((item: string) => visits && !visits.has(item))
         .map((item: string) => {
           const key = type.__refMap2Key.get(item);
 
@@ -57,7 +66,8 @@ export class TypeService {
           return this.getExports(
             projectId,
             item,
-            isArray ? mock[key][0] : mock[key]
+            isArray ? mock[key][0] : mock[key],
+            visits
           );
         })
     );
@@ -66,8 +76,10 @@ export class TypeService {
   }
 
   getTypeName(ref: string): string {
-    this.refType = ref.startsWith('#');
     const type = ref.substr(ref.lastIndexOf('/') + 1);
+
+    this.refType = ref.startsWith('#');
+
     return decodeURIComponent(type).trim();
   }
 
@@ -111,6 +123,7 @@ export class TypeService {
           if (config.properties.hasOwnProperty(filed)) {
             const filedConfig = config.properties[filed];
             const type = this.getType(filedConfig);
+
             types[definition][filed] = type;
             types[definition].__example[filed] = filedConfig.example || type;
 
@@ -143,12 +156,14 @@ export class TypeService {
     }
 
     let type = parameter.type;
+
     if (!type) {
       return '';
     }
 
     const isArray = this.isArray(type);
     const items = parameter.items;
+
     type = isArray ? '' : this.TYPE_MAP[parameter.type];
 
     if (items) {
@@ -170,6 +185,7 @@ export class TypeService {
     if (parameter.enum && this.isString(type)) {
       return this.getStringEnum(parameter.enum);
     }
+
     return type;
   }
 
@@ -189,9 +205,11 @@ export class TypeService {
     }
 
     const typeName = this.getTypeName(ref);
+
     if (this.isArray(schema.type)) {
       return typeName + '[]';
     }
+
     return typeName;
   }
 

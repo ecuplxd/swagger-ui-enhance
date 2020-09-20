@@ -19,7 +19,6 @@ export interface StoreData {
   expandeds: boolean[];
 }
 
-// 使用泛型定义
 export interface GObject<T> {
   [key: string]: T;
 }
