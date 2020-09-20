@@ -46,7 +46,7 @@ export class StoreService {
       namespaceIndex: 0,
       apiIndex: 0,
     },
-    expandeds: [true],
+    expandeds: [],
   };
 
   private projectSubject = new Subject<StoreData>();
@@ -144,7 +144,8 @@ export class StoreService {
     }
 
     this.projectExit = false;
-    this.dispatch('CHANGE_INDEX', {
+
+    this.updateData({
       projectIndex,
       namespaceIndex: 0,
       apiIndex: 0,
@@ -342,25 +343,19 @@ export class StoreService {
     const project = projects[index.projectIndex] || {};
     const namespaces = project.namespaces || [];
     const namespace = namespaces[index.namespaceIndex] || {};
+    const apiItems = namespace.apiItems || [];
 
     this.data.project = project;
     this.data.namespaces = namespaces;
     this.data.namespace = namespace;
-    this.data.apiItems = namespace.apiItems || [];
+    this.data.apiItems = apiItems;
 
     if (newIndexs.apiIndex !== undefined) {
-      this.data.expandeds = [];
-      this.data.expandeds[newIndexs.apiIndex] = true;
+      this.data.expandeds = apiItems.map((_, i) => i === newIndexs.apiIndex);
     }
 
     this.send();
     this.dumpsData();
-
-    return this;
-  }
-
-  dispatch(name: string, payload: Partial<StoreIndex> = {}): this {
-    this.updateData(payload);
 
     return this;
   }
@@ -376,9 +371,7 @@ export class StoreService {
       this.data = config;
     }
 
-    this.dispatch('CHANGE_INDEX', {
-      ...this.data.index,
-    });
+    this.updateData({ ...this.data.index });
 
     return this;
   }

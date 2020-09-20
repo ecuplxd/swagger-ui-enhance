@@ -23,3 +23,5 @@ export const TYPE_MAP: StringObject = {
 export const TOC_ID_PREFIX = 'api-toc-';
 
 export const NAMESPACE_ID_PREFIX = 'namespace-';
+
+export const API_ID_PREFIX = 'api-item-';

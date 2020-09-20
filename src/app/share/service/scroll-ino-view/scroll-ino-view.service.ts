@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Any } from '../../share.model';
 
 @Injectable({
   providedIn: 'root',
@@ -6,18 +7,25 @@ import { Injectable } from '@angular/core';
 export class ScrollInoViewService {
   constructor() {}
 
-  to(id: string): void {
-    const el = document.getElementById(id);
-    console.log(el);
+  tick_then(fn: () => Any): void {
+    setTimeout(fn, 0);
+  }
 
-    if (!el) {
-      return;
-    }
+  to(id: string, block: Any = 'center', selector?: string): void {
+    this.tick_then(() => {
+      const el = selector
+        ? document.querySelector(selector)
+        : document.getElementById(id);
 
-    el.scrollIntoView({
-      behavior: 'auto',
-      block: 'nearest',
-      inline: 'nearest',
+      if (!el) {
+        return;
+      }
+
+      el.scrollIntoView({
+        behavior: 'auto',
+        block,
+        inline: 'nearest',
+      });
     });
   }
 }

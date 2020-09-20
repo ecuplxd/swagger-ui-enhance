@@ -10,7 +10,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { ProjectNamesapce } from 'src/app/project/project.model';
-import { StoreService } from 'src/app/share/service';
+import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { ApiMethod } from '../api.model';
 
 @Component({
@@ -31,7 +31,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
 
   keyword = '';
 
-  matchedElClass = '.suggestion-item.actived';
+  MATCHED_EL_CLASS = '.suggestion-item.actived';
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent): void {
@@ -55,7 +55,10 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private store: StoreService) {}
+  constructor(
+    private store: StoreService,
+    private scroll: ScrollInoViewService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -144,7 +147,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     this.reset(true);
     this.hideSearchResult();
 
-    this.store.dispatch('CHANGE_INDEX', {
+    this.store.updateData({
       namespaceIndex: indexs[0],
       apiIndex: indexs[1],
     });
@@ -171,35 +174,26 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   updateActivedSearchIndex(dir: 'ArrowUp' | 'ArrowDown'): void {
     const delta = dir === 'ArrowUp' ? -1 : 1;
     const index = (this.activedSearchIndex + delta) % this.matchedCount;
+
     this.activedSearchIndex = index > -1 ? index : this.matchedCount - 1;
-    // TODO：需要更精确的时间（dom 更新后）
-    setTimeout(() => {
-      this.scrollToActivedItem();
-    }, 0);
+    this.scrollToActivedItem();
   }
 
   scrollToActivedItem(): void {
-    const el = document.querySelector(this.matchedElClass);
-    if (!el) {
-      return;
-    }
-
-    // bugfix
-    el.scrollIntoView({
-      behavior: 'auto',
-      block: 'nearest',
-      inline: 'nearest',
-    });
+    this.scroll.to('', 'nearest', this.MATCHED_EL_CLASS);
   }
 
   selectActivedItem(): void {
     if (this.matchedCount) {
-      const el = document.querySelector(this.matchedElClass);
+      const el = document.querySelector(this.MATCHED_EL_CLASS);
+
       if (!el) {
         return;
       }
+
       const namespaceIndex = el.getAttribute('data-namespace');
       const apiIndex = el.getAttribute('data-api');
+
       if (namespaceIndex && apiIndex) {
         this.handleSelect([+namespaceIndex, +apiIndex]);
       }

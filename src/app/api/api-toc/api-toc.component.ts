@@ -27,10 +27,7 @@ export class ApiTocComponent implements OnInit {
       this.title = data.namespace.name;
       this.apiItems = data.apiItems;
       this.activedIndex = data.index.apiIndex;
-
-      setTimeout(() => {
-        this.scroll.to(this.ID_PREFIX + this.activedIndex);
-      }, 0);
+      this.scroll.to(this.ID_PREFIX + this.activedIndex);
     });
   }
 
@@ -39,7 +36,7 @@ export class ApiTocComponent implements OnInit {
       return;
     }
 
-    this.store.dispatch('CHANGE_INDEX', {
+    this.store.updateData({
       apiIndex: index,
     });
   }

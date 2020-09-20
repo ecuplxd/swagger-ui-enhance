@@ -36,10 +36,7 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.store.getData$().subscribe((data) => {
       this.activedIndex = data.index.namespaceIndex;
-
-      setTimeout(() => {
-        this.scroll.to(this.ID_PREFIX + this.activedIndex);
-      }, 0);
+      this.scroll.to(this.ID_PREFIX + this.activedIndex);
     });
   }
 
@@ -60,7 +57,7 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
   }
 
   select(namespaceIndex: number): void {
-    this.store.dispatch('CHANGE_INDEX', {
+    this.store.updateData({
       namespaceIndex,
       apiIndex: 0,
     });

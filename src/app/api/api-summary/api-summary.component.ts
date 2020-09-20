@@ -74,7 +74,7 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
   }
 
   selectApi(apiIndex: number): void {
-    this.store.dispatch('CHANGE_INDEX', {
+    this.store.updateData({
       namespaceIndex: this.namespaceIndex,
       apiIndex,
     });
