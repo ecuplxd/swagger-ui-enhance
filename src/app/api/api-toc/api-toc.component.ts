@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StoreService } from 'src/app/share/service';
+import { TOC_ID_PREFIX } from 'src/app/share/const';
+import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { ApiItem } from '../api.model';
 
 @Component({
@@ -14,18 +15,22 @@ export class ApiTocComponent implements OnInit {
 
   activedIndex!: number;
 
-  // TODO
-  idPrefix = 'api-item-';
+  ID_PREFIX = TOC_ID_PREFIX;
 
-  constructor(private store: StoreService) {}
+  constructor(
+    private store: StoreService,
+    private scroll: ScrollInoViewService
+  ) {}
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data) => {
       this.title = data.namespace.name;
       this.apiItems = data.apiItems;
       this.activedIndex = data.index.apiIndex;
-      // bugfix
-      // this.scrollTo(data.index.apiIndex);
+
+      setTimeout(() => {
+        this.scroll.to(this.ID_PREFIX + this.activedIndex);
+      }, 0);
     });
   }
 
@@ -37,16 +42,5 @@ export class ApiTocComponent implements OnInit {
     this.store.dispatch('CHANGE_INDEX', {
       apiIndex: index,
     });
-  }
-
-  scrollTo(index: number): void {
-    const el = document.getElementById(this.idPrefix + index);
-    if (el) {
-      el.scrollIntoView({
-        behavior: 'auto',
-        block: 'nearest',
-        inline: 'nearest',
-      });
-    }
   }
 }

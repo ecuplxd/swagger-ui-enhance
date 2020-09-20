@@ -6,10 +6,14 @@
   <table class="f-14">
     <thead>
       <tr class="no-hover">
-        <th class="pa-8 text-left">
+        <th class="pa-8 text-left" style="width: 70%">
           <div class="inline-flex align-center">
             <span
-              *appCopy="true; selector: copyItemClass; title: '复制所有字段'"
+              *appCopy="
+                hadParameters;
+                selector: copyItemClass;
+                title: '复制所有字段'
+              "
             >
               字段名
             </span>
@@ -35,7 +39,7 @@
               [parameter]="parameter"
             ></app-api-type>
 
-            <div class="text--disabled">({{ parameter.in }})</div>
+            <div class="text--disabled text-ellipsis">({{ parameter.in }})</div>
           </td>
 
           <td class="pa-8" style="vertical-align: top">
@@ -50,7 +54,7 @@
         </tr>
       </ng-container>
 
-      <tr *ngIf="!parameters || parameters.length === 0">
+      <tr *ngIf="!hadParameters">
         <td class="pa-8 text-center text--disabled" colspan="2">没有参数</td>
       </tr>
     </tbody>

@@ -4,7 +4,6 @@ import { MatAccordion } from '@angular/material/expansion';
 
 import { ApiItem } from '../api.model';
 import { StoreService } from 'src/app/share/service';
-import { COLORS } from 'src/app/share/const';
 import { StoreData } from 'src/app/share/share.model';
 
 @Component({
@@ -18,8 +17,6 @@ export class ApiListComponent implements OnInit {
   apiItems: ApiItem[] = [];
 
   expandeds: boolean[] = [];
-
-  colors = COLORS;
 
   constructor(private store: StoreService) {}
 

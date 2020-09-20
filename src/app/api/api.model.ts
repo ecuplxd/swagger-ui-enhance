@@ -13,6 +13,7 @@ export interface ApiItem {
   parameters: ApiParameters[];
   produces: string[];
   responses: ApiResponses;
+  deprecated: boolean;
   security: StringsObject[];
   summary: string;
   tags: string[];
@@ -39,6 +40,7 @@ export interface ApiInfo {
   description: string;
   url: string;
   urlForCopy: string;
+  deprecated: boolean;
 }
 
 export type ApiMethod =

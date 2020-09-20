@@ -10,10 +10,10 @@
 
     <div class="y-center url-container">
       <div
-        class="url-segments y-center mr-10 px-5"
+        class="url-segments y-center mr-10 pl-5"
         [class.only-one-url]="urlParams.length === 1"
       >
-        <div class="y-center flex-1 py-1">
+        <div class="y-center flex-1 py-1 mr-5">
           <div class="url-segment-item" *ngFor="let url of urlParams">
             <span class="url-path f-16" *ngIf="!url.name">{{ url.path }}</span>
 
@@ -29,16 +29,22 @@
           </div>
         </div>
 
-        <mat-icon title="选择历史记录" class="icon select-history"
-          >arrow_drop_down</mat-icon
-        >
+        <app-api-request-history
+          [fromRequest]="true"
+          [outlined]="false"
+          [apiItem]="apiItem"
+          (selectHistory)="setHistory($event)"
+        ></app-api-request-history>
       </div>
 
-      <app-api-method
-        [method]="apiItem.__info.method"
-        title="发送请求"
-        (click)="doRequest()"
-      ></app-api-method>
+      <button class="pa-0" cdkFocusInitial style="border: 0">
+        <app-api-method
+          [deprecated]="apiItem.deprecated"
+          [method]="apiItem.__info.method"
+          title="发送请求"
+          (click)="doRequest()"
+        ></app-api-method>
+      </button>
     </div>
 
     <button class="ml-5" title="关闭" mat-icon-button mat-dialog-close>
@@ -47,7 +53,11 @@
   </div>
 
   <div class="editors flex" *ngIf="editorSize.width">
-    <app-editor #queryEditor [size]="editorSize" [value]="types"></app-editor>
+    <app-editor
+      #queryEditor
+      [size]="editorSize"
+      [value]="editorValue"
+    ></app-editor>
 
     <app-editor [size]="editorSize" [value]="response"></app-editor>
   </div>

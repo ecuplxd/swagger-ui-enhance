@@ -13,9 +13,13 @@ export class ApiParameterComponent implements OnInit {
 
   copyItemClass!: string;
 
+  hadParameters = true;
+
   constructor(private idService: IdService) {
     this.copyItemClass = this.idService.genID();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.hadParameters = this.parameters && this.parameters.length !== 0;
+  }
 }

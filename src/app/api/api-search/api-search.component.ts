@@ -66,15 +66,15 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   initSearch(): void {
     fromEvent(this.inputRef.nativeElement as HTMLInputElement, 'input')
       .pipe(
+        debounceTime(250),
+        distinctUntilChanged(),
         filter(() => {
           if (!this.keyword) {
             this.hideSearchResult();
             return false;
           }
           return true;
-        }),
-        debounceTime(250),
-        distinctUntilChanged()
+        })
       )
       .subscribe(() => {
         this.search();
@@ -82,9 +82,10 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   }
 
   getMatched(str: string, type: string = ''): string {
+    const cls = `token matched ${type}`.trim();
     return str.replace(
       new RegExp(this.keyword, 'ig'),
-      `<span class="token ${type} matched">$&</span>`
+      `<span class="${cls}">$&</span>`
     );
   }
 
@@ -116,9 +117,11 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
         api.__matchedIndex = api.__matched ? this.matchedCount++ : -1;
       });
 
-      if (!namespace.matched) {
-        namespace.matched = namespace.apiItems.some((api) => api.__matched);
-      }
+      // TODO
+      // if (!namespace.matched) {
+      //   namespace.matched = namespace.apiItems.some((api) => api.__matched);
+      // }
+      namespace.matched = namespace.apiItems.some((api) => api.__matched);
     });
 
     this.namespaces = namespaces;
@@ -137,13 +140,13 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  handleSelect(namespaceIndex: number, apiIndex: number): void {
+  handleSelect(indexs: number[]): void {
     this.reset(true);
     this.hideSearchResult();
 
     this.store.dispatch('CHANGE_INDEX', {
-      namespaceIndex,
-      apiIndex,
+      namespaceIndex: indexs[0],
+      apiIndex: indexs[1],
     });
   }
 
@@ -151,6 +154,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     if (this.triggle.menuOpen) {
       return;
     }
+
     this.triggle.openMenu();
   }
 
@@ -197,7 +201,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
       const namespaceIndex = el.getAttribute('data-namespace');
       const apiIndex = el.getAttribute('data-api');
       if (namespaceIndex && apiIndex) {
-        this.handleSelect(+namespaceIndex, +apiIndex);
+        this.handleSelect([+namespaceIndex, +apiIndex]);
       }
     }
   }
@@ -211,8 +215,8 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   }
 
   handleFocus(): void {
-    if (this.keyword) {
-      this.search();
+    if (this.keyword && this.matchedCount) {
+      this.showSearchResult();
     }
   }
 

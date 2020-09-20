@@ -26,7 +26,10 @@ import {
   CopyService,
   MenuPositionService,
   ProxyService,
+  HistoryService,
+  ScrollInoViewService,
 } from './service';
+import { DialogService } from './service/dialog/dialog.service';
 
 import { CopyDirective, StopClickDirective } from './directives';
 import {
@@ -44,6 +47,9 @@ const services = [
   CopyService,
   MenuPositionService,
   ProxyService,
+  HistoryService,
+  DialogService,
+  ScrollInoViewService,
 ];
 
 const directives = [

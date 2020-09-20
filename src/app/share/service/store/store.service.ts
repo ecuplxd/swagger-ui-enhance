@@ -57,6 +57,7 @@ export class StoreService {
     private proxy: ProxyService
   ) {
     this.loadDumpsData();
+
     setTimeout(() => {
       this.send();
     }, 0);
@@ -71,6 +72,10 @@ export class StoreService {
     return this.projectSubject.asObservable();
   }
 
+  getApiItem(id: string): ApiItem | undefined {
+    return this.data.apiItems.find((item) => item.__id === id);
+  }
+
   getCurPorject(): Project {
     return this.data.project;
   }
@@ -83,13 +88,22 @@ export class StoreService {
     return this.data.namespaces;
   }
 
-  fetchProject(url: string, cb?: Function): void {
-    this.proxy.proxy(url, 'get').subscribe((res) => {
-      this.importProject(res as Project, url);
-      if (cb) {
-        cb.call(null);
-      }
+  fetchProject(url: string): Promise<Object> {
+    const promise = new Promise<Object>((resolve, reject) => {
+      this.proxy.proxy(url, 'get').subscribe(
+        (res) => {
+          this.importProject(res as Project, url);
+          resolve(res);
+        },
+        (error) => {
+          this.toastMessage(`更新失败：${error.status} ${error.statusText}`);
+          console.log(error);
+          reject(error);
+        }
+      );
     });
+
+    return promise;
   }
 
   parseFile(file: File): void {
@@ -202,9 +216,10 @@ export class StoreService {
           __id: url + '|' + method,
           __produce: api.produces && api.produces[0],
           __info: {
-            description: api.summary,
+            description: api.summary || '该 API 缺少描述',
             method,
             url,
+            deprecated: api.deprecated,
             urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
           },
         };

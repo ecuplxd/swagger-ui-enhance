@@ -32,12 +32,13 @@
   <mat-expansion-panel
     *ngFor="let apiItem of apiItems; let i = index"
     [id]="'api-item-' + i"
-    class="my-10"
-    [(expanded)]="expandeds[i]"
-    [style]="{
-      border: '1px solid ' + colors[apiItem.__info.method],
-      boxShadow: 'none'
+    [ngClass]="{
+      'api-item': true,
+      ' my-10': true,
+      deprecated: apiItem.deprecated
     }"
+    [class]="apiItem.__info.method"
+    [(expanded)]="expandeds[i]"
   >
     <mat-expansion-panel-header class="px-16" expandedHeight="48px">
       <div class="y-center justify-between flex-1">
@@ -48,12 +49,7 @@
     </mat-expansion-panel-header>
 
     <ng-template matExpansionPanelContent>
-      <div
-        class="api-detail flex"
-        [style]="{
-          borderTop: '1px solid ' + colors[apiItem.__info.method]
-        }"
-      >
+      <div class="api-detail flex">
         <app-api-parameter
           class="px-10 flex-1"
           [parameters]="apiItem.parameters"

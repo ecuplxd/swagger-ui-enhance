@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { COLORS } from 'src/app/share/const';
 import { ApiMethod } from '../api.model';
 
 @Component({
@@ -8,11 +7,11 @@ import { ApiMethod } from '../api.model';
   styleUrls: ['./api-method.component.less'],
 })
 export class ApiMethodComponent implements OnInit {
+  @Input() deprecated = false;
+
   @Input() showMethod = true;
 
   @Input() method!: ApiMethod;
-
-  colors = COLORS;
 
   constructor() {}
 

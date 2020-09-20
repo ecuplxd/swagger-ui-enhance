@@ -9,7 +9,7 @@ var proxy = httpProxy.createProxyServer({});
 var staticRoot = path.resolve(__dirname, "../dist/swagger-ui");
 
 proxy.on("proxyReq", function (proxyReq, req, res, options) {
-  const targetInfo = getTargetInfo(req.url);
+  var targetInfo = getTargetInfo(req.url);
   proxyReq.path = targetInfo.path;
 });
 
@@ -52,7 +52,7 @@ function proxyRequest(target, req, res) {
 function handleRequest(req, res) {
   var { pathname } = url.parse(req.url, true);
   if (pathname.startsWith("/proxy")) {
-    const { target } = getTargetInfo(req.url);
+    var { target } = getTargetInfo(req.url);
     proxyRequest(target, req, res);
     return;
   }

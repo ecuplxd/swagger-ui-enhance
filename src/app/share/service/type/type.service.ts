@@ -126,7 +126,6 @@ export class TypeService {
     }
 
     this.types.set(projectId, types);
-    console.log(this.types);
 
     return this;
   }
@@ -205,7 +204,7 @@ export class TypeService {
 
     // const isClass = type && /[A-Z]/.test(type[0]);
     // 中文[]
-    const typeSplits = type.split('[]');
+    const typeSplits = typeof type === 'string' ? type.split('[]') : [];
 
     if (typeSplits[0] !== 'string' && typeSplits[1] !== undefined) {
       return [{}];

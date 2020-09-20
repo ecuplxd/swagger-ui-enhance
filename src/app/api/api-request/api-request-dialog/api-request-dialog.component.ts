@@ -1,13 +1,16 @@
-import {
-  Component,
-  HostListener,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { fromEvent, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { EditorComponent } from 'src/app/share/components';
-import { ProxyService, StoreService, TypeService } from 'src/app/share/service';
+import {
+  HistoryService,
+  ProxyService,
+  StoreService,
+  TypeService,
+} from 'src/app/share/service';
+import { RequestHistory } from 'src/app/share/service/history/history.model';
 import { ObjectObject } from 'src/app/share/share.model';
 import { ApiItem, ApiParameters, ApiUrl, Size } from '../../api.model';
 
@@ -16,8 +19,10 @@ import { ApiItem, ApiParameters, ApiUrl, Size } from '../../api.model';
   templateUrl: './api-request-dialog.component.html',
   styleUrls: ['./api-request-dialog.component.less'],
 })
-export class ApiRequestDialogComponent implements OnInit {
+export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   @ViewChild('queryEditor') queryEditor!: EditorComponent;
+
+  @ViewChild('triggle') triggle!: MatMenuTrigger;
 
   apiItem!: ApiItem;
 
@@ -28,32 +33,57 @@ export class ApiRequestDialogComponent implements OnInit {
 
   urlParams: ApiUrl[] = [];
 
-  types = '';
+  editorValue = '';
 
   response = '';
 
   refTypes: string[] = [];
 
-  // TODO：优化
-  @HostListener('window:resize', ['$event'])
-  handleResize(_: KeyboardEvent): void {
-    this.getEditorSize();
-  }
+  subscription!: Subscription;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { apiItem: ApiItem; editorSize: Size },
+    @Inject(MAT_DIALOG_DATA)
+    data: {
+      apiItem: ApiItem;
+      editorSize: Size;
+      history: RequestHistory;
+    },
     private typeService: TypeService,
     private store: StoreService,
-    private proxy: ProxyService
+    private proxy: ProxyService,
+    private historyService: HistoryService
   ) {
     this.apiItem = data.apiItem;
-    this.getEditorSize(data.editorSize);
+    this.updateEditorSize(data.editorSize);
+
+    if (data.history) {
+      this.setHistory(data.history);
+      return;
+    }
+
     this.parseUrl(this.apiItem.__info.url);
     this.groupParams();
     // this.getResponseType();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.subscription = fromEvent(window, 'resize')
+      .pipe(debounceTime(250))
+      .subscribe(() => {
+        this.updateEditorSize();
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  setHistory(item: RequestHistory): void {
+    this.urlParams = item.urlParams;
+    this.editorValue = item.editorValue;
+  }
 
   parseUrl(url: string): void {
     let index = 0;
@@ -134,8 +164,6 @@ export class ApiRequestDialogComponent implements OnInit {
         }
       });
 
-    console.log(mocks);
-
     ['Header', 'Query', 'Body']
       .map((kind) => {
         const kindLower = kind.toLowerCase();
@@ -153,8 +181,8 @@ export class ApiRequestDialogComponent implements OnInit {
             .replace(/"/g, "'")
             .replace(/'(__undefined__)'/g, 'undefined');
 
-          this.types += `/* ${kind} start */\nconst ${kindLower}: ${kind} = ${stringify}\n`;
-          this.types += `/* ${kind} end */\n\n\n`;
+          this.editorValue += `/* ${kind} start */\nconst ${kindLower}: ${kind} = ${stringify}\n`;
+          this.editorValue += `/* ${kind} end */\n\n\n`;
         }
 
         return {
@@ -164,13 +192,13 @@ export class ApiRequestDialogComponent implements OnInit {
       })
       .filter((item) => item.type)
       .forEach((item) => {
-        this.types += `export class ${item.name} {\n${item.type}\n}\n\n`;
+        this.editorValue += `\nexport class ${item.name} {\n${item.type}\n}\n`;
       });
 
-    this.types += this.refTypes.join('\n');
+    this.editorValue += this.refTypes.join('\n');
   }
 
-  getEditorSize(size?: Size): void {
+  updateEditorSize(size?: Size): void {
     let width = window.innerWidth;
     let height = window.innerHeight;
 
@@ -181,7 +209,7 @@ export class ApiRequestDialogComponent implements OnInit {
 
     size = {
       width: width / 2,
-      height: height - 38,
+      height: height - 56,
     };
 
     this.editorSize = JSON.parse(JSON.stringify(size));
@@ -210,39 +238,54 @@ export class ApiRequestDialogComponent implements OnInit {
   }
 
   eval(tex: string): Object {
-    return new Function('return ' + tex)();
+    try {
+      return new Function('return ' + tex)();
+    } catch (error) {
+      return {};
+    }
   }
 
   doRequest(): void {
-    let url = this.urlParams.map((item) => item.value || item.path).join('');
-
+    const url = this.urlParams.map((item) => item.value || item.path).join('');
     const method = this.apiItem.__info.method;
     const project = this.store.getCurPorject();
-
-    url = 'https://' + project.host + url;
-
-    const responseInfo: string[] = [
-      '// Request URL',
-      '// ' + url + '\n',
-      '// Server response',
-    ];
-
     const text = this.queryEditor.editor.getModel()?.getValue();
     const query = this.eval(this.getText(text, 'Query'));
     const body = this.eval(this.getText(text, 'Body'));
     const header = this.eval(this.getText(text, 'Header'));
+    const reqUrl = 'https://' + project.host + url;
+    const responseInfo: string[] = [
+      '// Request URL',
+      '// ' + reqUrl + '\n',
+      '// Server response',
+    ];
 
-    console.log(query, body, header);
+    this.historyService.add(this.apiItem.__id, url, this.urlParams, text);
+
     return;
-
-    this.proxy.proxy(url, method, query, body, header).subscribe(
+    this.proxy.proxy(reqUrl, method, query, body, header).subscribe(
       (res) => {
         responseInfo.push('// code: 200\n');
         responseInfo.push('// Response body：');
         responseInfo.push('const res = ' + JSON.stringify(res, null, 2));
         this.response = responseInfo.join('\n');
+        this.updateEditorSize();
       },
-      (error) => {}
+      (error) => {
+        console.log(error);
+      }
     );
+  }
+
+  showHistory(): void {
+    if (this.triggle.menuOpen) {
+      return;
+    }
+
+    this.triggle.openMenu();
+  }
+
+  hideHistory(): void {
+    this.triggle.closeMenu();
   }
 }
