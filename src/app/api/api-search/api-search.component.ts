@@ -37,13 +37,21 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
 
   MATCHED_EL_CLASS = '.suggestion-item.actived';
 
-  @HostListener('window:keyup', ['$event'])
-  keyEvent(event: KeyboardEvent): void {
+  @HostListener('window:keydown', ['$event'])
+  keyDownEvent(event: KeyboardEvent): void {
     switch (event.key) {
       case 'ArrowUp':
       case 'ArrowDown':
         this.updateActivedSearchIndex(event.key);
         break;
+      default:
+        break;
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyUpEvent(event: KeyboardEvent): void {
+    switch (event.key) {
       case '/':
         this.focusInput();
         break;
