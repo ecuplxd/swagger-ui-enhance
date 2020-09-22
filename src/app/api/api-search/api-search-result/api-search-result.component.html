@@ -5,9 +5,9 @@
     [class.hidden]="!namespace.matched"
   >
     <div class="ml-4 pl-4 header f-13">
-      <span [innerHTML]="namespace.name"></span>
+      <span class="f-16" [innerHTML]="namespace.name"></span>
 
-      <span class="sub-title ml-4" [innerHTML]="namespace.description"></span>
+      <span class="sub-title ml-8" [innerHTML]="namespace.description"></span>
     </div>
 
     <mat-divider class="ml-8 mb-1"></mat-divider>
@@ -33,7 +33,11 @@
         (click)="select(i, j)"
       >
         <div>
-          <div [innerHTML]="api.__info.url"></div>
+          <div>
+            <span [innerHTML]="api.__info.url"></span>
+            <span>#</span>
+            <span [innerHTML]="api.__info.operationId"></span>
+          </div>
 
           <div
             class="sub-title f-13"

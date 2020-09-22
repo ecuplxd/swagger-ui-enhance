@@ -222,6 +222,7 @@ export class StoreService {
             url,
             deprecated: api.deprecated,
             urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
+            operationId: api.operationId,
           },
         };
 

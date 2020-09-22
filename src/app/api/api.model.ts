@@ -41,6 +41,8 @@ export interface ApiInfo {
   url: string;
   urlForCopy: string;
   deprecated: boolean;
+  operationId: string;
+  [key: string]: Any;
 }
 
 export type ApiMethod =

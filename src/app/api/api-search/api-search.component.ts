@@ -2,9 +2,9 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   ViewChild,
-  HostListener,
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { fromEvent } from 'rxjs';
@@ -29,7 +29,11 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
 
   matchedCount = 0;
 
+  keywords = '';
+
   keyword = '';
+
+  filterMethod = '';
 
   MATCHED_EL_CLASS = '.suggestion-item.actived';
 
@@ -72,7 +76,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
         debounceTime(250),
         distinctUntilChanged(),
         filter(() => {
-          if (!this.keyword) {
+          if (!this.keywords) {
             this.hideSearchResult();
             return false;
           }
@@ -84,8 +88,13 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getMatched(str: string, type: string = ''): string {
+  getMatched(str: string = '', type: string = ''): string {
+    if (!str) {
+      return '';
+    }
+
     const cls = `token matched ${type}`.trim();
+
     return str.replace(
       new RegExp(this.keyword, 'ig'),
       `<span class="${cls}">$&</span>`
@@ -97,30 +106,32 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     const namespaces: ProjectNamesapce[] = JSON.parse(
       JSON.stringify(this.store.getCurNamespaces())
     );
+    const props = ['method', 'url', 'description', 'operationId'];
+
+    this.splitKeyWord();
 
     namespaces.forEach((namespace) => {
-      namespace.name = this.getMatched(namespace.name, 'title');
-      namespace.description = this.getMatched(namespace.description);
+      const { name, description } = namespace;
+      namespace.name = this.getMatched(name, 'title');
+      namespace.description = this.getMatched(description);
+      namespace.matched = name.includes('span') || description.includes('span');
 
-      namespace.matched =
-        namespace.name.includes('span') ||
-        namespace.description.includes('span');
+      namespace.apiItems
+        .filter((api) => api.__info.method.includes(this.filterMethod))
+        .forEach((api) => {
+          api.__info.method = api.__info.method.toUpperCase() as ApiMethod;
 
-      namespace.apiItems.forEach((api) => {
-        api.__info.method = this.getMatched(
-          api.__info.method.toUpperCase()
-        ) as ApiMethod;
-        api.__info.url = this.getMatched(api.__info.url);
-        api.__info.description = this.getMatched(api.__info.description);
+          props.forEach((prop) => {
+            api.__info[prop] = this.getMatched(api.__info[prop]);
+          });
 
-        api.__matched =
-          api.__info.method.includes('span') ||
-          api.__info.url.includes('span') ||
-          api.__info.description.includes('span');
-        api.__matchedIndex = api.__matched ? this.matchedCount++ : -1;
-      });
+          api.__matched = props.some((prop) =>
+            api.__info[prop].includes('span')
+          );
+          api.__matchedIndex = api.__matched ? this.matchedCount++ : -1;
+        });
 
-      // TODO
+      // TODO: 可以选择匹配的 namespace
       // if (!namespace.matched) {
       //   namespace.matched = namespace.apiItems.some((api) => api.__matched);
       // }
@@ -168,7 +179,21 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   reset(resetKeyword: boolean = false): void {
     this.activedSearchIndex = 0;
     this.matchedCount = 0;
-    this.keyword = resetKeyword ? '' : this.keyword;
+
+    if (resetKeyword) {
+      this.keywords = '';
+      this.keyword = '';
+      this.filterMethod = '';
+    } else {
+      this.splitKeyWord();
+    }
+  }
+
+  splitKeyWord(): void {
+    const keywords = this.keywords.split(' ');
+
+    this.keyword = keywords[0];
+    this.filterMethod = keywords[1] || '';
   }
 
   updateActivedSearchIndex(dir: 'ArrowUp' | 'ArrowDown'): void {
@@ -209,7 +234,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   }
 
   handleFocus(): void {
-    if (this.keyword && this.matchedCount) {
+    if (this.keywords && this.matchedCount) {
       this.showSearchResult();
     }
   }
