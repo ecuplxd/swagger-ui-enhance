@@ -10,7 +10,6 @@
   <div class="justify-between y-center py-8">
     <div class="left pl-16">
       <mat-slide-toggle
-        class="mr-16"
         color="primary"
         [checked]="removeQuestion"
         [disabled]="showSample"
@@ -21,12 +20,22 @@
 
       <mat-slide-toggle
         color="primary"
+        class="mx-16"
         [checked]="showSample"
         (change)="getMockCode($event)"
       >
         示例
       </mat-slide-toggle>
+
+      <mat-slide-toggle
+        color="primary"
+        [checked]="fixed"
+        (change)="fixedPopover($event)"
+      >
+        置顶
+      </mat-slide-toggle>
     </div>
+
     <div class="right">
       <button mat-button color="primary" (click)="copy()">复制</button>
       <button mat-button (click)="close()">关闭（ESC）</button>

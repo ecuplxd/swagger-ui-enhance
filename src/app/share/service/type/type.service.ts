@@ -32,11 +32,15 @@ export class TypeService {
     mock: AnyObject = {},
     visits?: Set<string>
   ): string {
+    visits = visits || new Set<string>();
     const noArrayName = name.replace('[]', '');
+
+    if (visits.has(noArrayName)) {
+      return '';
+    }
+
     const type: ApiTypeValue = this.getProjectTypes(projectId)[noArrayName];
     const exports = [`export class ${noArrayName} {`];
-
-    visits = visits || new Set<string>();
 
     for (const key in type) {
       if (type.hasOwnProperty(key) && !key.startsWith('__')) {

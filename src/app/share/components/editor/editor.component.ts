@@ -61,7 +61,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   MAX_HEIGHT = 400;
 
-  MAX_WIDTH = 500;
+  MAX_WIDTH = 550;
 
   LINE_HEIGHT = 20;
 

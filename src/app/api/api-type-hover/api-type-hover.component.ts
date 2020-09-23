@@ -37,6 +37,8 @@ export class ApiTypeHoverComponent implements OnInit {
 
   showSample = false;
 
+  fixed = false;
+
   noQuestionCode = '';
 
   mockCode = '';
@@ -101,5 +103,9 @@ export class ApiTypeHoverComponent implements OnInit {
     if (value !== this.code) {
       this._code = value;
     }
+  }
+
+  fixedPopover(toggle: MatSlideToggleChange): void {
+    this.fixed = toggle.checked;
   }
 }
