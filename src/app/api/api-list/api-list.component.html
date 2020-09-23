@@ -40,7 +40,13 @@
     [class]="apiItem.__info.method"
     [(expanded)]="expandeds[i]"
   >
-    <mat-expansion-panel-header class="px-16" expandedHeight="48px">
+    <mat-expansion-panel-header
+      class="px-16"
+      expandedHeight="48px"
+      [class.actived]="i === activedIndex"
+      (mousedown)="recordStart()"
+      (mouseup)="shouldAvoidSelect(i)"
+    >
       <div class="y-center justify-between flex-1">
         <app-api-info class="flex-1" [api]="apiItem.__info"></app-api-info>
 

@@ -21,6 +21,8 @@ export class ApiListComponent implements OnInit {
 
   activedIndex!: number;
 
+  start!: number;
+
   constructor(
     private store: StoreService,
     private scroll: ScrollInoViewService
@@ -36,5 +38,18 @@ export class ApiListComponent implements OnInit {
         this.scroll.to(this.ID_PREFIX + this.activedIndex);
       });
     });
+  }
+
+  recordStart(): void {
+    this.start = +new Date();
+  }
+
+  shouldAvoidSelect(index: number): void {
+    const end = +new Date();
+
+    // Note：避免选择的时候展开/收起手风琴组件
+    if (end - this.start > 200) {
+      this.expandeds[index] = !this.expandeds[index];
+    }
   }
 }
