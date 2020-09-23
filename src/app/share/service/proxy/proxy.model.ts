@@ -1,3 +1,5 @@
+import { GObject } from '../../share.model';
+
 export interface UrlInfo {
   source: string;
   host: string;
@@ -8,6 +10,4 @@ export interface UrlInfo {
   params: UrlParams;
 }
 
-export interface UrlParams {
-  [key: string]: string | string[];
-}
+export type UrlParams = GObject<string | string[]>;

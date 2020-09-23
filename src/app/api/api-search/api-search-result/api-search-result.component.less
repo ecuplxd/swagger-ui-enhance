@@ -1,0 +1,53 @@
+@import "src/styles/color.less";
+
+@matched: #174d8c;
+
+@matched-bg: rgba(143, 187, 237, 0.1);
+
+@matched-border: rgba(69, 142, 225, 0.8);
+
+@matched-hover: rgba(69, 142, 225, 0.05);
+
+.search-result {
+  .suggestions {
+    .method {
+      min-width: 50px;
+    }
+
+    .suggestion-item {
+      border-left: 1px solid @border-color;
+
+      app-api-request {
+        opacity: 0;
+      }
+
+      &.actived,
+      &:hover {
+        background: @matched-hover;
+        cursor: pointer;
+
+        app-api-request {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+/deep/ .token.matched {
+  color: @matched;
+  background: @matched-bg;
+}
+
+/deep/ .token.title.matched {
+  padding-bottom: 2px;
+  box-shadow: inset 0 -2px 0 0 @matched-border;
+}
+
+app-api-request {
+  /deep/ button {
+    line-height: initial !important;
+    font-size: 13px !important;
+    padding: 2px 5px !important;
+  }
+}

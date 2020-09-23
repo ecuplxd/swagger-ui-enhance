@@ -13,10 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -29,7 +26,10 @@ import {
   CopyService,
   MenuPositionService,
   ProxyService,
+  HistoryService,
+  ScrollInoViewService,
 } from './service';
+import { DialogService } from './service/dialog/dialog.service';
 
 import { CopyDirective, StopClickDirective } from './directives';
 import {
@@ -47,6 +47,9 @@ const services = [
   CopyService,
   MenuPositionService,
   ProxyService,
+  HistoryService,
+  DialogService,
+  ScrollInoViewService,
 ];
 
 const directives = [

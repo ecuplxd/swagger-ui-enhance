@@ -18,6 +18,10 @@ mat-sidenav-container {
   max-height: calc(100% - 64px);
   transform: translateX(0%);
   z-index: 3;
+
+  /deep/ .mat-drawer-inner-container {
+    overflow-x: hidden;
+  }
 }
 
 .right-nav {

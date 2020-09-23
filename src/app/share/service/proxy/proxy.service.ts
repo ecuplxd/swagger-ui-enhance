@@ -43,53 +43,69 @@ export class ProxyService {
   proxy(
     url: string,
     method: ApiMethod,
+    query: Object = {},
     body: Object = {},
     headers: Object = {}
   ): Observable<Object> {
     // const urlInfo = this.parseUrl(url);
 
+    const params = {
+      query,
+      headers,
+    };
+
     url = '/proxy?url=' + url;
     switch (method) {
       case 'get':
-        return this.get(url);
+        return this.get(url, params);
       case 'post':
-        return this.post(url, body);
+        return this.post(url, body, params);
       case 'put':
-        return this.put(url, body);
+        return this.put(url, body, params);
       case 'delete':
-        return this.delete(url);
+        return this.delete(url, params);
       case 'patch':
-        return this.patch(url, body);
+        return this.patch(url, body, params);
       default:
         break;
     }
     return this.get(url);
   }
 
-  get(url: string, params?: UrlParams): Observable<Object> {
+  get(url: string, params = {}): Observable<Object> {
     return this.http.get(url, {
       params,
     });
   }
 
-  post(url: string, body: Object): Observable<Object> {
-    return this.http.post(url, body);
+  post(url: string, body: Object, params = {}): Observable<Object> {
+    return this.http.post(url, body, {
+      params,
+    });
   }
 
-  put(url: string, body: Object): Observable<Object> {
-    return this.http.put(url, body);
+  put(url: string, body: Object, params = {}): Observable<Object> {
+    return this.http.put(url, body, {
+      params,
+    });
   }
 
-  delete(url: string): Observable<Object> {
-    return this.http.delete(url);
+  delete(url: string, params = {}): Observable<Object> {
+    return this.http.delete(url, {
+      params,
+    });
   }
 
-  patch(url: string, body: Object): Observable<Object> {
-    return this.http.patch(url, body);
+  patch(url: string, body: Object, params = {}): Observable<Object> {
+    return this.http.patch(url, body, {
+      params,
+    });
   }
 
-  head(url: string): Observable<Object> {
-    return this.http.head(url);
+  head(url: string, params = {}): Observable<Object> {
+    return this.http.head(url, {
+      params,
+    });
   }
 
   ws(): void {}

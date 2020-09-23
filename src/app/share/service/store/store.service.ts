@@ -15,7 +15,12 @@ import {
   ApiResponsesValue,
   ApiResponseHeaderValue,
 } from 'src/app/api/api.model';
-import { StoreIndex, StoreObject, StoreData } from '../../store.model';
+import {
+  StoreIndex,
+  AnyObject,
+  StoreData,
+  StoreIndexKey,
+} from '../../share.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProxyService } from '../proxy/proxy.service';
 import { Observable, Subject } from 'rxjs';
@@ -41,7 +46,7 @@ export class StoreService {
       namespaceIndex: 0,
       apiIndex: 0,
     },
-    expandeds: [true],
+    expandeds: [],
   };
 
   private projectSubject = new Subject<StoreData>();
@@ -52,6 +57,7 @@ export class StoreService {
     private proxy: ProxyService
   ) {
     this.loadDumpsData();
+
     setTimeout(() => {
       this.send();
     }, 0);
@@ -66,6 +72,14 @@ export class StoreService {
     return this.projectSubject.asObservable();
   }
 
+  getApiItem(id: string): ApiItem | undefined {
+    return this.data.apiItems.find((item) => item.__id === id);
+  }
+
+  getCurPorject(): Project {
+    return this.data.project;
+  }
+
   getCurProjectId(): string {
     return this.data.project.id;
   }
@@ -74,13 +88,22 @@ export class StoreService {
     return this.data.namespaces;
   }
 
-  fetchProject(url: string, cb?: Function): void {
-    this.proxy.proxy(url, 'get').subscribe((res) => {
-      this.importProject(res as Project, url);
-      if (cb) {
-        cb.call(null);
-      }
+  fetchProject(url: string): Promise<Object> {
+    const promise = new Promise<Object>((resolve, reject) => {
+      this.proxy.proxy(url, 'get').subscribe(
+        (res) => {
+          this.importProject(res as Project, url);
+          resolve(res);
+        },
+        (error) => {
+          this.toastMessage(`更新失败：${error.status} ${error.statusText}`);
+          console.log(error);
+          reject(error);
+        }
+      );
     });
+
+    return promise;
   }
 
   parseFile(file: File): void {
@@ -121,7 +144,8 @@ export class StoreService {
     }
 
     this.projectExit = false;
-    this.dispatch('CHANGE_INDEX', {
+
+    this.updateData({
       projectIndex,
       namespaceIndex: 0,
       apiIndex: 0,
@@ -152,7 +176,7 @@ export class StoreService {
 
   getNamespaceFromTags(project: Project): ProjectTag[] {
     const tags = new Set<string>();
-    this.iterObj(project.paths, (_1: string, methods: StoreObject) => {
+    this.iterObj(project.paths, (_1: string, methods: AnyObject) => {
       this.iterObj(methods, (_2: ApiMethod, api: ApiItem) => {
         api.tags.forEach((tag: string) => tags.add(tag));
       });
@@ -186,17 +210,19 @@ export class StoreService {
 
     const apiItems: ApiItem[] = [];
 
-    this.iterObj(project.paths, (url: string, methods: StoreObject) => {
+    this.iterObj(project.paths, (url: string, methods: AnyObject) => {
       this.iterObj(methods, (method: ApiMethod, api: ApiItem) => {
         api = {
           ...api,
           __id: url + '|' + method,
           __produce: api.produces && api.produces[0],
           __info: {
-            description: api.summary,
+            description: api.summary || '该 API 缺少描述',
             method,
             url,
+            deprecated: api.deprecated,
             urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
+            operationId: api.operationId,
           },
         };
 
@@ -209,7 +235,8 @@ export class StoreService {
         api.responses
       );
 
-      api.tags.forEach((tag: string) => {
+      const tags = api.tags || [];
+      tags.forEach((tag: string) => {
         const index = this.namespacesMap.get(tag);
 
         if (index !== undefined) {
@@ -221,7 +248,7 @@ export class StoreService {
     return this;
   }
 
-  transformResponses(responses: ApiResponses): this {
+  transformResponses(responses: ApiResponses = {}): this {
     this.iterObj(responses, (code: number, value: ApiResponsesValue) => {
       value.code = +code;
 
@@ -247,7 +274,7 @@ export class StoreService {
     return this;
   }
 
-  iterObj(obj: StoreObject, cb: Function): StoreObject[] {
+  iterObj(obj: AnyObject, cb: Function): AnyObject[] {
     return Object.keys(obj)
       .sort()
       .map((key) => cb.call(null, key, obj[key]));
@@ -301,14 +328,14 @@ export class StoreService {
     const { projects, index } = this.data;
 
     ['projectIndex', 'namespaceIndex', 'apiIndex']
-      .map((key) => [key, newIndexs[key]])
+      .map((key) => [key, newIndexs[key as StoreIndexKey]])
       .filter(
         (keyIndexs) =>
           keyIndexs[1] !== undefined &&
-          keyIndexs[1] !== index[keyIndexs[0] as string]
+          keyIndexs[1] !== index[keyIndexs[0] as StoreIndexKey]
       )
       .forEach((keyIndex) => {
-        const key = keyIndex[0] as string;
+        const key = keyIndex[0] as StoreIndexKey;
         const newIndex = keyIndex[1] as number;
 
         index[key] = newIndex;
@@ -317,25 +344,19 @@ export class StoreService {
     const project = projects[index.projectIndex] || {};
     const namespaces = project.namespaces || [];
     const namespace = namespaces[index.namespaceIndex] || {};
+    const apiItems = namespace.apiItems || [];
 
     this.data.project = project;
     this.data.namespaces = namespaces;
     this.data.namespace = namespace;
-    this.data.apiItems = namespace.apiItems || [];
+    this.data.apiItems = apiItems;
 
     if (newIndexs.apiIndex !== undefined) {
-      this.data.expandeds = [];
-      this.data.expandeds[newIndexs.apiIndex] = true;
+      this.data.expandeds = apiItems.map((_, i) => i === newIndexs.apiIndex);
     }
 
     this.send();
     this.dumpsData();
-
-    return this;
-  }
-
-  dispatch(name: string, payload: Partial<StoreIndex> = {}): this {
-    this.updateData(payload);
 
     return this;
   }
@@ -351,9 +372,7 @@ export class StoreService {
       this.data = config;
     }
 
-    this.dispatch('CHANGE_INDEX', {
-      ...this.data.index,
-    });
+    this.updateData({ ...this.data.index });
 
     return this;
   }

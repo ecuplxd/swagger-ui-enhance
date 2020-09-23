@@ -33,25 +33,26 @@
   background: #f0f0f0;
 
   .url-container {
+    position: relative;
     padding: 5px 10px;
     .border;
     background: @white;
 
     .url-segments {
+      position: relative;
+      min-width: 300px;
+      // height: @height;
+      // line-height: @height;
+      .border;
+
+      &.only-one-url {
+        &:hover {
+          .focus;
+        }
+      }
+
       .url-segment-item {
         position: relative;
-
-        &.only-one-url {
-          min-width: 300px;
-          height: @height;
-          padding: 0 5px;
-          .border;
-          line-height: @height;
-
-          &:hover {
-            .focus;
-          }
-        }
 
         .url-input {
           .border;
@@ -92,4 +93,9 @@
 
 .api-info {
   flex: initial;
+}
+
+app-api-request-history {
+  height: 27px;
+  line-height: 27px;
 }

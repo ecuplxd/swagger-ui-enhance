@@ -1,13 +1,15 @@
 import {
+  AfterViewInit,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
-  AfterViewInit,
   Output,
-  EventEmitter,
 } from '@angular/core';
 import * as monaco from 'monaco-editor';
+import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { Size } from 'src/app/api/api.model';
 import { IdService } from '../../service';
 
@@ -21,13 +23,28 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private _value!: string;
   @Input() set value(value: string) {
     this._value = value;
-    if (!value) {
-      return;
-    }
     this.updateValue(value);
   }
+
   get value(): string {
     return this._value;
+  }
+
+  // tslint:disable-next-line: variable-name
+  private _size!: Size;
+  @Input() set size(size: Size) {
+    this._size = size;
+    this.reLayoutBySize(size);
+  }
+
+  get size(): Size {
+    return this._size;
+  }
+
+  @Input() set resize(flag: boolean) {
+    if (flag) {
+      this.updateContainerSize();
+    }
   }
 
   @Input() theme = 'vs-dark';
@@ -36,13 +53,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() minimap = true;
 
-  // TODO：优化
-  @Input() set size(size: Size) {
-    setTimeout(() => {
-      this.updateContainerSize('', size);
-    }, 100);
-  }
-
   @Output() format = new EventEmitter<string>();
 
   editor!: monaco.editor.IStandaloneCodeEditor;
@@ -50,8 +60,19 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   editorId!: string;
 
   MAX_HEIGHT = 400;
-  MAX_WIDTH = 500;
+
+  MAX_WIDTH = 550;
+
   LINE_HEIGHT = 20;
+
+  EDITOR_CONFIG = {
+    language: 'typescript',
+    fontSize: 14,
+    tabSize: 2,
+    automaticLayout: true,
+  };
+
+  formated = false;
 
   constructor(private idService: IdService) {
     this.editorId = this.idService.genID();
@@ -60,72 +81,89 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.tryInitEditorFail();
+    this.tryInitEditorFail(this.value);
   }
 
   ngOnDestroy(): void {}
 
-  initEditor(): void {
+  initEditor(value: string = ''): void {
     const el = document.getElementById(this.editorId);
-
-    if (el) {
-      this.editor = monaco.editor.create(el, {
-        theme: this.theme,
-        value: this.value,
-        lineNumbers: this.lineNumbers,
-        language: 'typescript',
-        fontSize: 14,
-        tabSize: 2,
-        automaticLayout: true,
-        minimap: {
-          enabled: this.minimap,
-        },
-      });
-
-      this.formatCode();
-
-      this.updateValue = (value: string = '') => {
-        this.editor.setValue(value);
-        this.updateContainerSize(value);
-      };
+    if (!el) {
+      return;
     }
+
+    this.editor = monaco.editor.create(el, {
+      ...this.EDITOR_CONFIG,
+      theme: this.theme,
+      value,
+      lineNumbers: this.lineNumbers,
+      minimap: {
+        enabled: this.minimap,
+      },
+    });
+
+    this.reLayoutBySize();
+
+    this.formatCode();
+    this.updateContainerSize = this.decideSizeByValue;
+    this.updateValue = (val: string = '') => {
+      this.editor.setValue(val);
+      this.updateContainerSize();
+    };
   }
 
   formatCode(): void {
-    setTimeout(() => {
-      this.editor
-        .getAction('editor.action.formatDocument')
-        .run()
-        .then(() => {
-          const model = this.editor.getModel();
-          if (model) {
-            this.format.emit(model.getValue());
-          }
-        });
-    }, 100);
+    if (this.formated) {
+      return;
+    }
+
+    of(1)
+      .pipe(delay(1000))
+      .subscribe(() => {
+        this.editor
+          .getAction('editor.action.formatDocument')
+          .run()
+          .then(() => {
+            const model = this.editor.getModel();
+            this.formated = true;
+            if (model) {
+              this.format.emit(model.getValue());
+            }
+          });
+      });
   }
 
-  tryInitEditorFail(): boolean {
+  tryInitEditorFail(value: string = ''): boolean {
     if (!this.editor) {
-      this.initEditor();
+      this.initEditor(value);
     }
 
     return !this.editor;
   }
 
-  updateContainerSize(value: string, size?: Size): void {
+  updateContainerSize(): void {
     if (this.tryInitEditorFail()) {
       return;
     }
 
-    if (!value && size) {
-      this.editor.layout({
-        width: size.width,
-        height: size.height,
-      });
+    this.decideSizeByValue();
+  }
+
+  reLayoutBySize(size?: Size): void {
+    size = size || this.size;
+
+    if (!this.editor || !size) {
       return;
     }
 
+    this.editor.layout({
+      width: size.width,
+      height: size.height,
+    });
+  }
+
+  decideSizeByValue(): void {
+    const value = this.editor?.getModel()?.getValue();
     if (value === '// TODO') {
       return;
     }
@@ -141,11 +179,11 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateValue(value: string = ''): void {
-    if (this.tryInitEditorFail()) {
+    if (this.tryInitEditorFail(value)) {
       return;
     }
 
     this.editor.setValue(value);
-    this.updateContainerSize(value);
+    this.updateContainerSize();
   }
 }

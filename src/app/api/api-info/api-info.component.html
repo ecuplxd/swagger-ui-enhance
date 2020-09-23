@@ -1,10 +1,11 @@
 <app-api-method
   class="method mr-10"
+  [deprecated]="api.deprecated"
   [method]="api.method"
   [showMethod]="showMethod"
 ></app-api-method>
 
-<div class="flex-1 inline-flex api-info">
+<div class="flex-1 inline-flex api-info" [class.deprecated]="api.deprecated">
   <span *ngIf="showUrl" class="inline-flex align-center" style="min-width: 0">
     <span
       class="mx-1 code f-16 title text-ellipsis"

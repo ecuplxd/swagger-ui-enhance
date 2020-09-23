@@ -16,6 +16,8 @@ import { ApiMethodComponent } from './api-method/api-method.component';
 import { ApiRequestComponent } from './api-request/api-request.component';
 import { ApiRequestDialogComponent } from './api-request/api-request-dialog/api-request-dialog.component';
 import { ApiRoutingModule } from './api-routing.module';
+import { ApiSearchResultComponent } from './api-search/api-search-result/api-search-result.component';
+import { ApiRequestHistoryComponent } from './api-request/api-request-history/api-request-history.component';
 
 
 
@@ -34,6 +36,8 @@ import { ApiRoutingModule } from './api-routing.module';
     ApiMethodComponent,
     ApiRequestComponent,
     ApiRequestDialogComponent,
+    ApiSearchResultComponent,
+    ApiRequestHistoryComponent,
   ],
   imports: [
     ShareModule,

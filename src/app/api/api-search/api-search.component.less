@@ -1,18 +1,8 @@
-@import "src/styles/color.less";
-
-@input-width: 408px;
+@input-width: 461px;
 @input-height: 24px;
 
 @panel-width: 550px;
 @penal-height: 500px;
-
-@matched: #174d8c;
-
-@matched-bg: rgba(143, 187, 237, 0.1);
-
-@matched-border: rgba(69, 142, 225, 0.8);
-
-@matched-hover: rgba(69, 142, 225, 0.05);
 
 :host {
   position: absolute;
@@ -40,51 +30,8 @@
   }
 }
 
-.search-result {
-  .header {
-    height: 40px;
-    line-height: 40px;
-  }
-
-  .suggestions {
-    min-height: 55px;
-
-    .method {
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-    }
-
-    .right {
-      padding: 6px;
-      border-left: 1px solid @border-color;
-
-      &.actived,
-      &:hover {
-        background: @matched-hover;
-        cursor: pointer;
-      }
-    }
-  }
-}
-
 /deep/ .api-search-panel {
   max-height: @penal-height !important;
   min-width: @panel-width !important;
   max-width: initial !important;
-}
-
-/deep/ .token.matched {
-  color: @matched;
-  background: @matched-bg;
-}
-
-/deep/ .token.title.matched {
-  padding-bottom: 2px;
-  box-shadow: inset 0 -2px 0 0 @matched-border;
-}
-
-.f-16 {
-  // word-break: break-all;
-  // white-space: normal;
 }

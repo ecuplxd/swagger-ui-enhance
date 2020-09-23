@@ -13,6 +13,7 @@ import { ApiItem, ApiMethod } from '../api.model';
 import { MenuPositionService, StoreService } from 'src/app/share/service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
+import { Any } from 'src/app/share/share.model';
 // import { delay } from 'rxjs/operators';
 
 @Component({
@@ -73,7 +74,7 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
   }
 
   selectApi(apiIndex: number): void {
-    this.store.dispatch('CHANGE_INDEX', {
+    this.store.updateData({
       namespaceIndex: this.namespaceIndex,
       apiIndex,
     });
@@ -152,8 +153,7 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
 
   buttonEnter(trigger: MatMenuTrigger): void {
     setTimeout(() => {
-      // tslint:disable-next-line: no-any
-      const menu = trigger.menu as any;
+      const menu = trigger.menu as Any;
       const firstEl =
         menu.items.first && menu.items.first._elementRef.nativeElement;
 

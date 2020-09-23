@@ -1,0 +1,56 @@
+<div class="search-result code">
+  <mat-list
+    *ngFor="let namespace of namespaces; let i = index"
+    class="pt-0"
+    [class.hidden]="!namespace.matched"
+  >
+    <div class="ml-4 pl-4 header f-13">
+      <span class="f-16" [innerHTML]="namespace.name"></span>
+
+      <span class="sub-title ml-8" [innerHTML]="namespace.description"></span>
+    </div>
+
+    <mat-divider class="ml-8 mb-1"></mat-divider>
+
+    <div
+      *ngFor="let api of namespace.apiItems; let j = index"
+      class="ml-8 pl-4 flex align-center justify-start suggestions mb-2"
+      [ngClass]="{
+        hidden: !api.__matched,
+        deprecated: api.deprecated
+      }"
+    >
+      <div
+        class="xy-center f-13 mr-4 method"
+        [innerHTML]="api.__info.method"
+      ></div>
+
+      <div
+        class="f-13 flex-1 flex justify-between align-center suggestion-item px-5"
+        [class.actived]="api.__matchedIndex === actived"
+        [attr.data-namespace]="i"
+        [attr.data-api]="j"
+        (click)="select(i, j)"
+      >
+        <div>
+          <div>
+            <span [innerHTML]="api.__info.url"></span>
+            <span>#</span>
+            <span [innerHTML]="api.__info.operationId"></span>
+          </div>
+
+          <div
+            class="sub-title f-13"
+            [innerHTML]="api.__info.description"
+          ></div>
+        </div>
+
+        <app-api-request
+          class="ml-8 f-13"
+          [apiId]="api.__id"
+          [showHistory]="false"
+        ></app-api-request>
+      </div>
+    </div>
+  </mat-list>
+</div>

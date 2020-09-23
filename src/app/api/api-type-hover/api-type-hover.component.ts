@@ -21,6 +21,8 @@ export class ApiTypeHoverComponent implements OnInit {
     if (!this.code && value) {
       this._code = value;
       this.codeString = value;
+    } else {
+      this.resize = !!value;
     }
   }
   get code(): string {
@@ -35,11 +37,15 @@ export class ApiTypeHoverComponent implements OnInit {
 
   showSample = false;
 
+  fixed = false;
+
   noQuestionCode = '';
 
   mockCode = '';
 
   codeString = '';
+
+  resize!: boolean;
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent): void {
@@ -97,5 +103,9 @@ export class ApiTypeHoverComponent implements OnInit {
     if (value !== this.code) {
       this._code = value;
     }
+  }
+
+  fixedPopover(toggle: MatSlideToggleChange): void {
+    this.fixed = toggle.checked;
   }
 }

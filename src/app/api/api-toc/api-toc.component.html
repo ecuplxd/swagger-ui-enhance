@@ -1,12 +1,21 @@
-<div class="mb-24 pt-32 pl-24 toc">
-  <h3 class="mb-16 fw-normal">{{ title }}</h3>
+<div class="mb-12 pt-16 pl-12 toc">
+  <h3 class="mb-8 fw-normal">{{ title }}</h3>
   <ul>
     <li
-      class="sub-title mt-8 pr-24 pl-8"
+      [class]="api.__info.method"
       *ngFor="let api of apiItems; let i = index"
-      [class.actived]="i === activedIndex"
+      [ngClass]="{
+        actived: i === activedIndex,
+        'sub-title': true,
+        'mt-4': true,
+        'pr-12': true,
+        'pl-4': true,
+        'text-ellipsis': true,
+        deprecated: api.deprecated
+      }"
       (click)="changeActivedIndex(i)"
-      [id]="idPrefix + i + '-toc'"
+      [id]="ID_PREFIX + i"
+      [title]="api.__info.description"
     >
       {{ api.__info.description }}
     </li>

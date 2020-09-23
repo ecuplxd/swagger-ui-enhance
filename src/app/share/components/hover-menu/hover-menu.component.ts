@@ -24,6 +24,8 @@ export class HoverMenuComponent implements OnInit {
 
   @Input() position = 'bottom';
 
+  @Input() fixed = false;
+
   @Output() opened = new EventEmitter<boolean>();
 
   open = false;
@@ -47,6 +49,10 @@ export class HoverMenuComponent implements OnInit {
   }
 
   closeMenu(trigger: MatMenuTrigger): void {
+    if (this.fixed) {
+      return;
+    }
+
     this.timedOutCloser = (setTimeout(() => {
       trigger.closeMenu();
       this.open = false;

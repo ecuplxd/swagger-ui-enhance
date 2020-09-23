@@ -26,7 +26,7 @@ export class ProjectComponent implements OnInit {
   }
 
   handleProjectChange(projectIndex: number): void {
-    this.store.dispatch('CHANGE_INDEX', {
+    this.store.updateData({
       projectIndex,
       namespaceIndex: 0,
       apiIndex: 0,

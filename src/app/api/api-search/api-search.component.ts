@@ -2,15 +2,15 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   ViewChild,
-  HostListener,
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { ProjectNamesapce } from 'src/app/project/project.model';
-import { StoreService } from 'src/app/share/service';
+import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { ApiMethod } from '../api.model';
 
 @Component({
@@ -29,17 +29,29 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
 
   matchedCount = 0;
 
+  keywords = '';
+
   keyword = '';
 
-  matchedElClass = '.suggestion-item.actived';
+  filterMethod = '';
 
-  @HostListener('window:keyup', ['$event'])
-  keyEvent(event: KeyboardEvent): void {
+  MATCHED_EL_CLASS = '.suggestion-item.actived';
+
+  @HostListener('window:keydown', ['$event'])
+  keyDownEvent(event: KeyboardEvent): void {
     switch (event.key) {
       case 'ArrowUp':
       case 'ArrowDown':
         this.updateActivedSearchIndex(event.key);
         break;
+      default:
+        break;
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyUpEvent(event: KeyboardEvent): void {
+    switch (event.key) {
       case '/':
         this.focusInput();
         break;
@@ -55,7 +67,10 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private store: StoreService) {}
+  constructor(
+    private store: StoreService,
+    private scroll: ScrollInoViewService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -66,25 +81,31 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   initSearch(): void {
     fromEvent(this.inputRef.nativeElement as HTMLInputElement, 'input')
       .pipe(
+        debounceTime(250),
+        distinctUntilChanged(),
         filter(() => {
-          if (!this.keyword) {
+          if (!this.keywords) {
             this.hideSearchResult();
             return false;
           }
           return true;
-        }),
-        debounceTime(250),
-        distinctUntilChanged()
+        })
       )
       .subscribe(() => {
         this.search();
       });
   }
 
-  getMatched(str: string, type: string = ''): string {
+  getMatched(str: string = '', type: string = ''): string {
+    if (!str) {
+      return '';
+    }
+
+    const cls = `token matched ${type}`.trim();
+
     return str.replace(
       new RegExp(this.keyword, 'ig'),
-      `<span class="token ${type} matched">$&</span>`
+      `<span class="${cls}">$&</span>`
     );
   }
 
@@ -93,32 +114,36 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     const namespaces: ProjectNamesapce[] = JSON.parse(
       JSON.stringify(this.store.getCurNamespaces())
     );
+    const props = ['method', 'url', 'description', 'operationId'];
+
+    this.splitKeyWord();
 
     namespaces.forEach((namespace) => {
-      namespace.name = this.getMatched(namespace.name, 'title');
-      namespace.description = this.getMatched(namespace.description);
+      const { name, description } = namespace;
+      namespace.name = this.getMatched(name, 'title');
+      namespace.description = this.getMatched(description);
+      namespace.matched = name.includes('span') || description.includes('span');
 
-      namespace.matched =
-        namespace.name.includes('span') ||
-        namespace.description.includes('span');
+      namespace.apiItems
+        .filter((api) => api.__info.method.includes(this.filterMethod))
+        .forEach((api) => {
+          api.__info.method = api.__info.method.toUpperCase() as ApiMethod;
 
-      namespace.apiItems.forEach((api) => {
-        api.__info.method = this.getMatched(
-          api.__info.method.toUpperCase()
-        ) as ApiMethod;
-        api.__info.url = this.getMatched(api.__info.url);
-        api.__info.description = this.getMatched(api.__info.description);
+          props.forEach((prop) => {
+            api.__info[prop] = this.getMatched(api.__info[prop]);
+          });
 
-        api.__matched =
-          api.__info.method.includes('span') ||
-          api.__info.url.includes('span') ||
-          api.__info.description.includes('span');
-        api.__matchedIndex = api.__matched ? this.matchedCount++ : -1;
-      });
+          api.__matched = props.some((prop) =>
+            api.__info[prop].includes('span')
+          );
+          api.__matchedIndex = api.__matched ? this.matchedCount++ : -1;
+        });
 
-      if (!namespace.matched) {
-        namespace.matched = namespace.apiItems.some((api) => api.__matched);
-      }
+      // TODO: 可以选择匹配的 namespace
+      // if (!namespace.matched) {
+      //   namespace.matched = namespace.apiItems.some((api) => api.__matched);
+      // }
+      namespace.matched = namespace.apiItems.some((api) => api.__matched);
     });
 
     this.namespaces = namespaces;
@@ -137,13 +162,13 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     }
   }
 
-  handleSelect(namespaceIndex: number, apiIndex: number): void {
+  handleSelect(indexs: number[]): void {
     this.reset(true);
     this.hideSearchResult();
 
-    this.store.dispatch('CHANGE_INDEX', {
-      namespaceIndex,
-      apiIndex,
+    this.store.updateData({
+      namespaceIndex: indexs[0],
+      apiIndex: indexs[1],
     });
   }
 
@@ -151,6 +176,7 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
     if (this.triggle.menuOpen) {
       return;
     }
+
     this.triggle.openMenu();
   }
 
@@ -161,43 +187,48 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   reset(resetKeyword: boolean = false): void {
     this.activedSearchIndex = 0;
     this.matchedCount = 0;
-    this.keyword = resetKeyword ? '' : this.keyword;
+
+    if (resetKeyword) {
+      this.keywords = '';
+      this.keyword = '';
+      this.filterMethod = '';
+    } else {
+      this.splitKeyWord();
+    }
+  }
+
+  splitKeyWord(): void {
+    const keywords = this.keywords.split(' ');
+
+    this.keyword = keywords[0];
+    this.filterMethod = keywords[1] || '';
   }
 
   updateActivedSearchIndex(dir: 'ArrowUp' | 'ArrowDown'): void {
     const delta = dir === 'ArrowUp' ? -1 : 1;
     const index = (this.activedSearchIndex + delta) % this.matchedCount;
+
     this.activedSearchIndex = index > -1 ? index : this.matchedCount - 1;
-    // TODO：需要更精确的时间（dom 更新后）
-    setTimeout(() => {
-      this.scrollToActivedItem();
-    }, 0);
+    this.scrollToActivedItem();
   }
 
   scrollToActivedItem(): void {
-    const el = document.querySelector(this.matchedElClass);
-    if (!el) {
-      return;
-    }
-
-    // bugfix
-    el.scrollIntoView({
-      behavior: 'auto',
-      block: 'nearest',
-      inline: 'nearest',
-    });
+    this.scroll.to('', 'nearest', this.MATCHED_EL_CLASS);
   }
 
   selectActivedItem(): void {
     if (this.matchedCount) {
-      const el = document.querySelector(this.matchedElClass);
+      const el = document.querySelector(this.MATCHED_EL_CLASS);
+
       if (!el) {
         return;
       }
+
       const namespaceIndex = el.getAttribute('data-namespace');
       const apiIndex = el.getAttribute('data-api');
+
       if (namespaceIndex && apiIndex) {
-        this.handleSelect(+namespaceIndex, +apiIndex);
+        this.handleSelect([+namespaceIndex, +apiIndex]);
       }
     }
   }
@@ -211,8 +242,8 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
   }
 
   handleFocus(): void {
-    if (this.keyword) {
-      this.search();
+    if (this.keywords && this.matchedCount) {
+      this.showSearchResult();
     }
   }
 

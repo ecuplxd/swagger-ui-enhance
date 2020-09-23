@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { StoreService } from 'src/app/share/service';
-import { StoreData } from 'src/app/share/store.model';
+import { StoreData } from 'src/app/share/share.model';
 
 @Component({
   selector: 'app-import-project',
@@ -40,7 +42,6 @@ export class ImportProjectComponent implements OnInit {
     }
   }
 
-  // tslint:disable-next-line: no-any
   parseFile(event: Event): void {
     const target = event.target as HTMLInputElement;
     const files = target.files;
@@ -52,9 +53,11 @@ export class ImportProjectComponent implements OnInit {
     this.store.parseFile(files[0]);
     this.destroy = true;
 
-    setTimeout(() => {
-      this.destroy = false;
-    }, 500);
+    of(1)
+      .pipe(delay(500))
+      .subscribe(() => {
+        this.destroy = false;
+      });
   }
 
   fetchFile(): void {
@@ -63,7 +66,7 @@ export class ImportProjectComponent implements OnInit {
     }
 
     this.loading = true;
-    this.store.fetchProject(this.url, () => {
+    this.store.fetchProject(this.url).finally(() => {
       this.loading = false;
     });
   }

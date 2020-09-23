@@ -1,0 +1,31 @@
+@import "src/styles/color.less";
+
+.history {
+  margin-left: -1px;
+
+  &.no-outlined {
+    border-color: transparent !important;
+  }
+}
+
+/deep/ .api-request-hisotry-panel {
+  max-width: initial !important;
+  min-height: initial;
+
+  app-api-search {
+    position: relative;
+    left: auto;
+
+    .search-container {
+      padding: 0 10px;
+    }
+  }
+}
+
+.history-item {
+  cursor: pointer;
+
+  &:hover {
+    background: @primary-bg;
+  }
+}

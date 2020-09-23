@@ -14,9 +14,10 @@
 
 <mat-divider></mat-divider>
 
-<mat-nav-list class="scroll flex-1 project-namespaces">
+<mat-nav-list class="scroll flex-1 project-namespaces hidden-x">
   <ng-container *ngFor="let namespace of namespaces; let i = index">
     <mat-list-item
+      [id]="ID_PREFIX + i"
       [class]="{ selected: activedIndex === i, hidden: !namespace.matched }"
       (click)="select(i)"
     >

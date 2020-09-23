@@ -1,0 +1,32 @@
+<button
+  mat-stroked-button
+  color="primary"
+  class="outlined px-2 history"
+  [class.no-outlined]="!outlined"
+  appStopClick
+  [matMenuTriggerFor]="historyRef"
+  (menuOpened)="getHistory()"
+  title="选择历史记录"
+>
+  <mat-icon class="f-21">history</mat-icon>
+</button>
+
+<mat-menu
+  #historyRef="matMenu"
+  class="api-request-hisotry-panel scroll hidden-x"
+>
+  <ng-template matMenuContent>
+    <div *ngIf="empty" class="sub-title text-center">暂无记录</div>
+    <div
+      class="px-10 code history-item"
+      *ngFor="let item of historys"
+      (click)="request(item)"
+    >
+      <span class="title">{{ item.name }}</span>
+      <span> </span>
+      <span>
+        {{ item.url }}
+      </span>
+    </div>
+  </ng-template>
+</mat-menu>

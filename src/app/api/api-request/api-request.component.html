@@ -9,13 +9,8 @@
     发起请求
   </button>
 
-  <button
-    mat-stroked-button
-    color="primary"
-    class="outlined px-2 history"
-    appStopClick
-    (click)="request(true)"
-  >
-    <mat-icon class="f-21">history</mat-icon>
-  </button>
+  <app-api-request-history
+    *ngIf="showHistory"
+    [apiItem]="apiItem"
+  ></app-api-request-history>
 </div>

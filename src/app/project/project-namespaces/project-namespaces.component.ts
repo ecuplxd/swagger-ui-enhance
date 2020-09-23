@@ -2,16 +2,15 @@ import {
   Component,
   OnInit,
   Input,
-  ViewChildren,
-  QueryList,
   ElementRef,
   ViewChild,
   AfterViewInit,
 } from '@angular/core';
 import { ProjectNamesapce } from '../project.model';
-import { StoreService } from 'src/app/share/service';
+import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { NAMESPACE_ID_PREFIX } from 'src/app/share/const';
 
 @Component({
   selector: 'app-project-namespaces',
@@ -19,10 +18,6 @@ import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
   styleUrls: ['./project-namespaces.component.less'],
 })
 export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
-  // https://angular.io/api/core/ViewChildren#description
-  // https://angular.io/api/core/QueryList
-  @ViewChildren('apis') apis!: QueryList<ElementRef>;
-
   @ViewChild('inputRef') inputRef!: ElementRef;
 
   @Input() namespaces: ProjectNamesapce[] = [];
@@ -31,11 +26,17 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
 
   activedIndex!: number;
 
-  constructor(private store: StoreService) {}
+  ID_PREFIX = NAMESPACE_ID_PREFIX;
+
+  constructor(
+    private store: StoreService,
+    private scroll: ScrollInoViewService
+  ) {}
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data) => {
       this.activedIndex = data.index.namespaceIndex;
+      this.scroll.to(this.ID_PREFIX + this.activedIndex);
     });
   }
 
@@ -46,9 +47,9 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
   initSearch(): void {
     fromEvent(this.inputRef.nativeElement as HTMLInputElement, 'input')
       .pipe(
-        filter(() => !!this.keyword),
         debounceTime(500),
-        distinctUntilChanged()
+        distinctUntilChanged(),
+        filter(() => !!this.keyword)
       )
       .subscribe(() => {
         this.filterNamespaces();
@@ -56,7 +57,7 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
   }
 
   select(namespaceIndex: number): void {
-    this.store.dispatch('CHANGE_INDEX', {
+    this.store.updateData({
       namespaceIndex,
       apiIndex: 0,
     });
