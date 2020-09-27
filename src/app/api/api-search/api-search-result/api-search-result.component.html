@@ -4,7 +4,7 @@
     class="pt-0"
     [class.hidden]="!namespace.matched"
   >
-    <div class="ml-4 pl-4 header f-13">
+    <div class="ml-16 pa-4 header f-13">
       <span class="f-16" [innerHTML]="namespace.name"></span>
 
       <span class="sub-title ml-8" [innerHTML]="namespace.description"></span>
@@ -14,7 +14,7 @@
 
     <div
       *ngFor="let api of namespace.apiItems; let j = index"
-      class="ml-8 pl-4 flex align-center justify-start suggestions mb-2"
+      class="ml-8 pl-4 flex align-center justify-start suggestions mb-2 mt-2"
       [ngClass]="{
         hidden: !api.__matched,
         deprecated: api.deprecated
@@ -26,7 +26,7 @@
       ></div>
 
       <div
-        class="f-13 flex-1 flex justify-between align-center suggestion-item px-5"
+        class="f-13 flex-1 flex justify-between align-center suggestion-item px-10"
         [class.actived]="api.__matchedIndex === actived"
         [attr.data-namespace]="i"
         [attr.data-api]="j"
@@ -46,7 +46,7 @@
         </div>
 
         <app-api-request
-          class="ml-8 f-13"
+          class="ml-16 f-13"
           [apiId]="api.__id"
           [showHistory]="false"
         ></app-api-request>

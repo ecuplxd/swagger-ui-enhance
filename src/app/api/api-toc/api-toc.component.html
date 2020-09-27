@@ -1,5 +1,17 @@
 <div class="mb-12 pt-16 pl-12 toc">
-  <h3 class="mb-8 fw-normal">{{ title }}</h3>
+  <h3 class="y-center mb-8 fw-normal">
+    <button (click)="sortToc()" mat-icon-button title="排序" color="primary">
+      <mat-icon>sort</mat-icon>
+    </button>
+
+    <span class="text-ellipsis" [title]="title">{{ title }}</span>
+
+    <!-- TODO -->
+    <!-- <button mat-icon-button title="过滤" color="primary">
+      <mat-icon>filter_alt</mat-icon>
+    </button> -->
+  </h3>
+
   <ul>
     <li
       [class]="api.__info.method"

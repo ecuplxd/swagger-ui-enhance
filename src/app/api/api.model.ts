@@ -45,19 +45,22 @@ export interface ApiInfo {
   [key: string]: Any;
 }
 
-export type ApiMethod =
-  | 'get'
-  | 'post'
-  | 'put'
-  | 'patch'
-  | 'delete'
-  | 'head'
-  | 'options'
-  | 'lock'
-  | 'mkcol'
-  | 'move'
-  | 'copy'
-  | 'trace';
+export const API_METHODS = [
+  'get',
+  'post',
+  'put',
+  'delete',
+  'patch',
+  'head',
+  'options',
+  'lock',
+  'mkcol',
+  'move',
+  'copy',
+  'trace',
+] as const;
+
+export type ApiMethod = typeof API_METHODS[number];
 
 export interface ApiParameters {
   collectionFormat?: string;

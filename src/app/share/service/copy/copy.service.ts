@@ -36,7 +36,7 @@ export class CopyService {
 
   toastMessage(): void {
     this.snackBar.open('复制成功', '', {
-      duration: 1500,
+      duration: 2000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: 'copy-snack-bar',

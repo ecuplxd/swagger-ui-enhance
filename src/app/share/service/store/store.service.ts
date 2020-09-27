@@ -51,6 +51,10 @@ export class StoreService {
 
   private projectSubject = new Subject<StoreData>();
 
+  sortIndex = 0;
+
+  sortMethods!: ApiMethod[] | null;
+
   constructor(
     private typeService: TypeService,
     private snackBar: MatSnackBar,
@@ -292,7 +296,7 @@ export class StoreService {
 
   toastMessage(message: string): this {
     this.snackBar.open(message, '', {
-      duration: 1500,
+      duration: 2000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: 'copy-snack-bar',
@@ -351,6 +355,10 @@ export class StoreService {
     this.data.namespace = namespace;
     this.data.apiItems = apiItems;
 
+    if (newIndexs.namespaceIndex !== undefined) {
+      this.sortMethods = null;
+    }
+
     if (newIndexs.apiIndex !== undefined) {
       this.data.expandeds = apiItems.map((_, i) => i === newIndexs.apiIndex);
     }
@@ -381,5 +389,33 @@ export class StoreService {
     localStorage.setItem(this.DUMP_KEY, JSON.stringify(this.data));
 
     return this;
+  }
+
+  getSortKey(): string {
+    if (!this.sortMethods) {
+      this.sortMethods = Array.from(
+        new Set(this.data.apiItems.map((item) => item.__info.method))
+      );
+    }
+
+    if (this.sortIndex >= this.sortMethods.length) {
+      this.sortIndex = 0;
+    }
+
+    const sortKey = this.sortMethods[this.sortIndex];
+
+    return sortKey;
+  }
+
+  sortApiItems(): void {
+    const sortKey = this.getSortKey();
+
+    this.data.apiItems.sort((a, b) => {
+      const aMethod = a.__info.method === sortKey;
+      const bMethod = b.__info.method === sortKey;
+      return aMethod === bMethod ? 0 : aMethod > bMethod ? -1 : 1;
+    });
+    this.sortIndex++;
+    this.send();
   }
 }

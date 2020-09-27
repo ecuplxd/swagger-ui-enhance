@@ -40,4 +40,8 @@ export class ApiTocComponent implements OnInit {
       apiIndex: index,
     });
   }
+
+  sortToc(): void {
+    this.store.sortApiItems();
+  }
 }
