@@ -16,7 +16,7 @@ proxy.on("proxyReq", function (proxyReq, req, res, options) {
 function getTargetInfo(reqUrl) {
   var { query } = url.parse(reqUrl, true);
   var result = url.parse(query.url, true);
-  var target = result.protocol + "//" + result.hostname;
+  var target = result.protocol + "//" + result.host;
   return { target, ...result };
 }
 
