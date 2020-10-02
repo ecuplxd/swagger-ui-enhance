@@ -92,7 +92,10 @@ export class ApiTypeHoverComponent implements OnInit {
 
   copy(): void {
     this.copyService.copy(this.codeString, false);
-    this.closeMenu.emit();
+
+    if (!this.fixed) {
+      this.closeMenu.emit();
+    }
   }
 
   close(): void {
