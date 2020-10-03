@@ -88,7 +88,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   parseUrl(url: string): void {
     let index = 0;
 
-    url.replace(/\{(.+?)\}/g, (match: string, p1, p2) => {
+    url.replace(/\{(.+?)\}/g, (match: string = '', p1, p2) => {
       this.urlParams.push({
         path: url.substring(index, p2),
       });

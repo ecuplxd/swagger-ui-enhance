@@ -1,5 +1,6 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatMenuModule } from '@angular/material/menu';
 import { HoverMenuComponent } from './hover-menu.component';
 
 describe('HoverMenuComponent', () => {
@@ -8,9 +9,10 @@ describe('HoverMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HoverMenuComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [MatMenuModule],
+      declarations: [HoverMenuComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

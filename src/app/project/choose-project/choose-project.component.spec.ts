@@ -1,5 +1,5 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ChooseProjectComponent } from './choose-project.component';
 
 describe('ChooseProjectComponent', () => {
@@ -8,9 +8,9 @@ describe('ChooseProjectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChooseProjectComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [ChooseProjectComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

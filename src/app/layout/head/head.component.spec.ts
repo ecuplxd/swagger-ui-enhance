@@ -1,5 +1,5 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HeadComponent } from './head.component';
 
 describe('HeadComponent', () => {
@@ -8,9 +8,9 @@ describe('HeadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeadComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [HeadComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -1,6 +1,21 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatMenuModule } from '@angular/material/menu';
+import { ScrollInoViewService, StoreService } from 'src/app/share/service';
+import { Any } from 'src/app/share/share.model';
 import { ApiSearchComponent } from './api-search.component';
+
+class StoreServiceStub {
+  updateData(): void {}
+
+  getCurNamespaces(): Any[] {
+    return [];
+  }
+}
+
+class ScrollInoViewServiceStub {
+  to(): void {}
+}
 
 describe('ApiSearchComponent', () => {
   let component: ApiSearchComponent;
@@ -8,9 +23,20 @@ describe('ApiSearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ApiSearchComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [MatMenuModule],
+      declarations: [ApiSearchComponent],
+      providers: [
+        {
+          provide: StoreService,
+          useClass: StoreServiceStub,
+        },
+        {
+          provide: ScrollInoViewService,
+          useClass: ScrollInoViewServiceStub,
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

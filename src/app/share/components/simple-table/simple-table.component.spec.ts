@@ -1,5 +1,5 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SimpleTableComponent } from './simple-table.component';
 
 describe('SimpleTableComponent', () => {
@@ -8,9 +8,9 @@ describe('SimpleTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SimpleTableComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [SimpleTableComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
