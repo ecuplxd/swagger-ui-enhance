@@ -1,4 +1,6 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { HeadRightComponent } from './head-right.component';
 
@@ -8,9 +10,10 @@ describe('HeadRightComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeadRightComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [MatMenuModule],
+      declarations: [HeadRightComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

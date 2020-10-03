@@ -1,5 +1,7 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CopyService, IdService } from 'src/app/share/service';
 import { ApiTypeHoverComponent } from './api-type-hover.component';
 
 describe('ApiTypeHoverComponent', () => {
@@ -8,9 +10,11 @@ describe('ApiTypeHoverComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ApiTypeHoverComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [MatSnackBarModule],
+      declarations: [ApiTypeHoverComponent],
+      providers: [IdService, CopyService],
+    }).compileComponents();
   });
 
   beforeEach(() => {

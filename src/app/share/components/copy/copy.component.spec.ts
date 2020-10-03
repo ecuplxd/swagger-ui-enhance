@@ -1,6 +1,12 @@
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CopyService } from '../../service';
 
 import { CopyComponent } from './copy.component';
+
+class CopyServiceStub {
+  copy(): void {}
+}
 
 describe('CopyComponent', () => {
   let component: CopyComponent;
@@ -8,9 +14,15 @@ describe('CopyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CopyComponent ]
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [CopyComponent],
+      providers: [
+        {
+          provide: CopyService,
+          useClass: CopyServiceStub,
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
