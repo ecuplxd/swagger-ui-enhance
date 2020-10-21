@@ -49,7 +49,6 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
       .pipe(
         debounceTime(500),
         distinctUntilChanged(),
-        filter(() => !!this.keyword)
       )
       .subscribe(() => {
         this.filterNamespaces();
