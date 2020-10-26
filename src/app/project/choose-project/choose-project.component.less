@@ -1,7 +1,25 @@
 :host {
-  padding: 0 12px;
+  padding: 5px 12px;
+
+  > button {
+    width: 100%;
+    padding: 0 0 0 5px;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+  }
 }
 
-mat-form-field {
-  width: 100%;
+.cur-project {
+  text-align: left;
+  font-weight: normal;
+}
+
+.project-item {
+  display: flex !important;
+  padding-right: 3px;
+}
+
+/deep/ .choose-project-panel {
+  min-width: 270px !important;
+  max-width: initial !important;
 }

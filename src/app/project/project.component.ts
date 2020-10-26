@@ -32,4 +32,8 @@ export class ProjectComponent implements OnInit {
       apiIndex: 0,
     });
   }
+
+  handleProjectRemove(projectIndex: number): void {
+    this.store.removeProject(projectIndex);
+  }
 }
