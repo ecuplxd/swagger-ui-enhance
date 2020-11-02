@@ -6,6 +6,7 @@
     "start": "ng serve --proxyConfig=./proxy.config.json --liveReload=false",
     "build": "ng build --prod --aot",
     "test": "ng test --codeCoverage",
+    "test:ci": "ng test --codeCoverage --watch=false --browsers=ChromeHeadlessCustom",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -45,6 +46,7 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
     "protractor": "~7.0.0",
+    "puppeteer": "^5.4.1",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"
