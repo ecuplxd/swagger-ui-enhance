@@ -1,6 +1,6 @@
 <ng-container *ngIf="project && project.info">
-  <div [title]="project.info.description" class="title text-ellipsis-2">
-    {{ project.info.description }}
+  <div class="title">
+    {{ project?.info?.description }}
   </div>
   <div class="text-caption">[ Base URL: {{ shortUrl }} ]</div>
 </ng-container>

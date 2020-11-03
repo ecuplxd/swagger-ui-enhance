@@ -182,7 +182,9 @@ export class StoreService {
     const tags = new Set<string>();
     this.iterObj(project.paths, (_1: string, methods: AnyObject) => {
       this.iterObj(methods, (_2: ApiMethod, api: ApiItem) => {
-        api.tags.forEach((tag: string) => tags.add(tag));
+        if (api.tags) {
+          api.tags.forEach((tag: string) => tags.add(tag));
+        }
       });
     });
     return Array.from(tags).map((tag) => {
@@ -325,6 +327,12 @@ export class StoreService {
 
   removeProject(index: number): this {
     this.data.projects.splice(index, 1);
+    this.updateData({
+      projectIndex: 0,
+      namespaceIndex: 0,
+      apiIndex: 0,
+    });
+
     return this;
   }
 

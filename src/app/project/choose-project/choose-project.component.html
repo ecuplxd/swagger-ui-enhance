@@ -1,10 +1,30 @@
-<mat-form-field>
-  <mat-select
-    [(value)]="selected"
-    (selectionChange)="handleSelectChange($event)"
-  >
-    <mat-option *ngFor="let project of projects; let i = index" [value]="i">
-      {{ project.display }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<button mat-button [matMenuTriggerFor]="selectRef" title="切换项目">
+  <div class="flex y-center">
+    <span class="flex-1 cur-project">{{ projects[selected]?.display }}</span>
+
+    <mat-icon class="mf-8">arrow_drop_down</mat-icon>
+  </div>
+</button>
+
+<mat-menu #selectRef="matMenu" class="choose-project-panel">
+  <ng-template matMenuContent>
+    <div
+      class="flex y-center justify-between project-item"
+      mat-menu-item
+      *ngFor="let project of projects; let i = index"
+      (click)="changeProject(i)"
+    >
+      <span>{{ project.display }}</span>
+
+      <button
+        appStopClick
+        class="ml-5"
+        title="关闭"
+        mat-icon-button
+        (click)="removeProject(i)"
+      >
+        <mat-icon class="mr-0" title="移除" inline>close</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+</mat-menu>
