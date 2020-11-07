@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { Any, StoreData } from 'src/app/share/share.model';
+import { ApiModule } from '../api.module';
 import { ApiTocComponent } from './api-toc.component';
 
 class StoreServiceStub {
@@ -34,6 +35,7 @@ describe('ApiTocComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ApiModule],
       declarations: [ApiTocComponent],
       providers: [
         {

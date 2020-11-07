@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ApiModule } from '../../api.module';
 import { ApiSearchResultComponent } from './api-search-result.component';
 
 describe('ApiSearchResultComponent', () => {
@@ -9,6 +10,7 @@ describe('ApiSearchResultComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ApiModule],
       declarations: [ApiSearchResultComponent],
     }).compileComponents();
   });

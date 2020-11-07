@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { Any, StoreData } from 'src/app/share/share.model';
+import { ProjectModule } from '../project.module';
 import { ProjectNamespacesComponent } from './project-namespaces.component';
 
 class StoreServiceStub {
@@ -28,6 +29,7 @@ describe('ProjectNamespacesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ProjectModule],
       declarations: [ProjectNamespacesComponent],
       providers: [
         {

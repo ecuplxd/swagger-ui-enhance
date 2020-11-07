@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { StoreService } from '../share/service';
 import { Any, StoreData } from '../share/share.model';
 import { ProjectComponent } from './project.component';
+import { ProjectModule } from './project.module';
 
 class StoreServiceStub {
   getData$(): Observable<StoreData> {
@@ -26,6 +27,7 @@ describe('ProjectComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ProjectModule],
       declarations: [ProjectComponent],
       providers: [
         {

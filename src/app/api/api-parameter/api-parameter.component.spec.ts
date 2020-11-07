@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IdService } from 'src/app/share/service';
+import { ApiModule } from '../api.module';
 import { ApiParameterComponent } from './api-parameter.component';
 
 class IdServiceStub {
@@ -14,6 +15,7 @@ describe('ApiParameterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ApiModule],
       declarations: [ApiParameterComponent],
       providers: [
         {

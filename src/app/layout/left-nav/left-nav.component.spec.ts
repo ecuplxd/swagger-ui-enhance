@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LayoutModule } from '../layout.module';
 import { LeftNavComponent } from './left-nav.component';
 
 describe('LeftNavComponent', () => {
@@ -9,6 +10,7 @@ describe('LeftNavComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [LayoutModule],
       declarations: [LeftNavComponent],
     }).compileComponents();
   });

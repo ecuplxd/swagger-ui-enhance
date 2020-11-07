@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LayoutModule } from '../layout.module';
 import { RightNavComponent } from './right-nav.component';
 
 describe('RightNavComponent', () => {
@@ -9,6 +10,7 @@ describe('RightNavComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [LayoutModule],
       declarations: [RightNavComponent],
     }).compileComponents();
   });

@@ -1,6 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatMenuModule } from '@angular/material/menu';
+import { ProjectModule } from '../project.module';
 import { ChooseProjectComponent } from './choose-project.component';
 
 describe('ChooseProjectComponent', () => {
@@ -10,7 +10,7 @@ describe('ChooseProjectComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MatMenuModule],
+      imports: [ProjectModule],
       declarations: [ChooseProjectComponent],
     }).compileComponents();
   });
