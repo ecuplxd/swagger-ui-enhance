@@ -6,7 +6,11 @@
 ></app-api-method>
 
 <div class="flex-1 inline-flex api-info" [class.deprecated]="api.deprecated">
-  <span *ngIf="showUrl" class="inline-flex align-center" style="min-width: 0">
+  <span
+    *ngIf="showUrl"
+    class="api-url inline-flex align-center"
+    style="min-width: 0"
+  >
     <span
       class="mx-1 code f-16 title text-ellipsis"
       [title]="copyable ? api.urlForCopy : api.url"
@@ -19,7 +23,7 @@
 
   <span
     *ngIf="showDescription"
-    class="inline-flex align-center"
+    class="api-description inline-flex align-center"
     style="min-width: 0"
   >
     <span
