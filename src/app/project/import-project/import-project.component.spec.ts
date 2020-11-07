@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { StoreService } from 'src/app/share/service';
 import { StoreData } from 'src/app/share/share.model';
+import { ProjectModule } from '../project.module';
 import { ImportProjectComponent } from './import-project.component';
 
 class StoreServiceStub {
@@ -20,6 +21,7 @@ describe('ImportProjectComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ProjectModule],
       declarations: [ImportProjectComponent],
       providers: [
         {

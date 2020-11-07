@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ApiMethodComponent } from '../api-method/api-method.component';
 import { ApiInfo } from '../api.model';
+import { ApiModule } from '../api.module';
 import { ApiInfoComponent } from './api-info.component';
 
 describe('ApiInfoComponent', () => {
@@ -11,7 +11,8 @@ describe('ApiInfoComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ApiInfoComponent, ApiMethodComponent],
+      imports: [ApiModule],
+      declarations: [ApiInfoComponent],
     }).compileComponents();
   });
 

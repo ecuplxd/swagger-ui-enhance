@@ -5,9 +5,9 @@ import {
   HistoryService,
   ProxyService,
   StoreService,
-  TypeService,
+  TypeService
 } from 'src/app/share/service';
-import { ApiMethodComponent } from '../../api-method/api-method.component';
+import { ApiModule } from '../../api.module';
 import { ApiRequestDialogComponent } from './api-request-dialog.component';
 
 class TypeServiceStub {
@@ -39,7 +39,8 @@ describe('ApiRequestDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ApiRequestDialogComponent, ApiMethodComponent],
+      imports: [ApiModule],
+      declarations: [ApiRequestDialogComponent],
       providers: [
         {
           provide: TypeService,

@@ -1,8 +1,8 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatMenuModule } from '@angular/material/menu';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { Any } from 'src/app/share/share.model';
+import { ApiModule } from '../api.module';
 import { ApiSearchComponent } from './api-search.component';
 
 class StoreServiceStub {
@@ -24,7 +24,7 @@ describe('ApiSearchComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MatMenuModule],
+      imports: [ApiModule],
       declarations: [ApiSearchComponent],
       providers: [
         {

@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApiComponent } from './api.component';
+import { ApiModule } from './api.module';
 
 describe('ApiComponent', () => {
   let component: ApiComponent;
@@ -9,6 +10,7 @@ describe('ApiComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ApiModule],
       declarations: [ApiComponent],
     }).compileComponents();
   });

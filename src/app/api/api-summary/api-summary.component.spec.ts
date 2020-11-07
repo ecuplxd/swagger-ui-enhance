@@ -1,9 +1,8 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { Renderer2 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatMenuModule } from '@angular/material/menu';
-import { StoreService, MenuPositionService } from 'src/app/share/service';
-import { ApiMethodComponent } from '../api-method/api-method.component';
+import { MenuPositionService, StoreService } from 'src/app/share/service';
+import { ApiModule } from '../api.module';
 import { ApiSummaryComponent } from './api-summary.component';
 
 class StoreServiceStub {
@@ -17,8 +16,8 @@ describe('ApiSummaryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ApiSummaryComponent, ApiMethodComponent],
-      imports: [MatMenuModule],
+      imports: [ApiModule],
+      declarations: [ApiSummaryComponent],
       providers: [
         {
           provide: StoreService,

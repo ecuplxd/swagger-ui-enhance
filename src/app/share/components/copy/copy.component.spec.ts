@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ShareModule } from '../..';
 import { CopyService } from '../../service';
-
 import { CopyComponent } from './copy.component';
 
 class CopyServiceStub {
@@ -15,6 +15,7 @@ describe('CopyComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ShareModule],
       declarations: [CopyComponent],
       providers: [
         {
