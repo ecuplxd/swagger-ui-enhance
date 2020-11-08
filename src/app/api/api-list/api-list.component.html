@@ -1,4 +1,4 @@
-<div class="f-16 mt-32 text-center" *ngIf="!apiItems.length">
+<div class="no-data f-16 mt-32 text-center" *ngIf="!apiItems.length">
   <p class="my-32">暂无数据</p>
 
   <p>1、可点击左侧加号；</p>
@@ -8,18 +8,18 @@
   <p class="mt-32">导入 API（仅支持 .json 文件）</p>
 </div>
 
-<div class="flex justify-end mb-16" *ngIf="apiItems.length">
+<div class="api-items flex justify-end mb-16" *ngIf="apiItems.length">
   <button
     mat-stroked-button
     color="primary"
-    class="mr-10 outlined"
+    class="open-all mr-10 outlined"
     (click)="accordion.openAll()"
   >
     展开全部
   </button>
 
   <button
-    class="outlined"
+    class="close-all outlined"
     mat-stroked-button
     color="primary"
     (click)="accordion.closeAll()"
@@ -34,7 +34,7 @@
     [id]="ID_PREFIX + i"
     [ngClass]="{
       'api-item': true,
-      ' my-10': true,
+      'my-10': true,
       deprecated: apiItem.deprecated
     }"
     [class]="apiItem.__info.method"

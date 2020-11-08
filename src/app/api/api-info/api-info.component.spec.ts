@@ -39,7 +39,7 @@ describe('ApiInfoComponent', () => {
   it('should show api method, #showMethod=true', () => {
     const methodEl: HTMLElement = nativeElement.querySelector('.method');
 
-    expect(methodEl.innerText).toBe('GET');
+    expect(methodEl.innerText).toBe('GET', 'api method is get');
   });
 
   it('should not show api method, #showMethod=false', () => {
@@ -48,7 +48,7 @@ describe('ApiInfoComponent', () => {
 
     const methodEl: HTMLElement = nativeElement.querySelector('.method');
 
-    expect(methodEl.innerText).toBe('');
+    expect(methodEl.innerText).toBe('', 'api method is emtpy');
   });
 
   it('should show api url, #showUrl=true', () => {
@@ -63,7 +63,7 @@ describe('ApiInfoComponent', () => {
 
     const span = nativeElement.querySelector('.code');
 
-    expect(span).toBeNull();
+    expect(span).toBeNull('not show api url el');
   });
 
   it('should show api description, #showDescription=true', () => {
@@ -79,7 +79,7 @@ describe('ApiInfoComponent', () => {
 
     const span: HTMLSpanElement = nativeElement.querySelector('.sub-title');
 
-    expect(span).toBeNull();
+    expect(span).toBeNull('not show api description el');
   });
 
   it('shoud show api in one line style, #twoLine=false', () => {
@@ -111,8 +111,8 @@ describe('ApiInfoComponent', () => {
     expect(span.title).toBe('urlForCopy');
     expect(span.innerText).toContain('urlForCopy');
     expect(span.className.includes('mr-8')).toBeFalse();
-    expect(copy).toBeTruthy();
-    expect(copyDescription).toBeTruthy();
+    expect(copy).toBeTruthy('can copy api url');
+    expect(copyDescription).toBeTruthy('can copy api description');
   });
 
   it('should can not copy api url, #copyable=false', () => {
@@ -132,18 +132,21 @@ describe('ApiInfoComponent', () => {
     expect(span.title).toBe('url');
     expect(span.innerText).toBe('url');
     expect(span.className.includes('mr-8')).toBeTrue();
-    expect(copy).toBeNull();
-    expect(copyDescription).toBeNull();
+    expect(copy).toBeNull('can not copy api url');
+    expect(copyDescription).toBeNull('can not copy api description');
   });
 
   it('should mark deprecated api', () => {
     const div: HTMLDivElement = nativeElement.querySelector('.api-info');
 
-    expect(div.className.includes('deprecated')).toBeFalse();
+    expect(div.className.includes('deprecated')).toBe(
+      false,
+      'api not deprecated'
+    );
 
     component.api.deprecated = true;
     fixture.detectChanges();
 
-    expect(div.className.includes('deprecated')).toBeTrue();
+    expect(div.className.includes('deprecated')).toBe(true, 'api deprecated');
   });
 });

@@ -49,6 +49,10 @@ export class ApiListComponent implements OnInit {
 
     // Note：避免选择的时候展开/收起手风琴组件
     if (end - this.start > 200) {
+      // TODO: 优化
+      // Hack
+      // mousedown 一定会触发 click 所以 false -> true -> clikc 后 false
+      // true -> false -> click 后 true
       this.expandeds[index] = !this.expandeds[index];
     }
   }
