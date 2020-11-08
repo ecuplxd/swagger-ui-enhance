@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxyConfig=./proxy.config.json --liveReload=false",
+    "start": "ng serve --proxyConfig=./proxy.config.json --liveReload=false --port=5000",
     "build": "ng build --prod --aot",
+    "build:gh-pages": "ng build --prod --aot --output-path docs --output-hashing none --base-href /swagger-ui-enhance/",
     "test": "ng test --codeCoverage",
     "test:ci": "ng test --codeCoverage --watch=false --browsers=ChromeHeadlessCustom",
     "lint": "ng lint",
