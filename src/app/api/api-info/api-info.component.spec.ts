@@ -82,7 +82,7 @@ describe('ApiInfoComponent', () => {
     expect(span).toBeNull('not show api description el');
   });
 
-  it('shoud show api in one line style, #twoLine=false', () => {
+  it('should show api in one line style, #twoLine=false', () => {
     const el: HTMLElement = nativeElement;
 
     expect(el.className.includes('two-line')).toBeFalse();
