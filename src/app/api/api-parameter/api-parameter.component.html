@@ -7,7 +7,7 @@
     <thead>
       <tr class="no-hover">
         <th class="pa-8 text-left" style="width: 70%">
-          <div class="inline-flex align-center">
+          <div class="parameter-fields inline-flex align-center">
             <span
               *appCopy="
                 hadParameters;
@@ -32,14 +32,17 @@
       </tr>
 
       <ng-container *ngFor="let parameter of parameters; let last = last">
-        <tr>
+        <tr class="parameter-item">
           <td style="width: 50%" class="pa-8">
             <app-api-type
+              class="parameter-type"
               [class]="copyItemClass"
               [parameter]="parameter"
             ></app-api-type>
 
-            <div class="text--disabled text-ellipsis">({{ parameter.in }})</div>
+            <div class="parameter-in text--disabled text-ellipsis">
+              ({{ parameter.in }})
+            </div>
           </td>
 
           <td class="pa-8" style="vertical-align: top">
@@ -54,7 +57,7 @@
         </tr>
       </ng-container>
 
-      <tr *ngIf="!hadParameters">
+      <tr class="no-data" *ngIf="!hadParameters">
         <td class="pa-8 text-center text--disabled" colspan="2">没有参数</td>
       </tr>
     </tbody>
