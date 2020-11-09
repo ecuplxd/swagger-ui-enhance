@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Any } from 'src/app/share/share.model';
 import { API_METHODS } from '../api.model';
+import { ApiModule } from '../api.module';
 import { ApiMethodComponent } from './api-method.component';
 
 describe('ApiMethodComponent', () => {
@@ -12,6 +13,7 @@ describe('ApiMethodComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [ApiModule],
       declarations: [ApiMethodComponent],
     }).compileComponents();
   });
