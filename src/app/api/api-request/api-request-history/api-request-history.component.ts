@@ -20,7 +20,7 @@ export class ApiRequestHistoryComponent implements OnInit {
 
   historys: RequestHistory[] = [];
 
-  empty = false;
+  empty = true;
 
   constructor(
     private historyService: HistoryService,
@@ -30,7 +30,9 @@ export class ApiRequestHistoryComponent implements OnInit {
   ngOnInit(): void {}
 
   getHistory(): void {
-    this.historys = this.historyService.get(this.apiItem.__id);
+    this.historys = this.apiItem
+      ? this.historyService.get(this.apiItem.__id)
+      : [];
     this.empty = this.historys.length === 0;
   }
 
