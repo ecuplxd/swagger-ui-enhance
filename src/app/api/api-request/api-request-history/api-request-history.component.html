@@ -16,7 +16,7 @@
   class="api-request-hisotry-panel scroll hidden-x"
 >
   <ng-template matMenuContent>
-    <div *ngIf="empty" class="sub-title text-center">暂无记录</div>
+    <div *ngIf="empty" class="no-historys sub-title text-center">暂无记录</div>
     <div
       class="px-10 code history-item"
       *ngFor="let item of historys"
@@ -24,7 +24,7 @@
     >
       <span class="title">{{ item.name }}</span>
       <span> </span>
-      <span>
+      <span class="url">
         {{ item.url }}
       </span>
     </div>
