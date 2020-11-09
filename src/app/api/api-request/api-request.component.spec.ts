@@ -1,18 +1,18 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreService } from 'src/app/share/service';
 import { DialogService } from 'src/app/share/service/dialog/dialog.service';
+import { Any } from 'src/app/share/share.model';
+import { storeDataMock } from 'src/__test__';
 import { ApiItem } from '../api.model';
-
+import { ApiModule } from '../api.module';
 import { ApiRequestComponent } from './api-request.component';
-
-class DialogServiceStub {
-  openRequestDialog(): void {}
-}
 
 class StoreServiceStub {
   getApiItem(): ApiItem {
-    return {} as ApiItem;
+    return storeDataMock.apiItems[0];
   }
 }
 
@@ -26,12 +26,10 @@ describe('ApiRequestComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         schemas: [NO_ERRORS_SCHEMA],
+        imports: [BrowserAnimationsModule, ApiModule],
         declarations: [ApiRequestComponent],
         providers: [
-          {
-            provide: DialogService,
-            useClass: DialogServiceStub,
-          },
+          DialogService,
           {
             provide: StoreService,
             useClass: StoreServiceStub,
@@ -51,5 +49,53 @@ describe('ApiRequestComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should check init state', () => {
+    expect(component.apiItem).toBeUndefined('init undefined');
+    expect(component.apiId).toBeUndefined('init undefined');
+  });
+
+  it('should show api request history', () => {
+    let history: HTMLElement = fixture.nativeElement.querySelector(
+      'app-api-request-history'
+    );
+
+    expect(history).toBeTruthy();
+
+    component.showHistory = false;
+    fixture.detectChanges();
+
+    history = fixture.nativeElement.querySelector('app-api-request-history');
+
+    expect(history).toBeNull();
+  });
+
+  it('should open try it out modal', () => {
+    spyOn(dialogService, 'openRequestDialog');
+
+    component.apiItem = {} as ApiItem;
+
+    const btnDe = fixture.debugElement.query(By.css('button'));
+    btnDe.triggerEventHandler('click', {
+      stopPropagation: () => {},
+    });
+
+    expect(dialogService.openRequestDialog).toHaveBeenCalledWith({} as ApiItem);
+  });
+
+  it('should get apiItem from store if no #apiItem input', () => {
+    spyOn(dialogService, 'openRequestDialog');
+
+    component.apiItem = undefined as Any;
+
+    const btnDe = fixture.debugElement.query(By.css('button'));
+    btnDe.triggerEventHandler('click', {
+      stopPropagation: () => {},
+    });
+
+    expect(dialogService.openRequestDialog).toHaveBeenCalledWith(
+      storeDataMock.apiItems[0]
+    );
   });
 });
