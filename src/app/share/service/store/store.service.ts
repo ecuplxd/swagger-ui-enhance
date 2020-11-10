@@ -20,6 +20,7 @@ import {
   AnyObject,
   StoreData,
   StoreIndexKey,
+  Any,
 } from '../../share.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProxyService } from '../proxy/proxy.service';
@@ -49,7 +50,7 @@ export class StoreService {
     expandeds: [],
   };
 
-  private projectSubject = new Subject<StoreData>();
+  private projectSubject$$ = new Subject<StoreData>();
 
   sortIndex = 0;
 
@@ -61,19 +62,20 @@ export class StoreService {
     private proxy: ProxyService
   ) {
     this.loadDumpsData();
-
-    setTimeout(() => {
-      this.send();
-    }, 0);
   }
 
   private send(): this {
-    this.projectSubject.next(this.data);
+    this.projectSubject$$.next(this.data);
+    return this;
+  }
+
+  init(): this {
+    this.send();
     return this;
   }
 
   getData$(): Observable<StoreData> {
-    return this.projectSubject.asObservable();
+    return this.projectSubject$$.asObservable();
   }
 
   getApiItem(id: string): ApiItem | undefined {
@@ -110,17 +112,40 @@ export class StoreService {
     return promise;
   }
 
-  parseFile(file: File): void {
-    const blob = file.slice();
-
-    blob.text().then((text) => {
-      try {
-        this.importProject(JSON.parse(text));
-      } catch (error) {
-        console.log(error);
-        this.toastMessage('导入失败：解析错误');
+  parseFile(file: File): Promise<Any> {
+    const promise = new Promise((resolve, reject) => {
+      const prefix = '导入失败：';
+      let errorMessage = prefix + '未知的文件类型';
+      if (!file.type) {
+        this.toastMessage(errorMessage);
+        reject(errorMessage);
+        return;
       }
+
+      if (file.type !== 'application/json') {
+        errorMessage = prefix + '请导入 JSON 文件';
+        this.toastMessage(errorMessage);
+        reject(errorMessage);
+
+        return;
+      }
+
+      const blob = file.slice();
+
+      blob.text().then((text) => {
+        try {
+          this.importProject(JSON.parse(text));
+          resolve();
+        } catch (error) {
+          console.log(error);
+          errorMessage = prefix + '解析错误';
+          this.toastMessage(errorMessage);
+          reject(errorMessage);
+        }
+      });
     });
+
+    return promise;
   }
 
   importProject(project: Project, updateUrl?: string): this {

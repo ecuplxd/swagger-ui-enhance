@@ -31,7 +31,7 @@ import {
 } from './service';
 import { DialogService } from './service/dialog/dialog.service';
 
-import { CopyDirective, StopClickDirective } from './directives';
+import { CopyDirective, DragDropDirective, StopClickDirective } from './directives';
 import {
   CopyComponent,
   HoverMenuComponent,
@@ -55,6 +55,7 @@ const services = [
 const directives = [
   CopyDirective,
   StopClickDirective,
+  DragDropDirective,
 ];
 
 const components = [
@@ -89,7 +90,7 @@ const matModules = [
     ...components,
   ],
   providers: [
-    ...services,
+    // ...services,
   ],
   imports: [
     CommonModule,

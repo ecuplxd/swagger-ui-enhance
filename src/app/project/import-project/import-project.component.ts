@@ -36,7 +36,7 @@ export class ImportProjectComponent implements OnInit {
         if (Object.keys(data.project).length === 0) {
           this.url = this.demoUrl;
         } else {
-          this.url = data.project.updateUrl;
+          this.url = data.project.updateUrl || '';
         }
       });
     }
@@ -50,7 +50,7 @@ export class ImportProjectComponent implements OnInit {
       return;
     }
 
-    this.store.parseFile(files[0]);
+    this.store.parseFile(files[0]).finally(() => {});
     this.destroy = true;
 
     of(1)
