@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Project } from '../project.model';
 
 @Component({
@@ -7,6 +15,8 @@ import { Project } from '../project.model';
   styleUrls: ['./choose-project.component.less'],
 })
 export class ChooseProjectComponent implements OnInit {
+  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
+
   @Input() projects: Project[] = [];
 
   @Input() selected = 0;
@@ -14,6 +24,10 @@ export class ChooseProjectComponent implements OnInit {
   @Output() projectChanged = new EventEmitter<number>();
 
   @Output() projectRemove = new EventEmitter<number>();
+
+  get empty(): boolean {
+    return this.projects.length === 0;
+  }
 
   constructor() {}
 
@@ -26,5 +40,10 @@ export class ChooseProjectComponent implements OnInit {
 
   removeProject(index: number): void {
     this.projectRemove.emit(index);
+    this.closeMenu();
+  }
+
+  closeMenu(): void {
+    this.menuTrigger.closeMenu();
   }
 }

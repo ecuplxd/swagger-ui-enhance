@@ -26,5 +26,15 @@
         <mat-icon class="mr-0" title="移除" inline>close</mat-icon>
       </button>
     </div>
+
+    <div
+      *ngIf="empty"
+      mat-menu-item
+      class="flex y-center justify-between project-item"
+    >
+      <button class="ml-5 mat-icon-button" (click)="closeMenu()">
+        暂无数据
+      </button>
+    </div>
   </ng-template>
 </mat-menu>

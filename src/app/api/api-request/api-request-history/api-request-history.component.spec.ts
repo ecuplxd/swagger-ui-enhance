@@ -131,7 +131,6 @@ describe('ApiRequestHistoryComponent', () => {
     expect(items.length).toEqual(component.historys.length);
     expect(historyService.get).toHaveBeenCalledWith('/pet|post');
 
-    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const el: HTMLSpanElement | null = item.querySelector('.title');
