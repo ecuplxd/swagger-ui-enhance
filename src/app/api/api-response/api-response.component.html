@@ -35,9 +35,9 @@
       <ng-container
         *ngFor="let response of responses | keyvalue; let last = last"
       >
-        <tr>
+        <tr class="response-item">
           <td class="pa-8">
-            <div>{{ response.key }}</div>
+            <div class="response-key">{{ response.key }}</div>
           </td>
 
           <td class="pa-8">
@@ -56,9 +56,9 @@
             </td>
           </tr>
 
-          <tr class="no-hover">
+          <tr class="no-hover" [class]="'header' + response.key">
             <td colspan="3" class="px-16">
-              <table style="border: 0">
+              <table class="response-headers" style="border: 0">
                 <thead>
                   <tr class="no-hover">
                     <th class="pa-8 text-left">响应头</th>
@@ -73,23 +73,27 @@
                   <ng-container
                     *ngFor="let header of response.value.headers | keyvalue"
                   >
-                    <tr class="no-hover">
+                    <tr class="no-hove r">
                       <td colspan="3">
                         <mat-divider></mat-divider>
                       </td>
                     </tr>
 
-                    <tr>
+                    <tr class="response-header-item">
                       <td class="pa-8" style="min-width: 150px">
-                        <div>{{ header.key }}</div>
+                        <div class="header-key">{{ header.key }}</div>
                       </td>
 
                       <td class="pa-8">
-                        <div>{{ header.value.description }}</div>
+                        <div class="header-description">
+                          {{ header.value.description }}
+                        </div>
                       </td>
 
                       <td class="pa-8">
-                        <div>{{ types[header.value.type] }}</div>
+                        <div class="header-type">
+                          {{ types[header.value.type] }}
+                        </div>
                       </td>
                     </tr>
                   </ng-container>
@@ -105,6 +109,10 @@
           </td>
         </tr>
       </ng-container>
+
+      <tr class="no-data" *ngIf="responsesEmpty">
+        <td class="pa-8 text-center text--disabled" colspan="3">暂无数据</td>
+      </tr>
     </tbody>
   </table>
 </div>

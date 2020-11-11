@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
-import { ApiResponses } from '../api.model';
-import { MatSelectChange } from '@angular/material/select';
+import { Component, Input, OnInit } from '@angular/core';
 import { TYPE_MAP } from 'src/app/share/const';
+import { ApiResponses } from '../api.model';
 
 @Component({
   selector: 'app-api-response',
@@ -17,9 +16,11 @@ export class ApiResponseComponent implements OnInit {
 
   types = TYPE_MAP;
 
+  get responsesEmpty(): boolean {
+    return Object.keys(this.responses).length === 0;
+  }
+
   constructor() {}
 
   ngOnInit(): void {}
-
-  handleSelectChange(sel: MatSelectChange): void {}
 }
