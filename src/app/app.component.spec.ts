@@ -1,3 +1,4 @@
+import { APP_BASE_HREF } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
@@ -9,7 +10,13 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [AppModule],
-      providers: [StoreService],
+      providers: [
+        StoreService,
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+      ],
       declarations: [AppComponent],
     }).compileComponents();
   });
