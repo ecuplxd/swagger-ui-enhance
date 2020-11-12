@@ -21,7 +21,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 import {
   StoreService,
-  HightlightService,
   TypeService,
   CopyService,
   MenuPositionService,
@@ -35,7 +34,6 @@ import { CopyDirective, DragDropDirective, StopClickDirective } from './directiv
 import {
   CopyComponent,
   HoverMenuComponent,
-  SimpleTableComponent,
   EditorComponent,
 } from './components';
 
@@ -43,7 +41,6 @@ import {
 const services = [
   StoreService,
   TypeService,
-  HightlightService,
   CopyService,
   MenuPositionService,
   ProxyService,
@@ -61,7 +58,6 @@ const directives = [
 const components = [
   CopyComponent,
   HoverMenuComponent,
-  SimpleTableComponent,
   EditorComponent,
 ];
 
