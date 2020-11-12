@@ -135,7 +135,7 @@ export class StoreService {
       blob.text().then((text) => {
         try {
           this.importProject(JSON.parse(text));
-          resolve();
+          resolve(true);
         } catch (error) {
           console.log(error);
           errorMessage = prefix + '解析错误';

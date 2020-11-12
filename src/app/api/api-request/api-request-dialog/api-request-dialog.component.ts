@@ -128,7 +128,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   // TODO：优化
   groupParams(): void {
     const parameters: ApiParameters[] = JSON.parse(
-      JSON.stringify(this.apiItem.parameters)
+      JSON.stringify(this.apiItem.parameters || [])
     );
 
     if (!parameters) {

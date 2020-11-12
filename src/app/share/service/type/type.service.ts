@@ -80,9 +80,13 @@ export class TypeService {
   }
 
   getTypeName(ref: string): string {
-    const type = ref.substr(ref.lastIndexOf('/') + 1);
+    let type = ref.substr(ref.lastIndexOf('/') + 1);
 
     this.refType = ref.startsWith('#');
+
+    if (this.refType) {
+      type = this.formalTypeName(type);
+    }
 
     return decodeURIComponent(type).trim();
   }
@@ -103,11 +107,13 @@ export class TypeService {
   getTypes(projectId: string, definitions: ProjectDefinition): this {
     const types: ApiType = {};
 
-    for (const definition in definitions) {
+    for (let definition in definitions) {
       if (definitions.hasOwnProperty(definition)) {
         const config = definitions[definition];
 
         const refTypes = new Set<string>();
+
+        definition = this.formalTypeName(definition);
 
         types[definition] = {
           __required: {},
@@ -126,14 +132,16 @@ export class TypeService {
         for (const filed in config.properties) {
           if (config.properties.hasOwnProperty(filed)) {
             const filedConfig = config.properties[filed];
-            const type = this.getType(filedConfig);
+            let type = this.getType(filedConfig);
 
             types[definition][filed] = type;
             types[definition].__example[filed] = filedConfig.example || type;
 
             if (this.refType) {
-              refTypes.add(type.replace('[]', ''));
-              types[definition].__refMap2Key.set(type.replace('[]', ''), filed);
+              type = this.formalTypeName(type);
+              type = type.replace('[]', '');
+              refTypes.add(type);
+              types[definition].__refMap2Key.set(type, filed);
             }
           }
         }
@@ -145,6 +153,12 @@ export class TypeService {
     this.types.set(projectId, types);
 
     return this;
+  }
+
+  formalTypeName(type: string): string {
+    type = type.replace(/[\.\\\/\s]/g, '');
+    type = type[0].toUpperCase() + type.substr(1);
+    return type;
   }
 
   getStringEnum(enums: string[]): string {
