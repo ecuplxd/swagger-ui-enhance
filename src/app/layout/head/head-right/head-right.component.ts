@@ -61,9 +61,11 @@ export class HeadRightComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  // TODO
   changeLanguages(language: Language): void {
     this.language = language;
   }
 
+  // TODO
   changeTheme(color: string): void {}
 }

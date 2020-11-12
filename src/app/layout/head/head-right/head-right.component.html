@@ -1,10 +1,11 @@
-<button mat-icon-button title="切换主题">
+<button class="change-theme" mat-icon-button title="切换主题">
   <mat-icon>format_color_fill</mat-icon>
   <!-- <input type="color" /> -->
 </button>
 
 <a
   mat-button
+  class="github-href"
   href="https://github.com/ecuplxd/swagger-ui-enhance"
   title="https://github.com/ecuplxd/swagger-ui-enhance"
   target="_blank"
@@ -38,6 +39,7 @@
   <ng-template matMenuContent>
     <button
       mat-menu-item
+      class="lang-item"
       *ngFor="let language of languages"
       (click)="changeLanguages(language)"
     >
