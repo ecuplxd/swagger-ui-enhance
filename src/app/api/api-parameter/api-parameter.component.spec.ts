@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IdService } from 'src/app/share/service';
-import { storeDataMock } from 'src/__test__';
+import { STORE_DATA_MOCK } from 'src/__test__';
 import { ApiModule } from '../api.module';
 import { ApiParameterComponent } from './api-parameter.component';
 
@@ -51,7 +51,7 @@ describe('ApiParameterComponent', () => {
   it('should show api parameters table if #hadParameters=true', () => {
     fixture = TestBed.createComponent(ApiParameterComponent);
     component = fixture.componentInstance;
-    component.parameters = storeDataMock.apiItems[7].parameters;
+    component.parameters = STORE_DATA_MOCK.apiItems[7].parameters;
     component.ngOnInit();
     fixture.detectChanges();
 

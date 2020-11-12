@@ -1,6 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { storeDataMock } from 'src/__test__';
+import { STORE_DATA_MOCK } from 'src/__test__';
 import { ApiModule } from '../api.module';
 import { ApiResponseComponent } from './api-response.component';
 
@@ -45,7 +45,7 @@ describe('ApiResponseComponent', () => {
   });
 
   it('should show responses table', () => {
-    component.responses = storeDataMock.apiItems[2].responses;
+    component.responses = STORE_DATA_MOCK.apiItems[2].responses;
     fixture.detectChanges();
 
     const noData: HTMLTableRowElement = fixture.nativeElement.querySelector(
@@ -82,7 +82,7 @@ describe('ApiResponseComponent', () => {
   });
 
   it('should not show reponse headers if no headers data', () => {
-    component.responses = storeDataMock.apiItems[2].responses;
+    component.responses = STORE_DATA_MOCK.apiItems[2].responses;
     fixture.detectChanges();
 
     const el: HTMLTableElement = fixture.nativeElement.querySelector(
@@ -93,7 +93,7 @@ describe('ApiResponseComponent', () => {
   });
 
   it('should show reponse headers if have reponse headers data', () => {
-    component.responses = storeDataMock.namespaces[2].apiItems[3].responses;
+    component.responses = STORE_DATA_MOCK.namespaces[2].apiItems[3].responses;
     fixture.detectChanges();
 
     const response_200 = component.responses[200];

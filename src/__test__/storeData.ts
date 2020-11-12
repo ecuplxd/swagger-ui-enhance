@@ -1,6 +1,6 @@
 import { Any, StoreData } from 'src/app/share/share.model';
 
-export const storeDataMock = ({
+export const STORE_DATA_MOCK = ({
   projects: [
     {
       swagger: '2.0',
