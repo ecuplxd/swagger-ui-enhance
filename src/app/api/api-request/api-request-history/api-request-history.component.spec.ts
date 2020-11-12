@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HistoryService } from 'src/app/share/service';
 import { DialogService } from 'src/app/share/service/dialog/dialog.service';
 import { RequestHistory } from 'src/app/share/service/history/history.model';
-import { storeDataMock } from 'src/__test__';
+import { STORE_DATA_MOCK } from 'src/__test__';
 import { ApiModule } from '../../api.module';
 import { ApiRequestHistoryComponent } from './api-request-history.component';
 
@@ -113,7 +113,7 @@ describe('ApiRequestHistoryComponent', () => {
   it('should show request history if not empty, #empty=false', () => {
     spyOn(historyService, 'get').and.callThrough();
 
-    component.apiItem = storeDataMock.apiItems[0];
+    component.apiItem = STORE_DATA_MOCK.apiItems[0];
 
     const btnDe = fixture.debugElement.query(By.css('button.history'));
     btnDe.triggerEventHandler('click', {
@@ -143,7 +143,7 @@ describe('ApiRequestHistoryComponent', () => {
   });
 
   it('should request a history item', () => {
-    component.apiItem = storeDataMock.apiItems[0];
+    component.apiItem = STORE_DATA_MOCK.apiItems[0];
 
     const btnDe = fixture.debugElement.query(By.css('button.history'));
     btnDe.triggerEventHandler('click', {

@@ -5,14 +5,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreService } from 'src/app/share/service';
 import { DialogService } from 'src/app/share/service/dialog/dialog.service';
 import { Any } from 'src/app/share/share.model';
-import { storeDataMock } from 'src/__test__';
+import { STORE_DATA_MOCK } from 'src/__test__';
 import { ApiItem } from '../api.model';
 import { ApiModule } from '../api.module';
 import { ApiRequestComponent } from './api-request.component';
 
 class StoreServiceStub {
   getApiItem(): ApiItem {
-    return storeDataMock.apiItems[0];
+    return STORE_DATA_MOCK.apiItems[0];
   }
 }
 
@@ -95,7 +95,7 @@ describe('ApiRequestComponent', () => {
     });
 
     expect(dialogService.openRequestDialog).toHaveBeenCalledWith(
-      storeDataMock.apiItems[0]
+      STORE_DATA_MOCK.apiItems[0]
     );
   });
 });
