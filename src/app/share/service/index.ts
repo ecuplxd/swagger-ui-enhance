@@ -1,4 +1,3 @@
-export * from './hightlight/hightlight.service';
 export * from './store/store.service';
 export * from './type/type.service';
 export * from './id/id.service';
