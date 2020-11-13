@@ -108,6 +108,8 @@ describe('ApiSearchResultComponent', () => {
   });
 
   it('should matched item hightlight matched keywork', () => {
+    setNamespaces();
+
     const matchedItems: HTMLDivElement[] = fixture.nativeElement.querySelectorAll(
       '.suggestions:not(.hidden)'
     );

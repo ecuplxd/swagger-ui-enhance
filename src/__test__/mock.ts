@@ -1,8 +1,10 @@
-import { Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { Project } from 'src/app/project/project.model';
+import { StoreService } from 'src/app/share/service';
 import { StoreData } from 'src/app/share/share.model';
+import { STORE_DATA_MOCK } from './storeData';
 
-export const storeDataEmptyMock: StoreData = {
+export const STORE_DATA_EMPTY_MOCK: StoreData = {
   projects: [],
   project: {} as Project,
   namespaces: [],
@@ -21,8 +23,24 @@ export const storeDataEmptyMock: StoreData = {
   },
 };
 
-export class StoreServiceStub {
-  getData$(): Observable<StoreData> {
-    return of(storeDataEmptyMock);
+@Injectable()
+export class StoreServiceStub extends StoreService {
+  setMockData(data: StoreData): this {
+    // tslint:disable-next-line: no-string-literal
+    this['data'] = data;
+
+    return this;
+  }
+
+  useEmptyData(): this {
+    this.setMockData(STORE_DATA_EMPTY_MOCK).init();
+
+    return this;
+  }
+
+  useNotEmptyData(): this {
+    this.setMockData(STORE_DATA_MOCK).init();
+
+    return this;
   }
 }

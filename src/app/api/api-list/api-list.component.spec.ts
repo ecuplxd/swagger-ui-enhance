@@ -18,7 +18,7 @@ import { ApiListComponent } from './api-list.component';
 describe('ApiListComponent', () => {
   let component: ApiListComponent;
   let fixture: ComponentFixture<ApiListComponent>;
-  let store: StoreService;
+  let store: StoreServiceStub;
   let nativeElement: Any;
 
   const reInit = () => {
@@ -64,11 +64,13 @@ describe('ApiListComponent', () => {
     fixture = TestBed.createComponent(ApiListComponent);
     nativeElement = fixture.nativeElement;
     component = fixture.componentInstance;
-    store = TestBed.inject(StoreService);
+    store = TestBed.inject(StoreService) as StoreServiceStub;
     fixture.detectChanges();
   });
 
   it('should create', () => {
+    store.useEmptyData();
+
     expect(component).toBeTruthy();
     expect(component.activedIndex).toBe(1, 'set by store data');
   });
