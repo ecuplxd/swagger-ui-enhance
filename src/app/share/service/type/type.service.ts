@@ -80,7 +80,7 @@ export class TypeService {
   }
 
   getTypeName(ref: string): string {
-    let type = ref.substr(ref.lastIndexOf('/') + 1);
+    let type = decodeURIComponent(ref.substr(ref.lastIndexOf('/') + 1)).trim();
 
     this.refType = ref.startsWith('#');
 
@@ -88,7 +88,7 @@ export class TypeService {
       type = this.formalTypeName(type);
     }
 
-    return decodeURIComponent(type).trim();
+    return type;
   }
 
   isArray(type: string): boolean {
@@ -157,7 +157,9 @@ export class TypeService {
 
   formalTypeName(type: string): string {
     type = type.replace(/[\.\\\/\s]/g, '');
-    type = type[0].toUpperCase() + type.substr(1);
+
+    type = (type[0] || '').toUpperCase() + type.substr(1);
+
     return type;
   }
 

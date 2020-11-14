@@ -1,0 +1,55 @@
+@import "color.less";
+@import "vars.less";
+
+li.deprecated,
+div.deprecated {
+  text-decoration: line-through;
+}
+
+button.method.deprecated {
+  background-color: @deprecated;
+}
+
+.apiMethod(@methodName, @colorName) {
+  /* API List */
+  .api-item.@{methodName} {
+    box-shadow: none;
+    border: 1px solid ~"@{@{colorName}}";
+
+    mat-expansion-panel-header.actived,
+    mat-expansion-panel-header:hover {
+      background-color: hsla(color(~"@{@{colorName}}"), 0.1) !important;
+    }
+
+    .api-detail {
+      border-top: 1px solid ~"@{@{colorName}}";
+    }
+  }
+
+  /* API Method */
+  button.@{methodName} {
+    background-color: ~"@{@{colorName}}";
+  }
+
+  /* API TOC */
+  li.@{methodName} {
+    &::first-letter,
+    &:hover,
+    &.actived {
+      color: ~"@{@{colorName}}";
+      border-color: ~"@{@{colorName}}" !important;
+    }
+
+    &::first-letter {
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  }
+}
+
+.gen-method-style(@i) when (@i < length(@methods) + 1) {
+  .apiMethod(extract(@methods, @i), extract(@methods, @i));
+  .gen-method-style(@i + 1);
+}
+
+.gen-method-style(1);
