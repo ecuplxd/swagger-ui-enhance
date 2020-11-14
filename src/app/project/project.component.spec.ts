@@ -1,25 +1,82 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StoreServiceStub } from 'src/__test__';
+import { Injectable } from '@angular/core';
+import {
+  ComponentFixture,
+  fakeAsync,
+  flush,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Observable, of } from 'rxjs';
+import { click, StoreServiceStub } from 'src/__test__';
 import { StoreService } from '../share/service';
+import { StoreData } from '../share/share.model';
 import { ProjectComponent } from './project.component';
 import { Project } from './project.model';
 import { ProjectModule } from './project.module';
 
+@Injectable()
+class StoreServiceStub2 extends StoreServiceStub {
+  getData$(): Observable<StoreData> {
+    this.useNotEmptyData();
+    // tslint:disable-next-line: no-string-literal
+    return of(this['data']);
+  }
+}
+
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
   let fixture: ComponentFixture<ProjectComponent>;
-  let store: StoreService;
+  let store: StoreServiceStub2;
+
+  const installData = () => {
+    store.useNotEmptyData();
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    openProjetMenu();
+  };
+
+  const openProjetMenu = () => {
+    const projectDe: HTMLButtonElement = fixture.nativeElement.querySelector(
+      'app-choose-project > button'
+    );
+    click(projectDe);
+    fixture.detectChanges();
+
+    // 等待下拉菜单位置就绪
+    tick(500);
+  };
+
+  const selectPorject = (index: number) => {
+    const items: NodeListOf<Element> = document.body.querySelectorAll(
+      '.project-item'
+    );
+
+    const item = items[index] as HTMLDivElement;
+    click(item);
+    component.ngOnInit();
+    fixture.detectChanges();
+  };
+
+  const removeProject = (index: number) => {
+    const removeBtns = document.body.querySelectorAll('button.remove-project');
+    const btn1 = removeBtns[index] as HTMLButtonElement;
+    click(btn1);
+    component.ngOnInit();
+    fixture.detectChanges();
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ProjectModule],
+      imports: [BrowserAnimationsModule, ProjectModule],
       declarations: [ProjectComponent],
       providers: [
         {
           provide: StoreService,
-          useClass: StoreServiceStub,
+          useClass: StoreServiceStub2,
         },
       ],
     }).compileComponents();
@@ -28,7 +85,7 @@ describe('ProjectComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(StoreService);
+    store = TestBed.inject(StoreService) as StoreServiceStub2;
   });
 
   it('should create', () => {
@@ -81,4 +138,59 @@ describe('ProjectComponent', () => {
 
     expect(store.removeProject).toHaveBeenCalledWith(0);
   });
+
+  it('should raise projectChanged event when click', fakeAsync(() => {
+    installData();
+
+    expect(component.project).toEqual(component.projects[0]);
+    expect(component.selected).toBe(0, 'before select project');
+
+    selectPorject(1);
+
+    expect(component.selected).toBe(1, 'after select project');
+    expect(component.project).toEqual(component.projects[1]);
+
+    flush();
+  }));
+
+  it('should raise projectRemove event when click remove', fakeAsync(() => {
+    installData();
+    selectPorject(0);
+
+    expect(component.projects.length).toBe(2, 'before remove');
+
+    removeProject(1);
+
+    expect(component.projects.length).toBe(1, 'remove 1 project');
+
+    flush();
+  }));
+
+  xit('should keep #project if remove none selected project', fakeAsync(() => {
+    installData();
+    selectPorject(0);
+
+    expect(component.project).toEqual(component.projects[0]);
+    expect(component.selected).toBe(0, 'before remove');
+
+    openProjetMenu();
+    removeProject(1);
+    expect(component.project).toEqual(component.projects[0]);
+    expect(component.selected).toBe(0, 'before remove');
+
+    flush();
+  }));
+
+  xit('should select first project if remove the selected project', () => {});
+
+  it('should show no data if remove all projects', fakeAsync(() => {
+    installData();
+
+    removeProject(0);
+
+    expect(component.selected).toBe(0);
+    expect(component.projects.length).toBe(0);
+
+    flush();
+  }));
 });
