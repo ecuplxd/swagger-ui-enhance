@@ -1613,6 +1613,327 @@ export const STORE_DATA_MOCK = ({
         },
       ],
     },
+    {
+      swagger: '2.0',
+      info: { title: 'os-server-shelve', version: 'Unknown' },
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      paths: {
+        '/v2/{tenant_id}/servers/{server_id}/action': {
+          post: {
+            operationId: 'unshelve',
+            summary: 'Restore shelved server',
+            description: 'Restores a shelved server.\n',
+            produces: [],
+            responses: {
+              202: { description: '202 response', code: 202 },
+            },
+            tags: ['__default__'],
+          },
+        },
+      },
+      display: 'os-server-shelve Unknown',
+      id: 'os-server-shelveUnknown',
+      tags: [{ name: '__default__', description: '默认 namespace' }],
+      namespaces: [
+        {
+          name: '__default__',
+          description: '默认 namespace',
+          apiItems: [
+            {
+              operationId: 'unshelve',
+              summary: 'Restore shelved server',
+              description: 'Restores a shelved server.\n',
+              produces: [],
+              responses: {
+                202: { description: '202 response', code: 202 },
+              },
+              tags: ['__default__'],
+              __id: '/v2/{tenant_id}/servers/{server_id}/action|post',
+              __info: {
+                description: 'Restore shelved server',
+                method: 'post',
+                url: '/v2/{tenant_id}/servers/{server_id}/action',
+                urlForCopy: '`/v2/${tenant_id}/servers/${server_id}/action`',
+                operationId: 'unshelve',
+              },
+              __index: 0,
+            },
+          ],
+          matched: true,
+        },
+      ],
+    },
+    {
+      swagger: '2.0',
+      info: { title: 'os-quota-sets-v2.1', version: 'Unknown' },
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      paths: {
+        '/v2.1/os-quota-sets/{tenant_id}': {
+          delete: {
+            operationId: 'deletequota',
+            summary: 'Delete quota for tenant',
+            description: 'Deletes a quota for tenant.\n',
+            produces: [],
+            responses: {
+              204: { description: '204 response', code: 204 },
+            },
+            tags: ['__default__'],
+          },
+          get: {
+            operationId: 'showquotas',
+            summary: 'Show quotas',
+            description: 'Shows quotas for tenant.\n',
+            produces: ['application/json'],
+            responses: {
+              200: {
+                description: '200 response',
+                examples: {
+                  'application/json':
+                    '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 10,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 10\n    }\n}',
+                },
+                code: 200,
+              },
+            },
+            tags: ['__default__'],
+          },
+          put: {
+            operationId: 'updatesquotatenant',
+            summary: 'Update quota',
+            description: 'Updates quota for tenant.\n',
+            produces: ['application/json'],
+            responses: {
+              200: {
+                description: '200 response',
+                examples: {
+                  'application/json':
+                    '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 10,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 45\n    }\n}',
+                },
+                code: 200,
+              },
+            },
+            tags: ['__default__'],
+          },
+        },
+        '/v2.1/os-quota-sets/{tenant_id}/defaults': {
+          get: {
+            operationId: 'showdefaultquotas',
+            summary: 'Show default quotas',
+            description: 'Shows default quotas for tenant.\n',
+            produces: ['application/json'],
+            responses: {
+              200: {
+                description: '200 response',
+                examples: {
+                  'application/json':
+                    '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 10,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 10\n    }\n}',
+                },
+                code: 200,
+              },
+            },
+            tags: ['__default__'],
+          },
+        },
+        '/v2.1/os-quota-sets/{tenant_id}/': {
+          parameters: [
+            {
+              name: 'user_id',
+              required: false,
+              in: 'query',
+              type: 'string',
+              description:
+                'Specify the user in the `?user_id={user_id}` query parameter.\n',
+            },
+          ],
+          put: {
+            operationId: 'updatesquotauser',
+            summary: 'Update quota for user',
+            description: 'Updates quota for user.\n',
+            produces: ['application/json'],
+            responses: {
+              200: {
+                description: '200 response',
+                examples: {
+                  'application/json':
+                    '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 9,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 10\n    }\n}',
+                },
+                code: 200,
+              },
+            },
+            tags: ['__default__'],
+          },
+          delete: {
+            operationId: 'deletequotauser',
+            summary: 'Delete quota for user',
+            description: 'Deletes quota for a specified user.\n',
+            produces: [],
+            responses: {
+              204: { description: '204 response', code: 204 },
+            },
+            tags: ['__default__'],
+          },
+        },
+      },
+      display: 'os-quota-sets-v2.1 Unknown',
+      id: 'os-quota-sets-v2.1Unknown',
+      tags: [{ name: '__default__', description: '默认 namespace' }],
+      namespaces: [
+        {
+          name: '__default__',
+          description: '默认 namespace',
+          apiItems: [
+            {
+              operationId: 'deletequota',
+              summary: 'Delete quota for tenant',
+              description: 'Deletes a quota for tenant.\n',
+              produces: [],
+              responses: {
+                204: { description: '204 response', code: 204 },
+              },
+              tags: ['__default__'],
+              __id: '/v2.1/os-quota-sets/{tenant_id}|delete',
+              __info: {
+                description: 'Delete quota for tenant',
+                method: 'delete',
+                url: '/v2.1/os-quota-sets/{tenant_id}',
+                urlForCopy: '`/v2.1/os-quota-sets/${tenant_id}`',
+                operationId: 'deletequota',
+              },
+              __index: 0,
+            },
+            {
+              operationId: 'showquotas',
+              summary: 'Show quotas',
+              description: 'Shows quotas for tenant.\n',
+              produces: ['application/json'],
+              responses: {
+                200: {
+                  description: '200 response',
+                  examples: {
+                    'application/json':
+                      '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 10,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 10\n    }\n}',
+                  },
+                  code: 200,
+                },
+              },
+              tags: ['__default__'],
+              __id: '/v2.1/os-quota-sets/{tenant_id}|get',
+              __produce: 'application/json',
+              __info: {
+                description: 'Show quotas',
+                method: 'get',
+                url: '/v2.1/os-quota-sets/{tenant_id}',
+                urlForCopy: '`/v2.1/os-quota-sets/${tenant_id}`',
+                operationId: 'showquotas',
+              },
+              __index: 1,
+            },
+            {
+              operationId: 'updatesquotatenant',
+              summary: 'Update quota',
+              description: 'Updates quota for tenant.\n',
+              produces: ['application/json'],
+              responses: {
+                200: {
+                  description: '200 response',
+                  examples: {
+                    'application/json':
+                      '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 10,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 45\n    }\n}',
+                  },
+                  code: 200,
+                },
+              },
+              tags: ['__default__'],
+              __id: '/v2.1/os-quota-sets/{tenant_id}|put',
+              __produce: 'application/json',
+              __info: {
+                description: 'Update quota',
+                method: 'put',
+                url: '/v2.1/os-quota-sets/{tenant_id}',
+                urlForCopy: '`/v2.1/os-quota-sets/${tenant_id}`',
+                operationId: 'updatesquotatenant',
+              },
+              __index: 2,
+            },
+            {
+              operationId: 'deletequotauser',
+              summary: 'Delete quota for user',
+              description: 'Deletes quota for a specified user.\n',
+              produces: [],
+              responses: {
+                204: { description: '204 response', code: 204 },
+              },
+              tags: ['__default__'],
+              __id: '/v2.1/os-quota-sets/{tenant_id}/|delete',
+              __info: {
+                description: 'Delete quota for user',
+                method: 'delete',
+                url: '/v2.1/os-quota-sets/{tenant_id}/',
+                urlForCopy: '`/v2.1/os-quota-sets/${tenant_id}/`',
+                operationId: 'deletequotauser',
+              },
+              __index: 3,
+            },
+            {
+              operationId: 'updatesquotauser',
+              summary: 'Update quota for user',
+              description: 'Updates quota for user.\n',
+              produces: ['application/json'],
+              responses: {
+                200: {
+                  description: '200 response',
+                  examples: {
+                    'application/json':
+                      '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 9,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 10\n    }\n}',
+                  },
+                  code: 200,
+                },
+              },
+              tags: ['__default__'],
+              __id: '/v2.1/os-quota-sets/{tenant_id}/|put',
+              __produce: 'application/json',
+              __info: {
+                description: 'Update quota for user',
+                method: 'put',
+                url: '/v2.1/os-quota-sets/{tenant_id}/',
+                urlForCopy: '`/v2.1/os-quota-sets/${tenant_id}/`',
+                operationId: 'updatesquotauser',
+              },
+              __index: 4,
+            },
+            {
+              operationId: 'showdefaultquotas',
+              summary: 'Show default quotas',
+              description: 'Shows default quotas for tenant.\n',
+              produces: ['application/json'],
+              responses: {
+                200: {
+                  description: '200 response',
+                  examples: {
+                    'application/json':
+                      '{\n    "quota_set": {\n        "metadata_items": 128,\n        "server_groups": 10,\n        "server_group_members": 10,\n        "ram": 51200,\n        "floating_ips": 10,\n        "key_pairs": 100,\n        "instances": 10,\n        "security_group_rules": 20,\n        "cores": 20,\n        "fixed_ips": -1,\n        "id": "fake_tenant",\n        "security_groups": 10\n    }\n}',
+                  },
+                  code: 200,
+                },
+              },
+              tags: ['__default__'],
+              __id: '/v2.1/os-quota-sets/{tenant_id}/defaults|get',
+              __produce: 'application/json',
+              __info: {
+                description: 'Show default quotas',
+                method: 'get',
+                url: '/v2.1/os-quota-sets/{tenant_id}/defaults',
+                urlForCopy: '`/v2.1/os-quota-sets/${tenant_id}/defaults`',
+                operationId: 'showdefaultquotas',
+              },
+              __index: 5,
+            },
+          ],
+          matched: true,
+        },
+      ],
+    },
   ],
   cache: {},
   index: { projectIndex: 0, namespaceIndex: 0, apiIndex: 1 },

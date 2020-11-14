@@ -14,6 +14,7 @@ import {
   ApiParameters,
   ApiResponsesValue,
   ApiResponseHeaderValue,
+  API_METHODS,
 } from 'src/app/api/api.model';
 import {
   StoreIndex,
@@ -34,6 +35,8 @@ export class StoreService {
 
   private DUMP_KEY = 'SWAGGER_UI_ENHANCE';
 
+  private DEAFULT_NAMESPACE = '__default__';
+
   private namespacesMap: Map<string, number> = new Map();
 
   private data: StoreData = {
@@ -51,6 +54,9 @@ export class StoreService {
   };
 
   private projectSubject$$ = new Subject<StoreData>();
+
+  // TODO
+  parseLogs: string[] = [];
 
   sortIndex = 0;
 
@@ -116,6 +122,7 @@ export class StoreService {
     const promise = new Promise((resolve, reject) => {
       const prefix = '导入失败：';
       let errorMessage = prefix + '未知的文件类型';
+
       if (!file.type) {
         this.toastMessage(errorMessage);
         reject(errorMessage);
@@ -200,31 +207,38 @@ export class StoreService {
 
     project.display = title + ' ' + version;
     project.id = id;
+
     return this;
   }
 
   getNamespaceFromTags(project: Project): ProjectTag[] {
     const tags = new Set<string>();
+
     this.iterObj(project.paths, (_1: string, methods: AnyObject) => {
       this.iterObj(methods, (_2: ApiMethod, api: ApiItem) => {
-        if (api.tags) {
-          api.tags.forEach((tag: string) => tags.add(tag));
+        if (!api.tags || api.tags.length === 0) {
+          api.tags = [this.DEAFULT_NAMESPACE];
         }
+
+        api.tags.forEach((tag: string) => tags.add(tag));
       });
     });
+
     return Array.from(tags).map((tag) => {
       return {
         name: tag,
-        description: '--',
+        description: tag === this.DEAFULT_NAMESPACE ? '默认 namespace' : '--',
       };
     });
   }
 
   getNamespace(project: Project): this {
     this.namespacesMap.clear();
-    if (!project.tags) {
+
+    if (!project.tags || project.tags.length === 0) {
       project.tags = this.getNamespaceFromTags(project);
     }
+
     project.namespaces = project.tags.map((tag: ProjectTag, index: number) => {
       this.namespacesMap.set(tag.name, index);
       return {
@@ -233,6 +247,7 @@ export class StoreService {
         matched: true,
       };
     });
+
     return this;
   }
 
@@ -243,21 +258,24 @@ export class StoreService {
 
     this.iterObj(project.paths, (url: string, methods: AnyObject) => {
       this.iterObj(methods, (method: ApiMethod, api: ApiItem) => {
-        api = {
-          ...api,
-          __id: url + '|' + method,
-          __produce: api.produces && api.produces[0],
-          __info: {
-            description: api.summary || '该 API 缺少描述',
-            method,
-            url,
-            deprecated: api.deprecated,
-            urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
-            operationId: api.operationId,
-          },
-        };
+        // 处理不合法的请求方法
+        if (API_METHODS.includes(method)) {
+          api = {
+            ...api,
+            __id: url + '|' + method,
+            __produce: api.produces && api.produces[0],
+            __info: {
+              description: api.summary || '该 API 缺少描述',
+              method,
+              url,
+              deprecated: api.deprecated,
+              urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
+              operationId: api.operationId,
+            },
+          };
 
-        apiItems.push(api);
+          apiItems.push(api);
+        }
       });
     });
 
