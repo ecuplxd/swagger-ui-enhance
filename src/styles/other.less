@@ -1,0 +1,74 @@
+@import "color.less";
+@import "vars.less";
+
+.scroll-y {
+  overflow-y: auto;
+}
+
+.hidden-x {
+  overflow-x: hidden !important;
+}
+
+.hidden-y {
+  overflow-y: hidden !important;
+}
+
+button.outlined {
+  line-height: 27px;
+  border-radius: 0 !important;
+  border-color: @primary-selected !important;
+}
+
+button[disabled="true"] {
+  border-color: currentColor !important;
+  cursor: not-allowed;
+}
+
+button {
+  min-width: initial !important;
+}
+
+.no-hover:hover {
+  background: none !important;
+}
+
+.border {
+  border: 1px solid @border-color;
+}
+
+.hidden {
+  display: none !important;
+}
+
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+
+  thead tr {
+    height: 38px;
+  }
+
+  tr:hover {
+    background: @table-hover;
+  }
+
+  th {
+    color: @table-head;
+  }
+}
+
+.loading {
+  mat-icon {
+    position: relative;
+    bottom: 1px;
+    cursor: not-allowed;
+    animation: loading-rotate 1s linear infinite;
+  }
+}
+
+@keyframes loading-rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}

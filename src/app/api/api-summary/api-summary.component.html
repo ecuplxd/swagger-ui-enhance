@@ -13,7 +13,7 @@
 
 <mat-menu
   #levelOne="matMenu"
-  class="scroll"
+  class="scroll-y"
   [hasBackdrop]="false"
   [class]="!showSubMenu ? 'api-summary-panel' : ''"
 >
@@ -46,7 +46,7 @@
 
         <mat-menu
           #levelTwo="matMenu"
-          class="api-summary-panel scroll"
+          class="api-summary-panel scroll-y"
           [hasBackdrop]="false"
         >
           <mat-nav-list
