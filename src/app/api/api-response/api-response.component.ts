@@ -17,7 +17,7 @@ export class ApiResponseComponent implements OnInit {
   types = TYPE_MAP;
 
   get responsesEmpty(): boolean {
-    return Object.keys(this.responses).length === 0;
+    return !this.responses || Object.keys(this.responses).length === 0;
   }
 
   constructor() {}

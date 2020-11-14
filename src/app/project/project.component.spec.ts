@@ -157,16 +157,16 @@ describe('ProjectComponent', () => {
     installData();
     selectPorject(0);
 
-    expect(component.projects.length).toBe(2, 'before remove');
+    expect(component.projects.length).toBe(4, 'before remove');
 
     removeProject(1);
 
-    expect(component.projects.length).toBe(1, 'remove 1 project');
+    expect(component.projects.length).toBe(3, 'remove 1 project');
 
     flush();
   }));
 
-  xit('should keep #project if remove none selected project', fakeAsync(() => {
+  it('should keep #project if remove none selected project', fakeAsync(() => {
     installData();
     selectPorject(0);
 
@@ -181,9 +181,21 @@ describe('ProjectComponent', () => {
     flush();
   }));
 
-  xit('should select first project if remove the selected project', () => {});
+  it('should select first project if remove the selected project', fakeAsync(() => {
+    installData();
+    selectPorject(1);
+    openProjetMenu();
 
-  it('should show no data if remove all projects', fakeAsync(() => {
+    expect(component.selected).toBe(1);
+
+    removeProject(1);
+
+    expect(component.selected).toBe(0);
+
+    flush();
+  }));
+
+  it('should no projects if remove all projects', fakeAsync(() => {
     installData();
 
     removeProject(0);
