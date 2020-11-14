@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { Project } from 'src/app/project/project.model';
 import { StoreService } from 'src/app/share/service';
 import { StoreData } from 'src/app/share/share.model';
@@ -42,5 +43,10 @@ export class StoreServiceStub extends StoreService {
     this.setMockData(STORE_DATA_MOCK).init();
 
     return this;
+  }
+
+  getData$(): Observable<StoreData> {
+    // tslint:disable-next-line: no-string-literal
+    return of(this['data']);
   }
 }

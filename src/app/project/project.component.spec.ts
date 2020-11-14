@@ -1,5 +1,4 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
-import { Injectable } from '@angular/core';
 import {
   ComponentFixture,
   fakeAsync,
@@ -8,27 +7,16 @@ import {
   tick,
 } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Observable, of } from 'rxjs';
 import { click, StoreServiceStub } from 'src/__test__';
 import { StoreService } from '../share/service';
-import { StoreData } from '../share/share.model';
 import { ProjectComponent } from './project.component';
 import { Project } from './project.model';
 import { ProjectModule } from './project.module';
 
-@Injectable()
-class StoreServiceStub2 extends StoreServiceStub {
-  getData$(): Observable<StoreData> {
-    this.useNotEmptyData();
-    // tslint:disable-next-line: no-string-literal
-    return of(this['data']);
-  }
-}
-
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
   let fixture: ComponentFixture<ProjectComponent>;
-  let store: StoreServiceStub2;
+  let store: StoreServiceStub;
 
   const installData = () => {
     store.useNotEmptyData();
@@ -76,7 +64,7 @@ describe('ProjectComponent', () => {
       providers: [
         {
           provide: StoreService,
-          useClass: StoreServiceStub2,
+          useClass: StoreServiceStub,
         },
       ],
     }).compileComponents();
@@ -85,7 +73,7 @@ describe('ProjectComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProjectComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(StoreService) as StoreServiceStub2;
+    store = TestBed.inject(StoreService) as StoreServiceStub;
   });
 
   it('should create', () => {
