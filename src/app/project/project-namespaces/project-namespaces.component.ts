@@ -1,16 +1,16 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  ElementRef,
-  ViewChild,
   AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
-import { ProjectNamesapce } from '../project.model';
-import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { fromEvent } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { NAMESPACE_ID_PREFIX } from 'src/app/share/const';
+import { ScrollInoViewService, StoreService } from 'src/app/share/service';
+import { ProjectNamesapce } from '../project.model';
 
 @Component({
   selector: 'app-project-namespaces',
@@ -46,10 +46,7 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
 
   initSearch(): void {
     fromEvent(this.inputRef.nativeElement as HTMLInputElement, 'input')
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-      )
+      .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe(() => {
         this.filterNamespaces();
       });

@@ -8,10 +8,9 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { Any } from 'src/app/share/share.model';
-import { STORE_DATA_MOCK, StoreServiceStub } from 'src/__test__';
+import { StoreServiceStub } from 'src/__test__';
 import { ApiModule } from '../api.module';
 import { ApiListComponent } from './api-list.component';
 
@@ -22,7 +21,7 @@ describe('ApiListComponent', () => {
   let nativeElement: Any;
 
   const reInit = () => {
-    spyOn(store, 'getData$').and.returnValue(of(STORE_DATA_MOCK));
+    store.useNotEmptyData();
     component.ngOnInit();
     fixture.detectChanges();
   };
@@ -70,6 +69,8 @@ describe('ApiListComponent', () => {
 
   it('should create', () => {
     store.useEmptyData();
+    component.ngOnInit();
+    fixture.detectChanges();
 
     expect(component).toBeTruthy();
     expect(component.activedIndex).toBe(1, 'set by store data');
