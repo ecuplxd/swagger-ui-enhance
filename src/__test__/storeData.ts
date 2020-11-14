@@ -1561,6 +1561,58 @@ export const STORE_DATA_MOCK = ({
         },
       ],
     },
+    {
+      swagger: '2.0',
+      info: { title: 'os-admin-actions-v2.1', version: 'Unknown' },
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      paths: {
+        '/v2.1/servers/{server_id}/action/{server_id}/action': {
+          post: {
+            operationId: 'unpauseserver',
+            summary: 'Unpause server',
+            description:
+              'Unpauses a PAUSED server and changes its status to ACTIVE.\n',
+            produces: [],
+            responses: {
+              202: { description: '202 response', code: 202 },
+            },
+          },
+        },
+      },
+      display: 'os-admin-actions-v2.1 Unknown',
+      id: 'os-admin-actions-v2.1Unknown',
+      tags: [],
+      namespaces: [
+        {
+          name: '__default__',
+          description: '默认 namespace',
+          apiItems: [
+            {
+              operationId: 'unpauseserver',
+              summary: 'Unpause server',
+              description:
+                'Unpauses a PAUSED server and changes its status to ACTIVE.\n',
+              produces: [],
+              responses: {
+                202: { description: '202 response', code: 202 },
+              },
+              __id: '/v2.1/servers/{server_id}/action/{server_id}/action|post',
+              __info: {
+                description: 'Unpause server',
+                method: 'post',
+                url: '/v2.1/servers/{server_id}/action/{server_id}/action',
+                urlForCopy:
+                  '`/v2.1/servers/${server_id}/action/${server_id}/action`',
+                operationId: 'unpauseserver',
+              },
+              __index: 0,
+            },
+          ],
+          matched: true,
+        },
+      ],
+    },
   ],
   cache: {},
   index: { projectIndex: 0, namespaceIndex: 0, apiIndex: 1 },
