@@ -10,8 +10,8 @@ export class CopyService {
 
   constructor(private clipboard: Clipboard, private snackBar: MatSnackBar) {}
 
-  copy(value: string, selector: boolean = false): void {
-    if (selector) {
+  copy(value: string, valueUseForSelector: boolean = false): void {
+    if (valueUseForSelector) {
       const els = document.querySelectorAll('.' + value);
 
       // content_copy copy icon
