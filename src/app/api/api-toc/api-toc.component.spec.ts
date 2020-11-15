@@ -1,24 +1,13 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
-import { click, StoreServiceStub } from 'src/__test__';
+import { click, hasClass, Page, StoreServiceStub } from 'src/__test__';
 import { ApiModule } from '../api.module';
 import { ApiTocComponent } from './api-toc.component';
 
 describe('ApiTocComponent', () => {
   let component: ApiTocComponent;
-  let store: StoreServiceStub;
-  let fixture: ComponentFixture<ApiTocComponent>;
-
-  const installData = (): HTMLLIElement[] => {
-    store.useNotEmptyData();
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    const lis: HTMLLIElement[] = fixture.nativeElement.querySelectorAll('li');
-
-    return lis;
-  };
+  let page: Page<ApiTocComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -36,9 +25,8 @@ describe('ApiTocComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ApiTocComponent);
-    store = TestBed.inject(StoreService) as StoreServiceStub;
-    component = fixture.componentInstance;
+    page = new Page(ApiTocComponent);
+    component = page.component;
   });
 
   it('should create', () => {
@@ -47,125 +35,84 @@ describe('ApiTocComponent', () => {
     expect(component.apiItems).toEqual([], 'init #apiItems');
     expect(component.activedIndex).toBeUndefined('init #activedIndex');
 
-    installData();
+    page.installData();
 
-    const titleEl: HTMLSpanElement = fixture.nativeElement.querySelector(
-      '.toc-title'
-    );
+    const titleText = page.getText<HTMLSpanElement>('.toc-title');
 
-    expect(titleEl.innerText).toEqual('pet');
+    expect(titleText).toEqual('pet');
   });
 
   it('should mark deprecated api', () => {
-    const lis: HTMLLIElement[] = installData();
+    page.installData();
+    const lis = page.queryAll<HTMLLIElement>('li');
 
-    expect(lis[0].className.includes('deprecated')).toBe(
-      false,
-      '0 not a deprecated api'
-    );
-    expect(lis[1].className.includes('deprecated')).toBe(
-      false,
-      '1 not a deprecated api'
-    );
-    expect(lis[3].className.includes('deprecated')).toBe(
-      true,
-      '3 is a deprecated api'
-    );
+    expect(hasClass(lis[0], 'deprecated')).toBe(false, '0 not a deprecated api');
+    expect(hasClass(lis[1], 'deprecated')).toBe(false, '1 not a deprecated api');
+    expect(hasClass(lis[3], 'deprecated')).toBe(true, '3 is a deprecated api');
   });
 
   it('should mark actived toc item', () => {
-    const lis: HTMLLIElement[] = installData();
+    page.installData();
+    const lis = page.queryAll<HTMLLIElement>('li');
 
-    expect(lis[0].className.includes('actived')).toBe(
-      false,
-      '0 not cur actived toc'
-    );
-    expect(lis[1].className.includes('actived')).toBe(
-      true,
-      '1 is cur actived toc'
-    );
-    expect(lis[3].className.includes('actived')).toBe(
-      false,
-      '3 not cur actived toc'
-    );
+    expect(hasClass(lis[0], 'actived')).toBe(false, '0 not cur actived toc');
+    expect(hasClass(lis[1], 'actived')).toBe(true, '1 is cur actived toc');
+    expect(hasClass(lis[3], 'actived')).toBe(false, '3 not cur actived toc');
   });
 
   it('should not change #activedIndex by click cur active toc', () => {
-    let lis: HTMLLIElement[] = installData();
+    page.installData();
+    let lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(1, 'before click');
-    expect(lis[1].className.includes('actived')).toBe(
-      true,
-      'before click, 1 actived'
-    );
+    expect(hasClass(lis[1], 'actived')).toBe(true, 'before click, 1 actived');
 
-    click(lis[1]);
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    lis = fixture.nativeElement.querySelectorAll('li');
+    page.click(lis[1]);
+    lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(1, 'after click still 1');
-    expect(lis[1].className.includes('actived')).toBe(
-      true,
-      'after click, still 1 actived'
-    );
+    expect(hasClass(lis[1], 'actived')).toBe(true, 'after click, still 1 actived');
   });
 
   it('should change actived toc item by click', () => {
-    let lis: HTMLLIElement[] = installData();
+    page.installData();
+    let lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(1, 'before click');
-    expect(lis[0].className.includes('actived')).toBe(
-      false,
-      'before click, 0 not actived'
-    );
-    expect(lis[1].className.includes('actived')).toBe(
-      true,
-      'before click, 1 actived'
-    );
+    expect(hasClass(lis[0], 'actived')).toBe(false, 'before click, 0 not actived');
+    expect(hasClass(lis[1], 'actived')).toBe(true, 'before click, 1 actived');
 
-    click(lis[0]);
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    lis = fixture.nativeElement.querySelectorAll('li');
+    page.click(lis[0]);
+    lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(0, 'after click');
-    expect(lis[0].className.includes('actived')).toBe(
-      true,
-      'after click, 1 actived'
-    );
-    expect(lis[1].className.includes('actived')).toBe(
-      false,
-      'after click, 1 not actived'
-    );
+    expect(hasClass(lis[0], 'actived')).toBe(true, 'after click, 1 actived');
+    expect(hasClass(lis[1], 'actived')).toBe(false, 'after click, 1 not actived');
   });
 
   it('should sort tocs', () => {
-    installData();
-    spyOn(store, 'sortApiItems');
+    page.installData();
+    spyOn(page.store, 'sortApiItems');
 
-    const sortBtn = fixture.nativeElement.querySelector('button');
+    const sortBtn = page.query<HTMLButtonElement>('button');
     click(sortBtn);
 
-    expect(store.sortApiItems).toHaveBeenCalled();
+    expect(page.store.sortApiItems).toHaveBeenCalled();
   });
 
   // TODO：更好的 expect
   it('should sort re render toc list', () => {
-    let lis: HTMLLIElement[] = installData();
+    page.installData();
+    let lis = page.queryAll<HTMLLIElement>('li');
 
-    expect(lis[3].className.includes('get')).toBe(true, 'before sort');
+    expect(hasClass(lis[3], 'get')).toBe(true, 'before sort');
 
-    const sortBtn = fixture.nativeElement.querySelector('button');
-    click(sortBtn);
-    component.ngOnInit();
-    fixture.detectChanges();
+    const sortBtn = page.query<HTMLButtonElement>('button');
+    page.click(sortBtn);
 
-    lis = fixture.nativeElement.querySelectorAll('li');
+    lis = page.queryAll<HTMLLIElement>('li');
 
-    expect(lis[3].className.includes('get')).toBe(false, 'after sort');
-    expect(lis[3].className.includes('put')).toBe(true, 'after sort');
+    expect(hasClass(lis[3], 'get')).toBe(false, 'after sort');
+    expect(hasClass(lis[3], 'put')).toBe(true, 'after sort');
   });
 });
