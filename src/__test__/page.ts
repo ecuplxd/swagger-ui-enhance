@@ -33,12 +33,14 @@ export class Page<T extends Componnet> {
     }
   }
 
-  detectChanges(reInit = false): void {
-    if (reInit) {
-      this.component.ngOnInit();
-    }
+  doNgOnInit(): this {
+    this.component.ngOnInit();
+    return this;
+  }
 
+  detectChanges(): this {
     this.fixture.detectChanges();
+    return this;
   }
 
   query<U = HTMLElement>(selector: string): U {
@@ -54,6 +56,11 @@ export class Page<T extends Componnet> {
     return el.innerText.trim();
   }
 
+  getAttr<U extends HTMLElement>(selector: string, attr: string): string | null{
+    const el = this.query<U>(selector);
+    return el.getAttribute(attr);
+  }
+
   queryDe(selector: string): DebugElement {
     this.de = this.fixture.debugElement.query(By.css(selector));
     return this.de;
@@ -64,30 +71,25 @@ export class Page<T extends Componnet> {
     return this.des;
   }
 
-  click(el: HTMLElement, reInit = true): void {
+  click(el: HTMLElement): this {
     el.click();
-
-    this.detectChanges(reInit);
+    return this;
   }
 
-  clickDe(
-    de: DebugElement,
-    eventObj: Any = ButtonClickEvents.left,
-    reInit = true
-  ): void {
+  clickDe(de: DebugElement, eventObj: Any = ButtonClickEvents.left): this {
     (de || this.de).triggerEventHandler('click', eventObj);
 
-    this.detectChanges(reInit);
+    return this;
   }
 
-  installEmptyData(): void {
+  installEmptyData(): this {
     this.store.useEmptyData();
-    this.detectChanges(true);
+    return this.doNgOnInit().detectChanges();
   }
 
-  installData(): void {
+  installData(): this {
     this.store.useNotEmptyData();
-    this.detectChanges(true);
+    return this.doNgOnInit().detectChanges();
   }
 
   getApiItem(

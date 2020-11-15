@@ -10,7 +10,7 @@ import { StoreData } from 'src/app/share/share.model';
   styleUrls: ['./import-project.component.less'],
 })
 export class ImportProjectComponent implements OnInit {
-  @HostBinding('class') get valid(): string {
+  @HostBinding('class.by-local') get hostClass(): string {
     return this.byLocal ? 'by-local' : '';
   }
 
