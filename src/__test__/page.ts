@@ -1,10 +1,12 @@
 import { DebugElement, OnInit, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ApiItem } from 'src/app/api/api.model';
 import { StoreService } from 'src/app/share/service';
 import { Any } from 'src/app/share/share.model';
 import { ButtonClickEvents } from './click';
 import { StoreServiceStub } from './mock';
+import { STORE_DATA_MOCK } from './storeData';
 
 class Componnet implements OnInit {
   ngOnInit(): void {}
@@ -21,17 +23,29 @@ export class Page<T extends Componnet> {
 
   des: DebugElement[] = [];
 
-  constructor(component: Type<T>) {
+  constructor(component: Type<T>, detectChanges = true) {
     this.fixture = TestBed.createComponent(component);
     this.component = this.fixture.componentInstance;
     this.store = TestBed.inject(StoreService) as StoreServiceStub;
+
+    if (detectChanges) {
+      this.detectChanges();
+    }
   }
 
-  query<U>(selector: string): U {
+  detectChanges(reInit = false): void {
+    if (reInit) {
+      this.component.ngOnInit();
+    }
+
+    this.fixture.detectChanges();
+  }
+
+  query<U = HTMLElement>(selector: string): U {
     return this.fixture.nativeElement.querySelector(selector);
   }
 
-  queryAll<U>(selector: string): U[] {
+  queryAll<U = HTMLElement>(selector: string): U[] {
     return this.fixture.nativeElement.querySelectorAll(selector);
   }
 
@@ -53,26 +67,35 @@ export class Page<T extends Componnet> {
   click(el: HTMLElement, reInit = true): void {
     el.click();
 
-    if (reInit) {
-      this.component.ngOnInit();
-    }
-    this.fixture.detectChanges();
+    this.detectChanges(reInit);
   }
 
-  clickDe(de: DebugElement, eventObj: Any = ButtonClickEvents.left): void {
+  clickDe(
+    de: DebugElement,
+    eventObj: Any = ButtonClickEvents.left,
+    reInit = true
+  ): void {
     (de || this.de).triggerEventHandler('click', eventObj);
-    this.fixture.detectChanges();
+
+    this.detectChanges(reInit);
   }
 
   installEmptyData(): void {
     this.store.useEmptyData();
-    this.component.ngOnInit();
-    this.fixture.detectChanges();
+    this.detectChanges(true);
   }
 
   installData(): void {
     this.store.useNotEmptyData();
-    this.component.ngOnInit();
-    this.fixture.detectChanges();
+    this.detectChanges(true);
+  }
+
+  getApiItem(
+    apiIndex: number,
+    namespaceIndex: number = 0,
+    projectIndex: number = 0
+  ): ApiItem {
+    return STORE_DATA_MOCK.projects[projectIndex].namespaces[namespaceIndex]
+      .apiItems[apiIndex];
   }
 }

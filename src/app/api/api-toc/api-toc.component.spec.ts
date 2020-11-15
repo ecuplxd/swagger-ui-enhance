@@ -25,7 +25,7 @@ describe('ApiTocComponent', () => {
   });
 
   beforeEach(() => {
-    page = new Page(ApiTocComponent);
+    page = new Page(ApiTocComponent, false);
     component = page.component;
   });
 

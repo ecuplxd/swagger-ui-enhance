@@ -17,15 +17,16 @@ export class ApiTypeComponent implements OnInit {
 
   enumType = false;
 
-  showTypeDetail = false;
-
   openOnHover = true;
 
   code = '';
 
   parameterID!: string;
 
-  get id(): string {
+  // !refType -> display: string
+  // refType -> display:
+  // !this.type -> display
+  get displayText(): string {
     if (this.parameter.display) {
       return (
         this.parameter.display +
@@ -60,9 +61,5 @@ export class ApiTypeComponent implements OnInit {
         this.code = '// 解析失败\n';
       }
     }
-  }
-
-  close(): void {
-    this.showTypeDetail = false;
   }
 }
