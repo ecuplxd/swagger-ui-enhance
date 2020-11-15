@@ -49,4 +49,12 @@ export class StoreServiceStub extends StoreService {
     // tslint:disable-next-line: no-string-literal
     return of(this['data']);
   }
+
+  useProject(index: number): this {
+    this.updateData({
+      projectIndex: index,
+    });
+
+    return this;
+  }
 }

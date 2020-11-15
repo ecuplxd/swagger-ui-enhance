@@ -73,7 +73,7 @@ describe('ApiTypeComponent', () => {
 
   it('should can copy type if have #refType ', () => {
     component.parameter = {} as ApiParameters;
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     expect(component.refType).toBe(false, '{} not refType');
     expect(page.query('app-copy')).toBeFalsy('{} not refType, can not copy');
@@ -81,7 +81,7 @@ describe('ApiTypeComponent', () => {
     page = new Page(ApiTypeComponent, false);
     component = page.component;
     component.parameter = page.getApiItem(0).parameters[0];
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     expect(component.refType).toBe(true, 'Pet is a refType');
     expect(page.query('app-copy')).toBeTruthy('refType can copy');
@@ -89,14 +89,14 @@ describe('ApiTypeComponent', () => {
 
   it('should render refType by a', () => {
     component.parameter = page.getApiItem(0).parameters[0];
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     expect(hasClass(page.query('a'), 'ref-type-name')).toBeTruthy();
   });
 
   it('should #refType can hover show detail popup', () => {
     component.parameter = page.getApiItem(0).parameters[0];
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     const hoverEl = page.query('app-hover-menu > div');
     hoverEl.dispatchEvent(new Event('mouseenter'));
@@ -108,14 +108,14 @@ describe('ApiTypeComponent', () => {
     expect(apiHoverEl).toBeTruthy();
 
     component.parameter = {} as ApiParameters;
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     expect(page.query('app-hover-menu')).toBeFalsy();
   });
 
   it('should #refType only get type by hover and no #code', () => {
     component.parameter = page.getApiItem(0).parameters[0];
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     expect(component.code).toEqual('', 'no code string');
 
@@ -161,7 +161,7 @@ describe('ApiTypeComponent', () => {
 
   it('should #enumType use pre el', () => {
     component.parameter = page.getApiItem(4).parameters[0];
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     expect(component.enumType).toBe(true);
     expect(component.refType).toBe(false);
@@ -171,7 +171,7 @@ describe('ApiTypeComponent', () => {
 
   it('should render not enumType by span', () => {
     component.parameter = page.getApiItem(0).parameters[0];
-    page.detectChanges(true);
+    page.doNgOnInit().detectChanges();
 
     expect(page.query('.enum-type')).toBeFalsy();
     expect(page.getText('.type-display')).toEqual('body:');

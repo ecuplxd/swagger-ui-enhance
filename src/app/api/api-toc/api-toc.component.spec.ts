@@ -67,7 +67,7 @@ describe('ApiTocComponent', () => {
     expect(component.activedIndex).toEqual(1, 'before click');
     expect(hasClass(lis[1], 'actived')).toBe(true, 'before click, 1 actived');
 
-    page.click(lis[1]);
+    page.click(lis[1]).doNgOnInit().detectChanges();
     lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(1, 'after click still 1');
@@ -82,7 +82,7 @@ describe('ApiTocComponent', () => {
     expect(hasClass(lis[0], 'actived')).toBe(false, 'before click, 0 not actived');
     expect(hasClass(lis[1], 'actived')).toBe(true, 'before click, 1 actived');
 
-    page.click(lis[0]);
+    page.click(lis[0]).doNgOnInit().detectChanges();
     lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(0, 'after click');
@@ -108,7 +108,7 @@ describe('ApiTocComponent', () => {
     expect(hasClass(lis[3], 'get')).toBe(true, 'before sort');
 
     const sortBtn = page.query<HTMLButtonElement>('button');
-    page.click(sortBtn);
+    page.click(sortBtn).doNgOnInit().detectChanges();
 
     lis = page.queryAll<HTMLLIElement>('li');
 
