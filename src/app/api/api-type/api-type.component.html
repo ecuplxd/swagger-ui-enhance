@@ -1,12 +1,12 @@
 <div class="inline-flex align-start">
   <span
-    class="inline-flex align-center"
+    class="type-container inline-flex align-center"
     [class]="parameterID"
-    *appCopy="!!(id || refType); selector: parameterID"
+    *appCopy="!!(displayText || refType); selector: parameterID"
   >
-    <pre class="ma-0 code f-14" *ngIf="enumType">{{ id }}</pre>
+    <pre class="ma-0 enum-type code f-14" *ngIf="enumType">{{displayText}}</pre>
 
-    <span *ngIf="!enumType">{{ id }}</span>
+    <span *ngIf="!enumType" class="type-display">{{ displayText }}</span>
 
     <app-hover-menu
       *ngIf="refType"
