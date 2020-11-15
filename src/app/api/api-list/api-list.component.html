@@ -1,11 +1,11 @@
 <div class="no-data f-16 mt-32 text-center" *ngIf="!apiItems.length">
-  <p class="my-32">暂无数据</p>
+  <p i18n="no-data" class="my-32">暂无数据</p>
 
-  <p>1、可点击左侧加号；</p>
-  <p>2、或左上方地址栏。</p>
-  <p>3、或拖曳文件到此处。</p>
+  <p i18n="project-import-by-local">1、可点击左侧加号。</p>
+  <p i18n="project-import-by-input">2、或左上方地址栏。</p>
+  <p i18n="project-import-by-drop">3、或拖曳文件到此处。</p>
 
-  <p class="mt-32">导入 API（仅支持 .json 文件）</p>
+  <p class="mt-32" i18n="project-import-tip">导入 API（仅支持 .json 文件）</p>
 </div>
 
 <div class="api-items flex justify-end mb-16" *ngIf="apiItems.length">
@@ -14,6 +14,7 @@
     color="primary"
     class="open-all mr-10 outlined"
     (click)="accordion.openAll()"
+    i18n="expand-all"
   >
     展开全部
   </button>
@@ -23,6 +24,7 @@
     mat-stroked-button
     color="primary"
     (click)="accordion.closeAll()"
+    i18n="close-all"
   >
     收起全部
   </button>

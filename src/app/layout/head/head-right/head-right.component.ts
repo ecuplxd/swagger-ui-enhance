@@ -16,7 +16,7 @@ export class HeadRightComponent implements OnInit {
     },
     {
       name: 'English',
-      locale: 'en',
+      locale: 'en-US',
       country: 'us',
       fallback: true,
     },
@@ -64,6 +64,7 @@ export class HeadRightComponent implements OnInit {
   // TODO
   changeLanguages(language: Language): void {
     this.language = language;
+    localStorage.setItem('locale', language.locale);
   }
 
   // TODO
