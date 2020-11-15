@@ -16,3 +16,11 @@ export function click(
     el.triggerEventHandler('click', eventObj);
   }
 }
+
+export function hasClass(el: HTMLElement, className: string): boolean {
+  return el.className.includes(className);
+}
+
+export function hasText(el: HTMLElement, text: string): boolean {
+  return el.innerText.trim() === text;
+}
