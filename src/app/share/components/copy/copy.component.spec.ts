@@ -62,7 +62,9 @@ describe('CopyComponent', () => {
 
     spyOn(copyService, 'copy');
     const copyIconDe = fixture.debugElement.query(By.css('mat-icon'));
-    click(copyIconDe);
+    click(copyIconDe, {
+      stopPropagation: () => {},
+    });
 
     expect(copyService.copy).toHaveBeenCalledWith('value', false);
   });
@@ -73,7 +75,9 @@ describe('CopyComponent', () => {
 
     spyOn(copyService, 'copy');
     const copyIconDe = fixture.debugElement.query(By.css('mat-icon'));
-    click(copyIconDe);
+    click(copyIconDe, {
+      stopPropagation: () => {},
+    });
 
     expect(copyService.copy).toHaveBeenCalledWith('mat-icon', true);
   });
