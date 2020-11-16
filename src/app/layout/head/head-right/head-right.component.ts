@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from 'src/app/share/service';
 import { Language } from '../../layout.model';
 
 @Component({
@@ -13,12 +14,12 @@ export class HeadRightComponent implements OnInit {
       locale: 'zh-CN',
       alternate: 'zh-Hans',
       country: 'cn',
+      fallback: true,
     },
     {
       name: 'English',
       locale: 'en-US',
       country: 'us',
-      fallback: true,
     },
     {
       name: 'Deutsch',
@@ -48,23 +49,21 @@ export class HeadRightComponent implements OnInit {
       alternate: 'ja',
       country: 'jp',
     },
-    {
-      name: 'Help translate',
-      locale: 'eo-UY',
-      country: 'uy',
-    },
   ];
 
   language: Language = this.languages[0];
 
-  constructor() {}
+  constructor(private translate: TranslateService) {
+    const locale = this.translate.getLocale();
+    const language = this.languages.find((item) => item.locale === locale);
+    this.language = language || this.languages[0];
+  }
 
   ngOnInit(): void {}
 
   // TODO
   changeLanguages(language: Language): void {
-    this.language = language;
-    localStorage.setItem('locale', language.locale);
+    this.translate.setLocale(language.locale).reload();
   }
 
   // TODO

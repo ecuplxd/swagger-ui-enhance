@@ -1,1 +1,47 @@
-export default {};
+export default {
+  /* common */
+  'change-lang': '言語を切り替える',
+  'change-themed': 'テーマを切り替える',
+  close: '閉じる',
+  'close-all': 'すべて折りたたむ',
+  'close-esc': '閉じる（ESC）',
+  copy: 'コピー',
+  description: '説明',
+  'expand-all': 'すべて展開',
+  fixed: '上',
+  'no-data': 'データなし',
+  remove: '削除する',
+  search: '検索する',
+  type: 'の種類',
+
+  /* project */
+  'project-change': 'プロジェクトの切り替え',
+  'project-import-by-local':
+    'クリックしてローカルJSONファイルをインポートします',
+  'project-import-by-url': 'URLを介して既存のAPIをインポートする',
+  'project-import-or-update': 'インポートまたは更新',
+  'project-import-tip': 'APIのインポート（.jsonファイルのみがサポートされています）',
+  'project-import-tip-1': '1.左側のプラス記号をクリックします。',
+  'project-import-tip-2': '2.または左上のアドレスバー。',
+  'project-import-tip-3': '3.または、ファイルをここにドラッグします。',
+
+  /* api */
+  'api-copy-all-fileds': 'すべてのフィールドをコピーします',
+  'api-copy-description': '説明をコピーする',
+  'api-copy-url': 'URLをコピー',
+  'api-field-name': 'フィールド名',
+  'api-no-parameters': 'パラメータなし',
+  'api-no-request-histroy': '記録なし',
+  'api-request-parameters': 'リクエストパラメータ',
+  'api-response': 'レスポンスボディ',
+  'api-response-code': '応答コード',
+  'api-response-header': '応答ヘッダー',
+  'api-response-result': '結果',
+  'api-search-tip': '検索API（「/」アクティブ化、「↑/↓」スイッチ、「→/Enter」選択、「メソッド」フィルターメソッドの追加）',
+  'api-select-request-histroy': '履歴を選択',
+  'api-send-request': 'リクエストを送信',
+  'api-sort': 'ソート',
+  'api-try-it-out': 'リクエストを開始します',
+  'api-type-example': '例',
+  'api-type-remove-partial': 'Partial<T> -> T',
+};

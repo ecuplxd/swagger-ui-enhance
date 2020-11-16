@@ -27,10 +27,16 @@ import {
   ProxyService,
   HistoryService,
   ScrollInoViewService,
+  TranslateService,
 } from './service';
 import { DialogService } from './service/dialog/dialog.service';
 
-import { CopyDirective, DragDropDirective, StopClickDirective } from './directives';
+import {
+  CopyDirective,
+  DragDropDirective,
+  StopClickDirective,
+  TrDirective,
+} from './directives';
 import {
   CopyComponent,
   HoverMenuComponent,
@@ -47,12 +53,14 @@ const services = [
   HistoryService,
   DialogService,
   ScrollInoViewService,
+  TranslateService,
 ];
 
 const directives = [
   CopyDirective,
   StopClickDirective,
   DragDropDirective,
+  TrDirective,
 ];
 
 const components = [

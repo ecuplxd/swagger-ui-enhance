@@ -1,4 +1,9 @@
-<button class="change-theme" mat-icon-button title="切换主题">
+<button
+  class="change-theme"
+  mat-icon-button
+  title="切换主题"
+  tr="change-themed|title"
+>
   <mat-icon>format_color_fill</mat-icon>
   <!-- <input type="color" /> -->
 </button>
@@ -29,6 +34,7 @@
   [matMenuTriggerFor]="langRef"
   title="切换语言"
   class="change-lang"
+  tr="change-lang|title"
 >
   <mat-icon class="icon">translate</mat-icon>
   <span class="cur-lang">{{ language.name }}</span>
@@ -45,5 +51,13 @@
     >
       {{ language.name }}
     </button>
+
+    <a
+      mat-button
+      href="https://github.com/ecuplxd/swagger-ui-enhance/issues"
+      target="_blank"
+    >
+      Help translate
+    </a>
   </ng-template>
 </mat-menu>

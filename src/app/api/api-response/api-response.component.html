@@ -1,5 +1,5 @@
 <div class="y-center justify-between mb-10 header">
-  <span class="f-16">响应体</span>
+  <span class="f-16" tr="api-response">响应体</span>
 
   <!-- <mat-form-field>
     <mat-select
@@ -17,11 +17,13 @@
   <table class="f-14">
     <thead>
       <tr class="no-hover">
-        <th class="pa-8 text-left" style="width: 10%">响应码</th>
+        <th class="pa-8 text-left" style="width: 20%" tr="api-response-code">
+          响应码
+        </th>
 
-        <th class="pa-8 text-left">结果</th>
+        <th class="pa-8 text-left" tr="api-response-result">结果</th>
 
-        <th class="pa-8 text-left" style="width: 30%">描述</th>
+        <th class="pa-8 text-left" style="width: 30%" tr="description">描述</th>
       </tr>
     </thead>
 
@@ -56,16 +58,18 @@
             </td>
           </tr>
 
-          <tr class="no-hover" [class]="'header' + response.key">
+          <tr class="no-hover" [class]="'header' + response['key']">
             <td colspan="3" class="px-16">
               <table class="response-headers" style="border: 0">
                 <thead>
                   <tr class="no-hover">
-                    <th class="pa-8 text-left">响应头</th>
+                    <th class="pa-8 text-left" tr="api-response-header">
+                      响应头
+                    </th>
 
-                    <th class="pa-8 text-left">描述</th>
+                    <th class="pa-8 text-left" tr="description">描述</th>
 
-                    <th class="pa-8 text-left">类型</th>
+                    <th class="pa-8 text-left" tr="type">类型</th>
                   </tr>
                 </thead>
 
@@ -111,7 +115,9 @@
       </ng-container>
 
       <tr class="no-data" *ngIf="responsesEmpty">
-        <td class="pa-8 text-center text--disabled" colspan="3">暂无数据</td>
+        <td class="pa-8 text-center text--disabled" colspan="3" tr="no-data">
+          暂无数据
+        </td>
       </tr>
     </tbody>
   </table>

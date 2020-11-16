@@ -2,7 +2,7 @@
   mat-button
   [matMenuTriggerFor]="selectRef"
   title="切换项目"
-  i18n-title="project-change"
+  tr="project-change|title"
 >
   <div class="flex y-center">
     <span class="flex-1 cur-project">{{ projects[selected]?.display }}</span>
@@ -25,11 +25,11 @@
         appStopClick
         class="remove-project ml-5"
         title="关闭"
-        i18n-title="close"
+        tr="close|title"
         mat-icon-button
         (click)="removeProject(i)"
       >
-        <mat-icon class="mr-0" i18n-title="remove" title="移除" inline>
+        <mat-icon class="mr-0" tr="remove|title" title="移除" inline>
           close
         </mat-icon>
       </button>
@@ -40,7 +40,7 @@
       mat-menu-item
       class="flex y-center justify-between project-item"
     >
-      <button class="ml-5 mat-icon-button" (click)="closeMenu()" i18n="no-data">
+      <button class="ml-5 mat-icon-button" (click)="closeMenu()" tr="no-data">
         暂无数据
       </button>
     </div>

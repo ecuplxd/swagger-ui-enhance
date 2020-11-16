@@ -1,1 +1,47 @@
-export default {};
+// tslint:disable
+export default {
+  /* common */
+  'change-lang': 'Changer de langue',
+  'change-themed': 'Changer de thème',
+  close: 'fermer',
+  'close-all': 'Tout réduire',
+  'close-esc': 'Fermer (ESC)',
+  copy: 'Copie',
+  description: 'La description',
+  'expand-all': 'Développer tout',
+  fixed: 'Haut',
+  'no-data': 'Pas de données',
+  remove: 'Retirer',
+  search: 'rechercher',
+  type: 'Types de',
+
+  /* project */
+  'project-change': "Changer d'élément",
+  'project-import-by-local': 'Cliquez pour importer le fichier JSON local',
+  'project-import-by-url': 'Importer une API existante via une URL',
+  'project-import-or-update': 'Importer ou mettre à jour',
+  'project-import-tip': "Importer l'API (seuls les fichiers .json sont pris en charge)",
+  'project-import-tip-1': '1, cliquez sur le signe plus à gauche. ',
+  'project-import-tip-2': "2, ou la barre d'adresse en haut à gauche. ",
+  'project-import-tip-3': '3, ou faites glisser le fichier ici. ',
+
+  /* api */
+  'api-copy-all-fileds': 'Copier tous les champs',
+  'api-copy-description': 'Copier la description',
+  'api-copy-url': 'Copier le lien',
+  'api-field-name': 'Nom de domaine',
+  'api-no-parameters': 'Aucun paramètre',
+  'api-no-request-histroy': "Pas d'enregistrements",
+  'api-request-parameters': 'Demander des paramètres',
+  'api-response': 'Corps de réponse',
+  'api-response-code': 'Code de réponse',
+  'api-response-header': 'En-tête de réponse',
+  'api-response-result': 'Résultat',
+  'api-search-tip': 'Recherche API ("/" activer, "↑/↓" commutateur, "→/Enter" sélection, ajouter la méthode de filtrage "méthode")',
+  'api-select-request-histroy': "Sélectionner l'historique",
+  'api-send-request': 'envoyer une demande',
+  'api-sort': 'Trier',
+  'api-try-it-out': 'Lancer une requête',
+  'api-type-example': 'Exemple',
+  'api-type-remove-partial': 'Partial<T> -> T',
+};

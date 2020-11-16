@@ -36,8 +36,8 @@ See preview part for detail.
 # TODO
 
 - [ ] Try it out
-- [ ] unit test
-- [ ] i18n
+- [ ] `WIP` unit test
+- [x] i18n
 - [ ] change theme
 - [ ] toggle side nav
 

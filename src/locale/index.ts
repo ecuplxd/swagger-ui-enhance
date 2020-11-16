@@ -1,3 +1,4 @@
+import { Any } from 'src/app/share/share.model';
 import de from './de-DE';
 import en from './en-US';
 import fr from './fr-FR';
@@ -6,7 +7,7 @@ import ko from './ko-KR';
 import ru from './ru-RU';
 import zh from './zh-CN';
 
-export const i18ns = {
+export const i18ns: Any = {
   'de-DE': de,
   'en-US': en,
   'fr-FR': fr,

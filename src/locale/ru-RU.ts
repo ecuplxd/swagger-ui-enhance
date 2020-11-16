@@ -1,1 +1,46 @@
-export default {};
+export default {
+  /* common */
+  'change-lang': 'Переключить язык',
+  'change-themed': 'Сменить тему',
+  close: 'неисправность',
+  'close-all': 'Свернуть все',
+  'close-esc': 'Закрыть (ESC)',
+  copy: 'Копировать',
+  description: 'Описание',
+  'expand-all': 'Расширить все',
+  fixed: 'верхний',
+  'no-data': 'Нет данных',
+  remove: 'Удалять',
+  search: 'ищи',
+  type: 'Виды',
+
+  /* project */
+  'project-change': 'Переключить элемент',
+  'project-import-by-local': 'Нажмите, чтобы импортировать локальный файл JSON',
+  'project-import-by-url': 'Импортировать существующий API через URL',
+  'project-import-or-update': 'Импортировать или обновить',
+  'project-import-tip': 'Импорт API (поддерживаются только файлы .json)',
+  'project-import-tip-1': '1 щелкните значок плюса слева. ',
+  'project-import-tip-2': '2 или в адресной строке вверху слева. ',
+  'project-import-tip-3': '3, или перетащите файл сюда. ',
+
+  /* api */
+  'api-copy-all-fileds': 'Скопируйте все поля',
+  'api-copy-description': 'Копировать описание',
+  'api-copy-url': 'Копировать URL',
+  'api-field-name': 'Имя поля',
+  'api-no-parameters': 'Без параметров',
+  'api-no-request-histroy': 'Нет записей',
+  'api-request-parameters': 'Параметры запроса',
+  'api-response': 'Тело ответа',
+  'api-response-code': 'Код ответа',
+  'api-response-header': 'Заголовок ответа',
+  'api-response-result': 'Результат',
+  'api-search-tip': 'API поиска ("/" активировать, переключать "↑/↓", выбор "→/Enter", добавить метод фильтрации «метод»)',
+  'api-select-request-histroy': 'Выбрать историю',
+  'api-send-request': 'послать запрос',
+  'api-sort': 'Сортировать',
+  'api-try-it-out': 'Инициировать запрос',
+  'api-type-example': 'Пример',
+  'api-type-remove-partial': 'Partial<T> -> T',
+};

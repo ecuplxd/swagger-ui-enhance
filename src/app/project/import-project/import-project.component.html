@@ -6,6 +6,7 @@
     class="update-url pl-5"
     [(ngModel)]="url"
     placeholder="通过 URL 导入已有 API"
+    tr="project-import-by-url|placeholder"
   />
 
   <button
@@ -19,6 +20,7 @@
     <mat-icon
       class="f-21 inline-flex import-icon align-center justify-center"
       title="导入或进行更新"
+      tr="project-import-or-update|title"
     >
       refresh
     </mat-icon>
@@ -34,9 +36,15 @@
     #fileInput
     (change)="parseFile($event)"
     *ngIf="!destroy"
+    tr="project-import-by-local|title"
   />
 
-  <button mat-mini-fab color="primary" title="点击导入本地 JSON 文件">
+  <button
+    mat-mini-fab
+    color="primary"
+    title="点击导入本地 JSON 文件"
+    tr="project-import-by-local|title"
+  >
     <mat-icon>add</mat-icon>
   </button>
 </div>

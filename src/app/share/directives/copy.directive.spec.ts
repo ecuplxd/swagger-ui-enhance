@@ -1,6 +1,7 @@
 import { Component, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { TranslateService } from '../service';
 import { CopyDirective } from './copy.directive';
 
 @Component({
@@ -35,7 +36,9 @@ describe('CopyDirective', () => {
       TestBed.configureTestingModule({
         schemas: [NO_ERRORS_SCHEMA],
         declarations: [CopyDirective, CopyComponent],
-        providers: [],
+        providers: [
+          TranslateService,
+        ],
       }).compileComponents();
     })
   );

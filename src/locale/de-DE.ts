@@ -1,1 +1,46 @@
-export default {};
+export default {
+  /* common */
+  'change-lang': 'Sprache wechseln',
+  'change-themed': 'Thema wechseln',
+  close: 'ausschalten',
+  'close-all': 'Alle zusammenbrechen',
+  'close-esc': 'Schließen (ESC)',
+  copy: 'Kopieren',
+  description: 'Beschreibung',
+  'expand-all': 'Alle erweitern',
+  fixed: 'oben',
+  'no-data': 'Keine Daten',
+  remove: 'Entfernen',
+  search: 'suchen nach',
+  type: 'Arten von',
+
+  /* project */
+  'project-change': 'Gegenstand wechseln',
+  'project-import-by-local': 'Klicken Sie hier, um die lokale JSON-Datei zu importieren.',
+  'project-import-by-url': 'Vorhandene API über URL importieren',
+  'project-import-or-update': 'Importieren oder aktualisieren',
+  'project-import-tip': 'API importieren (nur JSON-Dateien werden unterstützt)',
+  'project-import-tip-1': '1, klicken Sie auf das Pluszeichen links. ',
+  'project-import-tip-2': '2, oder die Adressleiste oben links. ',
+  'project-import-tip-3': '3, oder ziehen Sie die Datei hierher. ',
+
+  /* api */
+  'api-copy-all-fileds': 'Kopieren Sie alle Felder',
+  'api-copy-description': 'Beschreibung kopieren',
+  'api-copy-url': 'URL kopieren',
+  'api-field-name': 'Feldname',
+  'api-no-parameters': 'Keine Parameter',
+  'api-no-request-histroy': 'Keine Aufzeichnungen',
+  'api-request-parameters': 'Parameter anfordern',
+  'api-response': 'Antwortkörper',
+  'api-response-code': 'Antwortcode',
+  'api-response-header': 'Antwortheader',
+  'api-response-result': 'Ergebnis',
+  'api-search-tip': 'Such-API ("/" aktivieren, "↑/↓" Schalter, "→/Eingabe", Filtermethode "Methode" hinzufügen)',
+  'api-select-request-histroy': 'Verlauf auswählen',
+  'api-send-request': 'Anfrage senden',
+  'api-sort': 'Sortieren',
+  'api-try-it-out': 'Anfrage einleiten',
+  'api-type-example': 'Beispiel',
+  'api-type-remove-partial': 'Partial<T> -> T',
+};

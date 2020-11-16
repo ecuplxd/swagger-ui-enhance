@@ -15,7 +15,7 @@
       class="mx-1 code f-16 title text-ellipsis"
       [title]="copyable ? api.urlForCopy : api.url"
       [class.mr-8]="!copyable"
-      *appCopy="copyable; value: api.urlForCopy; title: '复制 URL'"
+      *appCopy="copyable; value: api.urlForCopy; title: 'api-copy-url'"
     >
       {{ copyable ? api.urlForCopy : api.url }}
     </span>
@@ -29,7 +29,7 @@
     <span
       class="sub-title text-ellipsis"
       [title]="api.description"
-      *appCopy="copyable; value: api.description; title: '复制描述'"
+      *appCopy="copyable; value: api.description; title: 'api-copy-description'"
     >
       {{ api.description }}
     </span>
