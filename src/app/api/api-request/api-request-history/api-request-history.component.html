@@ -7,6 +7,7 @@
   [matMenuTriggerFor]="historyRef"
   (menuOpened)="getHistory()"
   title="选择历史记录"
+  tr="api-select-request-histroy|title"
 >
   <mat-icon class="f-21">history</mat-icon>
 </button>
@@ -16,7 +17,13 @@
   class="api-request-hisotry-panel scroll-y hidden-x"
 >
   <ng-template matMenuContent>
-    <div *ngIf="empty" class="no-historys sub-title text-center">暂无记录</div>
+    <div
+      *ngIf="empty"
+      class="no-historys sub-title text-center"
+      tr="api-no-request-histroy"
+    >
+      暂无记录
+    </div>
     <div
       class="px-10 code history-item"
       *ngFor="let item of historys"

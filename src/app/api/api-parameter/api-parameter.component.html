@@ -1,5 +1,5 @@
 <div class="y-center justify-between mb-10 header">
-  <span class="f-16">请求参数</span>
+  <span class="f-16" tr="api-request-parameters">请求参数</span>
 </div>
 
 <div class="flex-1 border">
@@ -12,15 +12,15 @@
               *appCopy="
                 hadParameters;
                 selector: copyItemClass;
-                title: '复制所有字段'
+                title: 'api-copy-all-fileds'
               "
             >
-              字段名
+              <span tr="api-field-name">字段名</span>
             </span>
           </div>
         </th>
 
-        <th class="pa-8 text-left">描述</th>
+        <th class="pa-8 text-left" tr="description">描述</th>
       </tr>
     </thead>
 
@@ -58,7 +58,13 @@
       </ng-container>
 
       <tr class="no-data" *ngIf="!hadParameters">
-        <td class="pa-8 text-center text--disabled" colspan="2">没有参数</td>
+        <td
+          class="pa-8 text-center text--disabled"
+          colspan="2"
+          tr="api-no-parameters"
+        >
+          没有参数
+        </td>
       </tr>
     </tbody>
   </table>

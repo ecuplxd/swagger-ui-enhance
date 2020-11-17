@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Directive, TemplateRef } from '@angular/core';
 import { CopyComponent } from '../components/copy/copy.component';
+import { TranslateService } from '../service';
 import { Any } from '../share.model';
 
 @Directive({
@@ -15,7 +16,7 @@ import { Any } from '../share.model';
 export class CopyDirective implements OnInit, OnDestroy {
   @Input() appCopy = false;
 
-  @Input() appCopyTitle = '复制';
+  @Input() appCopyTitle = 'copy';
 
   @Input() appCopyValue!: string;
 
@@ -24,7 +25,8 @@ export class CopyDirective implements OnInit, OnDestroy {
   constructor(
     private templateRef: TemplateRef<Any>,
     private viewContainer: ViewContainerRef,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +41,7 @@ export class CopyDirective implements OnInit, OnDestroy {
       const instance = componentRef.instance as CopyComponent;
 
       instance.value = this.appCopyValue;
-      instance.title = this.appCopyTitle;
+      instance.title = this.translate.getTranslateText(this.appCopyTitle);
       instance.selector = this.appCopySelector;
     }
   }

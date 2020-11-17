@@ -42,12 +42,19 @@
           [deprecated]="apiItem.deprecated"
           [method]="apiItem.__info.method"
           title="发送请求"
+          tr="api-send-request|title"
           (click)="doRequest()"
         ></app-api-method>
       </button>
     </div>
 
-    <button class="ml-5" title="关闭" mat-icon-button mat-dialog-close>
+    <button
+      class="ml-5"
+      tr="close|title"
+      title="关闭"
+      mat-icon-button
+      mat-dialog-close
+    >
       <mat-icon>close</mat-icon>
     </button>
   </div>
