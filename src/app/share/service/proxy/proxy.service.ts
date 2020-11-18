@@ -69,6 +69,7 @@ export class ProxyService {
       default:
         break;
     }
+
     return this.get(url);
   }
 
@@ -108,5 +109,6 @@ export class ProxyService {
     });
   }
 
+  // TODO
   ws(): void {}
 }
