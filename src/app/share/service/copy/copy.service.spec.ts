@@ -13,6 +13,8 @@ class MatSnackBarStub {
 
 describe('CopyService', () => {
   let service: CopyService;
+  let snackBar: MatSnackBar;
+  let clipboard: Clipboard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,10 +29,44 @@ describe('CopyService', () => {
         },
       ],
     });
+
     service = TestBed.inject(CopyService);
+    snackBar = TestBed.inject(MatSnackBar);
+    clipboard = TestBed.inject(Clipboard);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should #copy() do nothing if no value', () => {
+    spyOn(clipboard, 'copy');
+    service.copy('');
+
+    expect(clipboard.copy).not.toHaveBeenCalled();
+  });
+
+  it('should #copy() text', () => {
+    spyOn(clipboard, 'copy');
+
+    service.copy('copy', false);
+
+    expect(clipboard.copy).toHaveBeenCalledWith('copy');
+  });
+
+  it('should #copy() text by selector', () => {
+    spyOn(clipboard, 'copy');
+
+    const div = document.createElement('div');
+    div.innerHTML = `
+    <div class="copy">copy1<br/>fffff</div>
+    <div class="copy">copy2</div>
+    <div class="copy">copy3 <span>content_copy</span></div>
+    `;
+    document.body.appendChild(div);
+
+    service.copy('copy', true);
+
+    expect(clipboard.copy).toHaveBeenCalledWith('copy1fffff, copy2, copy3 ');
   });
 });
