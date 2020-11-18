@@ -68,5 +68,7 @@ describe('CopyService', () => {
     service.copy('copy', true);
 
     expect(clipboard.copy).toHaveBeenCalledWith('copy1fffff, copy2, copy3 ');
+
+    document.body.removeChild(div);
   });
 });

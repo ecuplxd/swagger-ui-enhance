@@ -12,8 +12,10 @@ export class HistoryService {
 
   constructor() {}
 
+  // TODO
   load(): void {}
 
+  // TODO
   dump(): void {}
 
   add(
@@ -29,18 +31,12 @@ export class HistoryService {
       editorValue,
     };
 
-    if (this.historys[apiId]) {
-      let historyExit = this.getHistoryByName(apiId, name);
-      if (historyExit) {
-        historyExit = historyItem;
-        return;
-      }
-
-      this.historys[apiId].push(historyItem);
+    if (!this.historys[apiId]) {
+      this.historys[apiId] = [historyItem];
       return;
     }
 
-    this.historys[apiId] = [historyItem];
+    this.historys[apiId].push(historyItem);
   }
 
   get(apiId: string): RequestHistory[] {
