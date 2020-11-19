@@ -65,6 +65,10 @@ export class DialogService {
       data,
     });
 
+    this.listenCloseDialog();
+  }
+
+  listenCloseDialog(): void {
     this.dialogRef.afterClosed().subscribe(() => {
       this.html.classList.remove('hidden-y');
     });
