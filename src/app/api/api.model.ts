@@ -1,3 +1,4 @@
+import { RequestHistory } from '../share/service/history/history.model';
 import {
   Any,
   AnyObject,
@@ -138,3 +139,11 @@ export interface ApiUrl {
   name?: string;
   value?: string;
 }
+
+export interface ApiRequestModalData {
+  apiItem: ApiItem;
+  editorSize: Size;
+  history?: RequestHistory;
+}
+
+export type RequestKind = 'Body' | 'Header' | 'Query';
