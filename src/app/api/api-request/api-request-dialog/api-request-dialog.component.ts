@@ -1,6 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { EditorComponent } from 'src/app/share/components';
@@ -12,7 +11,14 @@ import {
 } from 'src/app/share/service';
 import { RequestHistory } from 'src/app/share/service/history/history.model';
 import { ObjectObject } from 'src/app/share/share.model';
-import { ApiItem, ApiParameters, ApiUrl, Size } from '../../api.model';
+import {
+  ApiItem,
+  ApiParameters,
+  ApiRequestModalData,
+  ApiUrl,
+  RequestKind,
+  Size,
+} from '../../api.model';
 
 @Component({
   selector: 'app-api-request-dialog',
@@ -21,8 +27,6 @@ import { ApiItem, ApiParameters, ApiUrl, Size } from '../../api.model';
 })
 export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   @ViewChild('queryEditor') queryEditor!: EditorComponent;
-
-  @ViewChild('triggle') triggle!: MatMenuTrigger;
 
   apiItem!: ApiItem;
 
@@ -42,12 +46,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   subscription!: Subscription;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA)
-    data: {
-      apiItem: ApiItem;
-      editorSize: Size;
-      history: RequestHistory;
-    },
+    @Inject(MAT_DIALOG_DATA) data: ApiRequestModalData,
     private typeService: TypeService,
     private store: StoreService,
     private proxy: ProxyService,
@@ -63,7 +62,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
 
     this.parseUrl(this.apiItem.__info.url);
     this.groupParams();
-    // this.getResponseType();
+    this.getResponseType();
   }
 
   ngOnInit(): void {
@@ -75,9 +74,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscription.unsubscribe();
   }
 
   setHistory(item: RequestHistory): void {
@@ -85,10 +82,14 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     this.editorValue = item.editorValue;
   }
 
+  getStringLen(str: string | undefined): number {
+    return (str || '').length;
+  }
+
   parseUrl(url: string): void {
     let index = 0;
 
-    url.replace(/\{(.+?)\}/g, (match: string = '', p1, p2) => {
+    url.replace(/\{(.+?)\}/g, (match: string, p1, p2) => {
       this.urlParams.push({
         path: url.substring(index, p2),
       });
@@ -99,7 +100,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         value: '',
       });
 
-      index = p2 + match.length;
+      index = p2 + this.getStringLen(match);
 
       return '';
     });
@@ -131,7 +132,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
       JSON.stringify(this.apiItem.parameters || [])
     );
 
-    if (!parameters) {
+    if (parameters.length === 0) {
       return;
     }
 
@@ -139,6 +140,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
       query: {},
       body: {},
       header: {},
+      formData: {},
     };
 
     parameters
@@ -164,9 +166,9 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         }
       });
 
-    ['Header', 'Query', 'Body']
+    ['Header', 'Query', 'Body', 'FormData']
       .map((kind) => {
-        const kindLower = kind.toLowerCase();
+        const kindLower = kind[0].toLowerCase() + kind.substring(1);
         const type = parameters
           .filter((param) => param.in === kindLower)
           .map((param) => param.display)
@@ -215,7 +217,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     this.editorSize = JSON.parse(JSON.stringify(size));
   }
 
-  getText(text: string | undefined, type: string): string {
+  getText(text: string | undefined, type: RequestKind): string {
     if (text === undefined) {
       return '{}';
     }
@@ -230,16 +232,16 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     const offset = ` ${type} = `.length;
     const result = text.substring(start + offset, end);
 
-    return result;
+    return result.trim();
   }
 
   createResponse(): string {
     return '';
   }
 
-  eval(tex: string): Object {
+  eval(text: string): Object {
     try {
-      return new Function('return ' + tex)();
+      return new Function('return ' + text)();
     } catch (error) {
       return {};
     }
@@ -261,8 +263,6 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     ];
 
     this.historyService.add(this.apiItem.__id, url, this.urlParams, text);
-
-    return;
     this.proxy.proxy(reqUrl, method, query, body, header).subscribe(
       (res) => {
         responseInfo.push('// code: 200\n');
@@ -275,17 +275,5 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     );
-  }
-
-  showHistory(): void {
-    if (this.triggle.menuOpen) {
-      return;
-    }
-
-    this.triggle.openMenu();
-  }
-
-  hideHistory(): void {
-    this.triggle.closeMenu();
   }
 }

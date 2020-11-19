@@ -2,7 +2,6 @@ import { Component, EventEmitter, NO_ERRORS_SCHEMA, Output } from '@angular/core
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ShareModule } from 'src/app/share';
-import { HoverMenuComponent } from 'src/app/share/components';
 import { IdService, StoreService, TypeService } from 'src/app/share/service';
 import { hasClass, Page, StoreServiceStub } from 'src/__test__';
 import { ApiParameters } from '../api.model';
