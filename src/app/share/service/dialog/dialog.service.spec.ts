@@ -81,5 +81,9 @@ describe('DialogService', () => {
     const html = document.querySelector('html') as HTMLElement;
 
     expect(hasClass(html, 'hidden-y')).toBe(false, 'after close opened dialog');
+
+    // TODO: why can't close
+    const modal = document.querySelector('.cdk-overlay-container');
+    modal?.parentNode?.removeChild(modal);
   });
 });
