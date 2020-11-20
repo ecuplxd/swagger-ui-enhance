@@ -60,6 +60,7 @@ export class HoverMenuComponent implements OnInit {
   }
 
   close(): void {
+    this.open = false;
     this.menuTrigger.closeMenu();
   }
 }
