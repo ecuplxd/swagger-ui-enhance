@@ -1,14 +1,22 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { Injectable } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateService } from 'src/app/share/service';
+import { Page } from 'src/__test__';
 import { LayoutModule } from '../../layout.module';
 import { HeadRightComponent } from './head-right.component';
 
+@Injectable()
+class TranslateServiceStub extends TranslateService {
+  reload(): this {
+    return this;
+  }
+}
+
 describe('HeadRightComponent', () => {
+  let page: Page<HeadRightComponent>;
   let component: HeadRightComponent;
-  let fixture: ComponentFixture<HeadRightComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -16,15 +24,18 @@ describe('HeadRightComponent', () => {
       imports: [BrowserAnimationsModule, LayoutModule],
       declarations: [HeadRightComponent],
       providers: [
-        TranslateService,
+        {
+          provide: TranslateService,
+          useClass: TranslateServiceStub,
+        },
       ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HeadRightComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    localStorage.removeItem('locale');
+    page = new Page(HeadRightComponent);
+    component = page.component;
   });
 
   it('should create', () => {
@@ -32,7 +43,7 @@ describe('HeadRightComponent', () => {
   });
 
   it('should have github link', () => {
-    const a: HTMLElement = fixture.nativeElement.querySelector('.github-href');
+    const a: HTMLElement = page.query('.github-href');
 
     expect(a).toBeTruthy();
     expect(a.getAttribute('target')).toBe('_blank');
@@ -43,22 +54,20 @@ describe('HeadRightComponent', () => {
   });
 
   it('should have change theme el', () => {
-    const btn = fixture.nativeElement.querySelector('.change-theme');
+    const btn = page.query('.change-theme');
 
     expect(btn).toBeTruthy();
   });
 
   it('should have change lang el', () => {
-    const btn = fixture.nativeElement.querySelector('.change-lang');
+    const btn = page.query('.change-lang');
 
     expect(btn).toBeTruthy();
   });
 
-  // TODO
-  xit('should change lang', () => {
-    const btn = fixture.debugElement.query(By.css('.change-lang'));
-    btn.triggerEventHandler('click', {});
-    fixture.detectChanges();
+  it('should change lang', () => {
+    const btn = page.queryDe('.change-lang');
+    page.clickDe(btn).detectChanges();
 
     expect(component.language).toEqual(
       {
@@ -66,6 +75,7 @@ describe('HeadRightComponent', () => {
         locale: 'zh-CN',
         alternate: 'zh-Hans',
         country: 'cn',
+        fallback: true,
       },
       'pre language'
     );
@@ -74,13 +84,13 @@ describe('HeadRightComponent', () => {
       '.lang-item'
     );
     langs[1].click();
+    page.detectChanges();
 
     expect(component.language).toEqual(
       {
         name: 'English',
-        locale: 'en',
+        locale: 'en-US',
         country: 'us',
-        fallback: true,
       },
       'cur language'
     );
