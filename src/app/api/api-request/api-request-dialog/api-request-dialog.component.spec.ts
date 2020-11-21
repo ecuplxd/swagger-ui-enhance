@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { Component, Input } from '@angular/core';
 import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -86,6 +87,7 @@ describe('ApiRequestDialogComponent', () => {
         MatDialogModule,
         MatMenuModule,
         MatIconModule,
+        FormsModule,
       ],
       declarations: [
         ApiRequestDialogComponent,
@@ -414,7 +416,11 @@ describe('ApiRequestDialogComponent', () => {
   });
 
   it('should send a request', () => {
+    expect(component.response).toBe('', 'before send');
+
     component.doRequest();
+
+    expect(component.response).not.toEqual('');
   });
 
   it('should #doRequest() handle error', () => {
