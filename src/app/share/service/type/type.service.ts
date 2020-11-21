@@ -234,7 +234,7 @@ export class TypeService {
   }
 
   // TODO：是否有社区方案
-  mock(type: string): Any {
+  mock(type: string | undefined | null): Any {
     // enum
     if (type && type.includes('|')) {
       return type.trim().split('|').filter(Boolean)[0].trim().replace(/'/g, '');
