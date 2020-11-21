@@ -55,14 +55,15 @@ export class HeadRightComponent implements OnInit {
 
   constructor(private translate: TranslateService) {
     const locale = this.translate.getLocale();
-    const language = this.languages.find((item) => item.locale === locale);
-    this.language = language || this.languages[0];
+    // tslint:disable-next-line: no-non-null-assertion
+    const language = this.languages.find((item) => item.locale === locale)!;
+    this.language = language;
   }
 
   ngOnInit(): void {}
 
-  // TODO
   changeLanguages(language: Language): void {
+    this.language = language;
     this.translate.setLocale(language.locale).reload();
   }
 

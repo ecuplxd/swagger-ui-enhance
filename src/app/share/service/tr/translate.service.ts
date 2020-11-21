@@ -25,12 +25,15 @@ export class TranslateService {
   }
 
   setLocale(local: string): this {
+    this.locale = local;
     localStorage.setItem(this.STORAGE_KEY, local);
     return this;
   }
 
   reload(): this {
-    location.reload();
+    Array.from(document.querySelectorAll(`[${this.I18N_MARK}]`)).forEach((el) =>
+      this.tr(el as HTMLElement)
+    );
     return this;
   }
 
