@@ -11,6 +11,7 @@
     <div class="left pl-16">
       <mat-slide-toggle
         color="primary"
+        class="remove-question"
         [checked]="removeQuestion"
         [disabled]="showSample"
         (change)="removeCodeQuestion($event)"
@@ -20,7 +21,7 @@
 
       <mat-slide-toggle
         color="primary"
-        class="mx-16"
+        class="mx-16 show-sample"
         [checked]="showSample"
         (change)="getMockCode($event)"
       >
@@ -29,6 +30,7 @@
 
       <mat-slide-toggle
         color="primary"
+        class="fixed-popover"
         [checked]="fixed"
         (change)="fixedPopover($event)"
       >
@@ -37,10 +39,19 @@
     </div>
 
     <div class="right">
-      <button mat-button color="primary" (click)="copy()" tr="copy">
+      <button
+        class="copy-code"
+        mat-button
+        color="primary"
+        (click)="copy()"
+        tr="copy"
+      >
         复制
       </button>
-      <button mat-button (click)="close()" tr="close-esc">关闭（ESC）</button>
+
+      <button class="close" mat-button (click)="close()" tr="close-esc">
+        关闭（ESC）
+      </button>
     </div>
   </div>
 </div>
