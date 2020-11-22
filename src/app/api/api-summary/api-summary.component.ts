@@ -1,19 +1,19 @@
 // https://stackoverflow.com/questions/53618333/how-to-open-and-close-angular-mat-menu-on-hover
 
 import {
+  AfterViewInit,
   Component,
-  OnInit,
   Input,
+  OnInit,
   Renderer2,
   ViewChild,
-  AfterViewInit,
 } from '@angular/core';
-
-import { ApiItem, ApiMethod } from '../api.model';
-import { MenuPositionService, StoreService } from 'src/app/share/service';
-import { MatMenuTrigger } from '@angular/material/menu';
 import { MatButton } from '@angular/material/button';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MenuPositionService, StoreService } from 'src/app/share/service';
 import { Any } from 'src/app/share/share.model';
+import { ApiItem, ApiMethod } from '../api.model';
+
 // import { delay } from 'rxjs/operators';
 
 @Component({
@@ -23,6 +23,7 @@ import { Any } from 'src/app/share/share.model';
 })
 export class ApiSummaryComponent implements OnInit, AfterViewInit {
   @ViewChild('levelOneTrigger') menuTrigger!: MatMenuTrigger;
+  @ViewChild('btn') btn!: MatButton;
 
   @Input() apiItems: ApiItem[] = [];
 
@@ -62,13 +63,15 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
 
   groupByMethod(): void {
     this.apiItems.forEach((apiItem: ApiItem, index: number) => {
+      const method = apiItem.__info.method;
       apiItem.__index = index;
 
-      if (this.groups.get(apiItem.__info.method)) {
-        this.groups.get(apiItem.__info.method)?.push(apiItem);
+      if (this.groups.get(method)) {
+        // tslint:disable-next-line: no-non-null-assertion
+        this.groups.get(method)!.push(apiItem);
       } else {
-        this.methods.push(apiItem.__info.method);
-        this.groups.set(apiItem.__info.method, [apiItem]);
+        this.methods.push(method);
+        this.groups.set(method, [apiItem]);
       }
     });
   }
