@@ -101,7 +101,10 @@
               "src/styles.less"
             ],
             "scripts": [],
-            "codeCoverageExclude": ["src/app/share/components/editor/**"]
+            "codeCoverageExclude": [
+              "src/app/share/components/editor/**",
+              "src/app/app-routing.module.ts"
+            ]
           }
         },
         "lint": {
