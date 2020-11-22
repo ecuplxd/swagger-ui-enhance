@@ -1,11 +1,12 @@
 <button
-  #button
+  #btn
+  class="triggle-button"
   mat-icon-button
   [matMenuTriggerFor]="levelOne"
   #levelOneTrigger="matMenuTrigger"
   appStopClick
   (mouseenter)="buttonEnter(levelOneTrigger)"
-  (mouseleave)="buttonLeave(levelOneTrigger, button)"
+  (mouseleave)="buttonLeave(levelOneTrigger, btn)"
   (menuOpened)="handleMenuOpen()"
 >
   <mat-icon>more_vert</mat-icon>
@@ -19,7 +20,7 @@
 >
   <div
     (mouseenter)="menuenter()"
-    (mouseleave)="menuLeave(levelOneTrigger, button)"
+    (mouseleave)="menuLeave(levelOneTrigger, btn)"
   >
     <mat-nav-list class="pt-0" *ngIf="!showSubMenu">
       <mat-list-item
@@ -52,7 +53,7 @@
           <mat-nav-list
             class="pt-0"
             (mouseenter)="menu2enter()"
-            (mouseleave)="menu2Leave(levelOneTrigger, levelTwoTrigger, button)"
+            (mouseleave)="menu2Leave(levelOneTrigger, levelTwoTrigger, btn)"
           >
             <mat-list-item
               *ngFor="let api of groups.get(method)"
