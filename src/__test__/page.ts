@@ -1,5 +1,7 @@
+import { HttpClientModule } from '@angular/common/http';
 import { DebugElement, OnInit, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { By } from '@angular/platform-browser';
 import { ApiItem } from 'src/app/api/api.model';
 import { StoreService } from 'src/app/share/service';
@@ -13,6 +15,15 @@ class Componnet implements OnInit {
 }
 
 export class Page<T extends Componnet> {
+  static imports = [MatSnackBarModule, HttpClientModule];
+
+  static providers = [
+    {
+      provide: StoreService,
+      useClass: StoreServiceStub,
+    },
+  ];
+
   fixture!: ComponentFixture<T>;
 
   component: T;
@@ -56,7 +67,10 @@ export class Page<T extends Componnet> {
     return el.innerText.trim();
   }
 
-  getAttr<U extends HTMLElement>(selector: string, attr: string): string | null{
+  getAttr<U extends HTMLElement>(
+    selector: string,
+    attr: string
+  ): string | null {
     const el = this.query<U>(selector);
     return el.getAttribute(attr);
   }

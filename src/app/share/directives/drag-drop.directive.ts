@@ -5,6 +5,7 @@ import {
   HostListener,
   Output,
 } from '@angular/core';
+import { Any } from '../share.model';
 
 @Directive({
   selector: '[appDragDrop]',
@@ -29,12 +30,12 @@ export class DragDropDirective {
 
   @HostListener('dragleave', ['$event'])
   public onDragLeave(event: DragEvent): void {
-    this.stopEvent(event).setBackgroudColor();
+    this.stopEvent(event).setBackgroudColor(this.bgColor);
   }
 
   @HostListener('drop', ['$event'])
   public ondrop(event: DragEvent): void {
-    this.stopEvent(event).setBackgroudColor();
+    this.stopEvent(event).setBackgroudColor(this.bgColor);
 
     if (!event.dataTransfer) {
       return;
@@ -56,7 +57,7 @@ export class DragDropDirective {
     return this;
   }
 
-  setBackgroudColor(color: string = this.bgColor, opacity: number = 1): this {
+  setBackgroudColor(color: string, opacity: number = 1): this {
     this.background = color;
     this.opacity = opacity;
 
