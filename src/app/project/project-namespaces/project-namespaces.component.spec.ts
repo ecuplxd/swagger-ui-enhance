@@ -6,7 +6,7 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { click, StoreServiceStub } from 'src/__test__';
 import { ProjectModule } from '../project.module';
@@ -27,10 +27,22 @@ describe('ProjectNamespacesComponent', () => {
     fixture.detectChanges();
   };
 
+  const openMenu = (index: number) => {
+    const btns = document.querySelectorAll('.triggle-button');
+    btns[index].dispatchEvent(new Event('mouseenter'));
+    fixture.detectChanges();
+    tick();
+
+    const menu = document.querySelector('.menu1-trigger');
+    menu?.dispatchEvent(new Event('mouseenter'));
+    fixture.detectChanges();
+    tick();
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ProjectModule],
+      imports: [BrowserAnimationsModule, ProjectModule],
       declarations: [ProjectNamespacesComponent],
       providers: [
         {
@@ -137,6 +149,17 @@ describe('ProjectNamespacesComponent', () => {
       '2 not selected'
     );
   });
+
+  it('should show api summary by hover right dot', fakeAsync(() => {
+    installData();
+    openMenu(0);
+
+    const menu = document.querySelector('.api-summary-panel');
+
+    expect(menu).toBeTruthy();
+
+    flush();
+  }));
 
   it('should filter namespace', fakeAsync(() => {
     installData();

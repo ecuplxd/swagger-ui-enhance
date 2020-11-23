@@ -19,6 +19,7 @@
   [class]="!showSubMenu ? 'api-summary-panel' : ''"
 >
   <div
+    class="menu1-trigger"
     (mouseenter)="menuenter()"
     (mouseleave)="menuLeave(levelOneTrigger, btn)"
   >
@@ -38,6 +39,7 @@
     <ng-container *ngIf="showSubMenu">
       <ng-container *ngFor="let method of methods">
         <div
+          class="method-group"
           mat-menu-item
           #levelTwoTrigger="matMenuTrigger"
           [matMenuTriggerFor]="levelTwo"
@@ -51,7 +53,7 @@
           [hasBackdrop]="false"
         >
           <mat-nav-list
-            class="pt-0"
+            class="menu2-trigger pt-0"
             (mouseenter)="menu2enter()"
             (mouseleave)="menu2Leave(levelOneTrigger, levelTwoTrigger, btn)"
           >
