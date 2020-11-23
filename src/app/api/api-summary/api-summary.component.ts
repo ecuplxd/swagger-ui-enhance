@@ -11,7 +11,6 @@ import {
 import { MatButton } from '@angular/material/button';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MenuPositionService, StoreService } from 'src/app/share/service';
-import { Any } from 'src/app/share/share.model';
 import { ApiItem, ApiMethod } from '../api.model';
 
 // import { delay } from 'rxjs/operators';
@@ -23,6 +22,9 @@ import { ApiItem, ApiMethod } from '../api.model';
 })
 export class ApiSummaryComponent implements OnInit, AfterViewInit {
   @ViewChild('levelOneTrigger') menuTrigger!: MatMenuTrigger;
+
+  @ViewChild('levelTwoTrigger') menuTrigger2!: MatMenuTrigger;
+
   @ViewChild('btn') btn!: MatButton;
 
   @Input() apiItems: ApiItem[] = [];
@@ -101,22 +103,10 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
 
   menuLeave(trigger: MatMenuTrigger, button: MatButton): void {
     setTimeout(() => {
+      this.isMatMenuOpen = false;
+
       if (!this.isMatMenu2Open && !this.enteredButton) {
-        this.isMatMenuOpen = false;
-
-        trigger.closeMenu();
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-focused'
-        );
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-program-focused'
-        );
-      } else {
-        this.isMatMenuOpen = false;
+        this.removeFocusElCdkClass(trigger, button);
       }
     }, 80);
   }
@@ -132,23 +122,14 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
   ): void {
     setTimeout(() => {
       if (this.isMatMenu2Open) {
-        trigger1.closeMenu();
+        this.removeFocusElCdkClass(trigger1, button);
 
         this.isMatMenuOpen = false;
         this.isMatMenu2Open = false;
         this.enteredButton = false;
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-focused'
-        );
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-program-focused'
-        );
       } else {
         this.isMatMenu2Open = false;
+
         trigger2.closeMenu();
       }
     }, 100);
@@ -156,10 +137,6 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
 
   buttonEnter(trigger: MatMenuTrigger): void {
     setTimeout(() => {
-      const menu = trigger.menu as Any;
-      const firstEl =
-        menu.items.first && menu.items.first._elementRef.nativeElement;
-
       if (this.prevButtonTrigger && this.prevButtonTrigger !== trigger) {
         this.prevButtonTrigger.closeMenu();
         this.prevButtonTrigger = trigger;
@@ -167,22 +144,11 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
         this.isMatMenu2Open = false;
 
         trigger.openMenu();
-
-        if (firstEl) {
-          this.render.removeClass(firstEl, 'cdk-focused');
-
-          this.render.removeClass(firstEl, 'cdk-program-focused');
-        }
       } else if (!this.isMatMenuOpen) {
         this.enteredButton = true;
         this.prevButtonTrigger = trigger;
 
         trigger.openMenu();
-
-        if (firstEl) {
-          this.render.removeClass(firstEl, 'cdk-focused');
-          this.render.removeClass(firstEl, 'cdk-program-focused');
-        }
       } else {
         this.enteredButton = true;
         this.prevButtonTrigger = trigger;
@@ -192,34 +158,25 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
 
   buttonLeave(trigger: MatMenuTrigger, button: MatButton): void {
     setTimeout(() => {
+      // isMatMenuOpen = false 移到另一个 namespace
       if (this.enteredButton && !this.isMatMenuOpen) {
-        trigger.closeMenu();
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-focused'
-        );
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-program-focused'
-        );
+        this.removeFocusElCdkClass(trigger, button);
       }
+
       if (!this.isMatMenuOpen) {
-        trigger.closeMenu();
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-focused'
-        );
-
-        this.render.removeClass(
-          button._elementRef.nativeElement,
-          'cdk-program-focused'
-        );
+        this.removeFocusElCdkClass(trigger, button);
       } else {
         this.enteredButton = false;
       }
     }, 100);
+  }
+
+  removeFocusElCdkClass(trigger: MatMenuTrigger, el: MatButton): void {
+    trigger.closeMenu();
+
+    const nativeElement = el._elementRef.nativeElement;
+
+    this.render.removeClass(nativeElement, 'cdk-focused');
+    this.render.removeClass(nativeElement, 'cdk-program-focused');
   }
 }

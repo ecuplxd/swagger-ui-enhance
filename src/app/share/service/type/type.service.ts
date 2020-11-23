@@ -156,7 +156,7 @@ export class TypeService {
   }
 
   formalTypeName(type: string): string {
-    type = type.replace(/[\.\\\/\s]/g, '');
+    type = type.replace(/[\.\\\/\s«»]/g, '');
 
     type = (type[0] || '').toUpperCase() + type.substr(1);
 
