@@ -224,12 +224,10 @@ export class ApiSearchComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      const namespaceIndex = el.getAttribute('data-namespace');
-      const apiIndex = el.getAttribute('data-api');
+      const namespaceIndex = el.getAttribute('data-namespace') as string;
+      const apiIndex = el.getAttribute('data-api') as string;
 
-      if (namespaceIndex && apiIndex) {
-        this.handleSelect([+namespaceIndex, +apiIndex]);
-      }
+      this.handleSelect([+namespaceIndex, +apiIndex]);
     }
   }
 
