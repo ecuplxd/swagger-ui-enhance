@@ -195,7 +195,7 @@ export class Tag {
     spyOn(copyService, 'copy');
     spyOn(component.closeMenu, 'emit');
     const de = page.queryDe('.copy-code');
-    page.clickDe(de).detectChanges();
+    page.clickDe().detectChanges();
 
     expect(copyService.copy).toHaveBeenCalledWith(code, false);
     expect(component.closeMenu.emit).toHaveBeenCalled();

@@ -247,11 +247,21 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  getEditorValue(): string | undefined {
+    const model = this.queryEditor.editor.getModel();
+
+    if (!model) {
+      return '';
+    }
+
+    return model.getValue();
+  }
+
   doRequest(): void {
     const url = this.urlParams.map((item) => item.value || item.path).join('');
     const method = this.apiItem.__info.method;
     const project = this.store.getCurPorject();
-    const text = this.queryEditor.editor.getModel()?.getValue();
+    const text = this.getEditorValue();
     const query = this.eval(this.getText(text, 'Query'));
     const body = this.eval(this.getText(text, 'Body'));
     const header = this.eval(this.getText(text, 'Header'));

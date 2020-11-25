@@ -4949,3 +4949,7 @@ export const STORE_DATA_MOCK = ({
     },
   ],
 } as Any) as StoreData;
+
+export const STORE_DATA_MOCK2 = JSON.parse(
+  JSON.stringify(STORE_DATA_MOCK)
+) as StoreData;

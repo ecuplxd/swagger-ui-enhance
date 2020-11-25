@@ -1,31 +1,29 @@
 import { Injectable } from '@angular/core';
-
-import { TypeService } from '../type/type.service';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, Subject } from 'rxjs';
+import {
+  ApiItem,
+  ApiMethod,
+  ApiParameters,
+  ApiResponseHeaderValue,
+  ApiResponses,
+  ApiResponsesValue,
+  API_METHODS,
+} from 'src/app/api/api.model';
 import {
   Project,
   ProjectNamesapce,
   ProjectTag,
 } from 'src/app/project/project.model';
 import {
-  ApiItem,
-  ApiMethod,
-  ApiResponses,
-  ApiParameters,
-  ApiResponsesValue,
-  ApiResponseHeaderValue,
-  API_METHODS,
-} from 'src/app/api/api.model';
-import {
-  StoreIndex,
+  Any,
   AnyObject,
   StoreData,
+  StoreIndex,
   StoreIndexKey,
-  Any,
 } from '../../share.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProxyService } from '../proxy/proxy.service';
-import { Observable, Subject } from 'rxjs';
+import { TypeService } from '../type/type.service';
 
 @Injectable({
   providedIn: 'root',
@@ -162,7 +160,12 @@ export class StoreService {
 
     this.transformProject(project);
     this.selectProject(project);
+    this.toastImportResult();
 
+    return this;
+  }
+
+  toastImportResult(): this {
     if (!this.projectExit) {
       this.toastMessage('导入成功');
     }
@@ -211,25 +214,26 @@ export class StoreService {
     return this;
   }
 
+  resolveApiTag(api: ApiItem, tags: Set<string>): ApiItem {
+    if (this.noTag(api.tags)) {
+      api.tags = [this.DEAFULT_NAMESPACE];
+    }
+
+    api.tags.forEach((tag: string) => tags.add(tag));
+
+    return api;
+  }
+
   getNamespaceFromTags(project: Project): ProjectTag[] {
     const tags = new Set<string>();
 
-    this.iterObj(project.paths, (_1: string, methods: AnyObject) => {
-      this.iterObj(methods, (_2: ApiMethod, api: ApiItem) => {
-        if (!api.tags || api.tags.length === 0) {
-          api.tags = [this.DEAFULT_NAMESPACE];
-        }
+    this.iterObj(project.paths, (_1: string, methods: AnyObject) =>
+      this.iterObj(methods, (_2: ApiMethod, api: ApiItem) =>
+        this.resolveApiTag(api, tags)
+      )
+    );
 
-        api.tags.forEach((tag: string) => tags.add(tag));
-      });
-    });
-
-    return Array.from(tags).map((tag) => {
-      return {
-        name: tag,
-        description: tag === this.DEAFULT_NAMESPACE ? '默认 namespace' : '--',
-      };
-    });
+    return Array.from(tags).map((tag) => this.transformTag(tag));
   }
 
   getNamespace(project: Project): this {
@@ -252,49 +256,74 @@ export class StoreService {
   }
 
   getNamespaceApis(project: Project): this {
-    let apiIndex = 0;
-
     const apiItems: ApiItem[] = [];
 
     this.iterObj(project.paths, (url: string, methods: AnyObject) => {
       this.iterObj(methods, (method: ApiMethod, api: ApiItem) => {
         // 处理不合法的请求方法
         if (API_METHODS.includes(method)) {
-          api = {
-            ...api,
-            __id: url + '|' + method,
-            __produce: api.produces && api.produces[0],
-            __info: {
-              description: api.summary || '该 API 缺少描述',
-              method,
-              url,
-              deprecated: api.deprecated,
-              urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
-              operationId: api.operationId,
-            },
-          };
-
-          apiItems.push(api);
+          apiItems.push(this.transformApi(api, method, url));
         }
       });
     });
 
+    let apiIndex = 0;
     apiItems.forEach((api: ApiItem) => {
       this.transformParameters(api.parameters).transformResponses(
         api.responses
       );
 
-      const tags = api.tags || [];
-      tags.forEach((tag: string) => {
-        const index = this.namespacesMap.get(tag);
-
-        if (index !== undefined) {
-          api.__index = apiIndex++;
-          project.namespaces[index].apiItems.push(api);
-        }
-      });
+      apiIndex = this.addApiIntoNamespace(project, api, apiIndex);
     });
     return this;
+  }
+
+  addApiIntoNamespace(
+    project: Project,
+    api: ApiItem,
+    apiIndex: number
+  ): number {
+    this.getApiTags(api).forEach((tag: string) => {
+      const index = this.namespacesMap.get(tag);
+
+      if (index !== undefined) {
+        api.__index = apiIndex++;
+        project.namespaces[index].apiItems.push(api);
+      }
+    });
+
+    return apiIndex;
+  }
+
+  getApiTags(api: ApiItem): string[] {
+    return api.tags || [];
+  }
+
+  noTag(tags: string[]): boolean {
+    return !tags || tags.length === 0;
+  }
+
+  transformApi(api: ApiItem, method: ApiMethod, url: string): ApiItem {
+    return {
+      ...api,
+      __id: url + '|' + method,
+      __produce: api.produces && api.produces[0],
+      __info: {
+        description: api.summary || '该 API 缺少描述',
+        method,
+        url,
+        deprecated: api.deprecated,
+        urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
+        operationId: api.operationId,
+      },
+    };
+  }
+
+  transformTag(tag: string): ProjectTag {
+    return {
+      name: tag,
+      description: tag === this.DEAFULT_NAMESPACE ? '默认 namespace' : '--',
+    };
   }
 
   transformResponses(responses: ApiResponses = {}): this {
