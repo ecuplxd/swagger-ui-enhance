@@ -475,4 +475,10 @@ describe('ApiRequestDialogComponent', () => {
     expect(component.getStringLen('1111')).toEqual(4);
     expect(component.getStringLen(undefined)).toEqual(0);
   });
+
+  it('should handle get editor value fail', () => {
+    spyOn(component.queryEditor.editor, 'getModel').and.returnValue(null);
+
+    expect(component.getEditorValue()).toEqual('');
+  });
 });

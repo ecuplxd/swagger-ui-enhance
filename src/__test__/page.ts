@@ -11,7 +11,11 @@ import { StoreServiceStub } from './mock';
 import { STORE_DATA_MOCK } from './storeData';
 
 class Componnet implements OnInit {
-  ngOnInit(): void {}
+  static usePage = 0;
+  ngOnInit(): void {
+    Componnet.usePage++;
+    // console.log('use Page: ' + Componnet.usePage);
+  }
 }
 
 export class Page<T extends Componnet> {
@@ -35,6 +39,7 @@ export class Page<T extends Componnet> {
   des: DebugElement[] = [];
 
   constructor(component: Type<T>, detectChanges = true) {
+    new Componnet().ngOnInit();
     this.fixture = TestBed.createComponent(component);
     this.component = this.fixture.componentInstance;
     this.store = TestBed.inject(StoreService) as StoreServiceStub;
@@ -90,7 +95,7 @@ export class Page<T extends Componnet> {
     return this;
   }
 
-  clickDe(de: DebugElement, eventObj: Any = ButtonClickEvents.left): this {
+  clickDe(de?: DebugElement, eventObj: Any = ButtonClickEvents.left): this {
     (de || this.de).triggerEventHandler('click', eventObj);
 
     return this;
