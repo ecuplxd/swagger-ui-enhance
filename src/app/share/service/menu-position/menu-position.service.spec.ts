@@ -1,5 +1,6 @@
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { TestBed } from '@angular/core/testing';
+import { Any } from '../../share.model';
 
 import { MenuPositionService } from './menu-position.service';
 import { MenuPositionValue } from './menu.model';
@@ -104,7 +105,29 @@ describe('MenuPositionService', () => {
     }
   });
 
-  xit('should #recalculateMenu()', () => {});
+  it('should #setPosition(), #triggersSubmenu() true', () => {
+    const triggerStub = { triggersSubmenu: () => true } as Any;
+    const strategyStub = { withPositions: () => {} } as Any;
 
-  xit('should #setPosition()', () => {});
+    spyOn(service, 'convertMenuPositionToConnectedPositions');
+
+    service.setPosition(triggerStub, strategyStub);
+
+    expect(
+      service.convertMenuPositionToConnectedPositions
+    ).toHaveBeenCalledWith(['right', 'top'], -8);
+  });
+
+  it('should #setPosition(), #triggersSubmenu() false', () => {
+    const triggerStub = { triggersSubmenu: () => false } as Any;
+    const strategyStub = { withPositions: () => {} } as Any;
+
+    spyOn(service, 'convertMenuPositionToConnectedPositions');
+
+    service.setPosition(triggerStub, strategyStub);
+
+    expect(
+      service.convertMenuPositionToConnectedPositions
+    ).toHaveBeenCalledWith(['right', 'top']);
+  });
 });
