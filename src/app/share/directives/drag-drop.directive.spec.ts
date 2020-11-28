@@ -20,14 +20,14 @@ describe('DragDropDirective', () => {
     spyOn(directive, 'setBackgroudColor').and.callThrough();
     directive.onDragLeave(new DragEvent('dragleave'));
 
-    expect(directive.setBackgroudColor).toHaveBeenCalledWith('#f5fcff');
+    expect(directive.setBackgroudColor).toHaveBeenCalledWith('#fafafa');
   });
 
   it('should drop restore color', () => {
     spyOn(directive, 'setBackgroudColor').and.callThrough();
     directive.ondrop(new DragEvent('drop'));
 
-    expect(directive.setBackgroudColor).toHaveBeenCalledWith('#f5fcff');
+    expect(directive.setBackgroudColor).toHaveBeenCalledWith('#fafafa');
   });
 
   it('should drop not emit fileDropped if no file', () => {

@@ -1,6 +1,16 @@
 <ng-container *ngIf="project && project.info">
-  <div class="title">
-    {{ project?.info?.description }}
+  <div
+    class="title mr-2"
+    [class]="expanded ? '' : 'text-ellipsis-2'"
+    [title]="description"
+  >
+    {{ description }}
   </div>
+
+  <!-- TODO: i18n -->
+  <div class="description-action" (click)="toggle()">
+    {{ expanded ? "收起" : "展开" }}
+  </div>
+
   <div class="text-caption">[ Base URL: {{ shortUrl }} ]</div>
 </ng-container>

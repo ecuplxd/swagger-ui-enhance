@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Project } from '../project.model';
 
 @Component({
@@ -13,7 +13,17 @@ export class ProjectInfoComponent implements OnInit {
     return this.project.host + this.project.basePath;
   }
 
+  get description(): string {
+    return this.project.info.description;
+  }
+
+  expanded = false;
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  toggle(): void {
+    this.expanded = !this.expanded;
+  }
 }
