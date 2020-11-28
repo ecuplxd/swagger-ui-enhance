@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, OnInit } from '@angular/core';
 import { StoreService } from './share/service/store/store.service';
 
 @Component({
@@ -8,6 +8,8 @@ import { StoreService } from './share/service/store/store.service';
   styleUrls: ['./app.component.less'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  @HostBinding('class.mat-app-background')
+
   title = 'swagger-ui';
 
   constructor(private store: StoreService) {}

@@ -11,7 +11,7 @@ import { Any } from '../share.model';
   selector: '[appDragDrop]',
 })
 export class DragDropDirective {
-  bgColor = '#f5fcff';
+  bgColor = '#fafafa';
 
   activeBgColor = '#9ecbec';
 

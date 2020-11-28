@@ -26,14 +26,14 @@
       ></div>
 
       <div
-        class="f-13 flex-1 flex justify-between align-center suggestion-item px-10"
+        class="f-13 flex-1 flex justify-between align-center suggestion-item mb-1"
         [class.actived]="api.__matchedIndex === actived"
         [attr.data-namespace]="i"
         [attr.data-api]="j"
         (click)="select(i, j)"
       >
         <div>
-          <div>
+          <div class="f-16 mb-4">
             <span [innerHTML]="api.__info.url"></span>
             <span>#</span>
             <span [innerHTML]="api.__info.operationId"></span>

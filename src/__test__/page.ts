@@ -12,6 +12,7 @@ import { STORE_DATA_MOCK } from './storeData';
 
 class Componnet implements OnInit {
   static usePage = 0;
+
   ngOnInit(): void {
     Componnet.usePage++;
     // console.log('use Page: ' + Componnet.usePage);
@@ -38,11 +39,14 @@ export class Page<T extends Componnet> {
 
   des: DebugElement[] = [];
 
-  constructor(component: Type<T>, detectChanges = true) {
+  constructor(component: Type<T>, detectChanges = true, injectStore = true) {
     new Componnet().ngOnInit();
     this.fixture = TestBed.createComponent(component);
     this.component = this.fixture.componentInstance;
-    this.store = TestBed.inject(StoreService) as StoreServiceStub;
+
+    if (injectStore) {
+      this.store = TestBed.inject(StoreService) as StoreServiceStub;
+    }
 
     if (detectChanges) {
       this.detectChanges();

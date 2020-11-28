@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-left-nav',
@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./left-nav.component.less'],
 })
 export class LeftNavComponent implements OnInit {
+  @HostBinding('style.width')
+  private width = '300px';
+
   year = new Date().getFullYear();
 
   constructor() {}

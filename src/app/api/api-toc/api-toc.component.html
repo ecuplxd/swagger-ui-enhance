@@ -1,7 +1,7 @@
-<div class="mb-12 pt-16 pl-12 toc">
+<div class="pt-8 pl-12 toc flex flex-column flex-1-h">
   <h3 class="y-center mb-8 fw-normal">
     <button
-      class="sort-toc"
+      class="sort-toc mr-8"
       (click)="sortToc()"
       mat-icon-button
       title="排序"
@@ -19,7 +19,7 @@
     </button> -->
   </h3>
 
-  <ul>
+  <ul class="flex-1-h ma-0 pb-10 scroll-y">
     <li
       [class]="api.__info.method"
       *ngFor="let api of apiItems; let i = index"
@@ -34,7 +34,8 @@
       }"
       (click)="changeActivedIndex(i)"
       [id]="ID_PREFIX + i"
-      [title]="api.__info.description"
+      [matTooltip]="api.__info.description"
+      matTooltipPosition="left"
     >
       {{ api.__info.description }}
     </li>
