@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { API_ID_PREFIX } from 'src/app/share/const';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { StoreData } from 'src/app/share/share.model';
-import { ApiItem } from '../api.model';
+import { ApiItem, AuthInfo } from '../api.model';
 
 @Component({
   selector: 'app-api-list',
@@ -22,6 +23,21 @@ export class ApiListComponent implements OnInit {
   activedIndex!: number;
 
   start!: number;
+
+  showSetting = false;
+
+  auth: AuthInfo = {
+    kind: 'cookies',
+    useProxy: false,
+    proxyUrl: '',
+    token: '',
+    cookies: [
+      {
+        key: '',
+        value: '',
+      },
+    ],
+  };
 
   constructor(
     private store: StoreService,
@@ -55,5 +71,24 @@ export class ApiListComponent implements OnInit {
       // true -> false -> click 后 true
       this.expandeds[index] = !this.expandeds[index];
     }
+  }
+
+  addCookie(): void {
+    this.auth.cookies.push({
+      key: '',
+      value: '',
+    });
+  }
+
+  removeCookie(index: number): void {
+    this.auth.cookies.splice(index, 1);
+  }
+
+  toggleSetting(toggle: MatSlideToggleChange): void {
+    this.showSetting = toggle.checked;
+  }
+
+  toggleProxy(toggle: MatSlideToggleChange): void {
+    this.auth.useProxy = toggle.checked;
   }
 }

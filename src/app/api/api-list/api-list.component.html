@@ -8,26 +8,118 @@
   <p class="mt-32" tr="project-import-tip">导入 API（仅支持 .json 文件）</p>
 </div>
 
-<div class="api-items flex justify-end mb-16" *ngIf="apiItems.length">
-  <button
-    mat-stroked-button
-    color="primary"
-    class="open-all mr-10 outlined"
-    (click)="accordion.openAll()"
-    tr="expand-all"
-  >
-    展开全部
-  </button>
+<div class="api-items flex y-center justify-between mb-16">
+  <div *ngIf="apiItems.length">
+    <mat-slide-toggle
+      class="proxy-setting"
+      color="primary"
+      [checked]="showSetting"
+      (change)="toggleSetting($event)"
+    >
+      请求设置
+    </mat-slide-toggle>
+  </div>
 
-  <button
-    class="close-all outlined"
-    mat-stroked-button
+  <div *ngIf="apiItems.length">
+    <button
+      mat-stroked-button
+      color="primary"
+      class="outlined expand-all mr-10"
+      (click)="accordion.openAll()"
+      tr="expand-all"
+    >
+      展开全部
+    </button>
+
+    <button
+      mat-stroked-button
+      color="primary"
+      class="outlined close-all"
+      (click)="accordion.closeAll()"
+      tr="close-all"
+    >
+      收起全部
+    </button>
+  </div>
+</div>
+
+<div class="ml-30" *ngIf="showSetting">
+  <mat-slide-toggle
     color="primary"
-    (click)="accordion.closeAll()"
-    tr="close-all"
+    [checked]="auth.useProxy"
+    (change)="toggleProxy($event)"
   >
-    收起全部
-  </button>
+    使用代理（全局）
+  </mat-slide-toggle>
+
+  <div class="mt-10">以下配置只针对当前 Project：</div>
+
+  <div>
+    <mat-form-field class="full-width">
+      <label class="mb-8">API 转发地址</label>
+
+      <input matInput type="url" [(ngModel)]="auth.proxyUrl" />
+    </mat-form-field>
+  </div>
+
+  <mat-radio-group class="flex y-center" [(ngModel)]="auth.kind">
+    <label>鉴权方式：</label>
+
+    <mat-radio-button color="primary" value="cookies">
+      Cookie
+    </mat-radio-button>
+
+    <mat-radio-button class="mx-20" color="primary" value="token">
+      Token
+    </mat-radio-button>
+
+    <mat-radio-button color="primary" value="other">其它</mat-radio-button>
+  </mat-radio-group>
+
+  <div class="mt-10" *ngIf="auth.useProxy">
+    <div *ngIf="auth.kind === 'cookies'">
+      <div
+        class="cookie-item"
+        *ngFor="let cookie of auth.cookies; let i = index"
+      >
+        <mat-form-field>
+          <input matInput placeholder="Key" [(ngModel)]="cookie.key" />
+        </mat-form-field>
+
+        <mat-form-field class="mx-10 cookie-input">
+          <input matInput placeholder="Value" [(ngModel)]="cookie.value" />
+        </mat-form-field>
+
+        <button
+          *ngIf="i === 0"
+          mat-stroked-button
+          color="primary"
+          class="outlined mr-8"
+          (click)="addCookie()"
+        >
+          添加
+        </button>
+
+        <button
+          *ngIf="i !== 0"
+          mat-stroked-button
+          color="warn"
+          class="outlined"
+          (click)="removeCookie(i)"
+        >
+          移除
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="auth.kind === 'token'">
+      <mat-form-field class="full-width">
+        <input matInput [(ngModel)]="auth.token" />
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="auth.kind === 'other'">其它我就不知道了</div>
+  </div>
 </div>
 
 <mat-accordion multi hideToggle>
