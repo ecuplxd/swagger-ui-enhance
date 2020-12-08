@@ -17,6 +17,7 @@ export interface StoreData {
   apiItems: ApiItem[];
   index: StoreIndex;
   expandeds: boolean[];
+  useProxy: boolean;
 }
 
 export interface GObject<T> {

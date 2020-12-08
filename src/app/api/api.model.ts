@@ -150,13 +150,12 @@ export type RequestKind = 'Body' | 'Header' | 'Query';
 
 export interface AuthInfo {
   kind: AuthKind;
-  useProxy: boolean;
   proxyUrl: string;
-  cookies: KeyValue[];
+  cookie: KeyValue[];
   token: string;
 }
 
-export type AuthKind = 'cookies' | 'token' | 'other';
+export type AuthKind = 'cookie' | 'token' | 'other';
 
 export interface KeyValue {
   key: string;

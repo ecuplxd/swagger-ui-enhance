@@ -9,6 +9,7 @@ import {
   ApiResponses,
   ApiResponsesValue,
   API_METHODS,
+  AuthInfo,
 } from 'src/app/api/api.model';
 import {
   Project,
@@ -49,6 +50,7 @@ export class StoreService {
       apiIndex: 0,
     },
     expandeds: [],
+    useProxy: false,
   };
 
   private projectSubject$$ = new Subject<StoreData>();
@@ -106,6 +108,7 @@ export class StoreService {
           resolve(res);
         },
         (error) => {
+          // TODO: i18n
           this.toastMessage(`更新失败：${error.status} ${error.statusText}`);
           console.log(error);
           reject(error);
@@ -118,6 +121,7 @@ export class StoreService {
 
   parseFile(file: File): Promise<Any> {
     const promise = new Promise((resolve, reject) => {
+      // TODO: i18n
       const prefix = '导入失败：';
       let errorMessage = prefix + '未知的文件类型';
 
@@ -128,6 +132,7 @@ export class StoreService {
       }
 
       if (file.type !== 'application/json') {
+        // TODO: i18n
         errorMessage = prefix + '请导入 JSON 文件';
         this.toastMessage(errorMessage);
         reject(errorMessage);
@@ -143,6 +148,7 @@ export class StoreService {
           resolve(true);
         } catch (error) {
           console.log(error);
+          // TODO: i18n
           errorMessage = prefix + '解析错误';
           this.toastMessage(errorMessage);
           reject(errorMessage);
@@ -167,6 +173,7 @@ export class StoreService {
 
   toastImportResult(): this {
     if (!this.projectExit) {
+      // TODO: i18n
       this.toastMessage('导入成功');
     }
 
@@ -309,6 +316,7 @@ export class StoreService {
       __id: url + '|' + method,
       __produce: api.produces && api.produces[0],
       __info: {
+        // TODO: i18n
         description: api.summary || '该 API 缺少描述',
         method,
         url,
@@ -322,6 +330,7 @@ export class StoreService {
   transformTag(tag: string): ProjectTag {
     return {
       name: tag,
+      // TODO: i18n
       description: tag === this.DEAFULT_NAMESPACE ? '默认 namespace' : '--',
     };
   }
@@ -375,7 +384,16 @@ export class StoreService {
       verticalPosition: 'top',
       panelClass: 'copy-snack-bar',
     });
+
     return this;
+  }
+
+  setProjectAuth(auth: AuthInfo, useProxy: boolean): void {
+    this.data.project.auth = auth;
+    this.data.useProxy = useProxy;
+    // TODO: i18n
+    this.toastMessage('保存成功');
+    this.dumpsData();
   }
 
   addProject(project: Project): this {
@@ -391,6 +409,7 @@ export class StoreService {
     this.dumpsData();
 
     if (this.projectExit) {
+      // TODO: i18n
       this.toastMessage('导入的 API 配置已经存在，更新成功。');
     }
 

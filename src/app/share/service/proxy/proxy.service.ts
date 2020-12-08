@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiMethod } from 'src/app/api/api.model';
@@ -55,6 +55,8 @@ export class ProxyService {
     };
 
     url = '/proxy?url=' + url;
+
+    console.log(url);
     switch (method) {
       case 'get':
         return this.get(url, params);

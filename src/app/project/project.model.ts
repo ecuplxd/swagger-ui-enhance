@@ -1,4 +1,10 @@
-import { ApiMethod, ApiItem, Schema, Item } from 'src/app/api/api.model';
+import {
+  ApiItem,
+  ApiMethod,
+  AuthInfo,
+  Item,
+  Schema,
+} from 'src/app/api/api.model';
 import { GObject } from '../share/share.model';
 
 export interface Project {
@@ -15,6 +21,7 @@ export interface Project {
   id: string;
   display: string;
   namespaces: ProjectNamesapce[];
+  auth: AuthInfo;
 }
 
 export type ProjectDefinition = GObject<ProjectDefinitionValue>;

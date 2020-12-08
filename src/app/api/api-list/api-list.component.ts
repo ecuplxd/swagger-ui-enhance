@@ -26,12 +26,13 @@ export class ApiListComponent implements OnInit {
 
   showSetting = false;
 
+  useProxy = false;
+
   auth: AuthInfo = {
-    kind: 'cookies',
-    useProxy: false,
+    kind: 'cookie',
     proxyUrl: '',
     token: '',
-    cookies: [
+    cookie: [
       {
         key: '',
         value: '',
@@ -46,6 +47,7 @@ export class ApiListComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data: StoreData) => {
+      this.useProxy = data.useProxy || false;
       this.apiItems = data.apiItems;
       this.expandeds = data.expandeds;
       this.expandeds[data.index.apiIndex] = true;
@@ -53,6 +55,12 @@ export class ApiListComponent implements OnInit {
       this.scroll.tick_then(() => {
         this.scroll.to(this.ID_PREFIX + this.activedIndex);
       });
+
+      const project = this.store.getCurPorject();
+
+      if (project.auth) {
+        this.auth = project.auth;
+      }
     });
   }
 
@@ -74,14 +82,14 @@ export class ApiListComponent implements OnInit {
   }
 
   addCookie(): void {
-    this.auth.cookies.push({
+    this.auth.cookie.push({
       key: '',
       value: '',
     });
   }
 
   removeCookie(index: number): void {
-    this.auth.cookies.splice(index, 1);
+    this.auth.cookie.splice(index, 1);
   }
 
   toggleSetting(toggle: MatSlideToggleChange): void {
@@ -89,6 +97,10 @@ export class ApiListComponent implements OnInit {
   }
 
   toggleProxy(toggle: MatSlideToggleChange): void {
-    this.auth.useProxy = toggle.checked;
+    this.useProxy = toggle.checked;
+  }
+
+  save(): void {
+    this.store.setProjectAuth(this.auth, this.useProxy);
   }
 }
