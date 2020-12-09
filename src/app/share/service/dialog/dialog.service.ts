@@ -12,11 +12,13 @@ import { RequestHistory } from '../history/history.model';
 })
 export class DialogService {
   DIALOG_CONFIG = {
-    hasBackdrop: false,
+    hasBackdrop: true,
     disableClose: false,
     restoreFocus: false,
     panelClass: 'api-request-panel',
   };
+
+  scale = 1.5;
 
   dialogRef!: MatDialogRef<ApiRequestDialogComponent, Any>;
 
@@ -34,8 +36,8 @@ export class DialogService {
   }
 
   getDialogSize(): Size {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = window.innerWidth / this.scale;
+    const height = window.innerHeight / this.scale;
     return { width, height };
   }
 
@@ -55,8 +57,6 @@ export class DialogService {
     const size = {
       width: width + 'px',
       height: height + 'px',
-      maxWidth: '100%',
-      maxHeight: '100%',
     };
 
     this.dialogRef = this.dialog.open(ApiRequestDialogComponent, {

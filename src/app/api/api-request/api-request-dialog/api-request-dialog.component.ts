@@ -45,6 +45,8 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
 
   subscription!: Subscription;
 
+  scale = 1.5;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) data: ApiRequestModalData,
     private typeService: TypeService,
@@ -207,8 +209,8 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   }
 
   updateEditorSize(size?: Size): void {
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    let width = window.innerWidth / this.scale;
+    let height = window.innerHeight / this.scale;
 
     if (size) {
       width = size.width;
@@ -217,7 +219,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
 
     size = {
       width: width / 2,
-      height: height - 56,
+      height,
     };
 
     this.editorSize = JSON.parse(JSON.stringify(size));
