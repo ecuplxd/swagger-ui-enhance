@@ -397,7 +397,7 @@ export class StoreService {
   setProjectAuth(auth: AuthInfo, useProxy: boolean): void {
     this.data.project.auth = auth;
     this.data.useProxy = useProxy;
-    this.data.project.proxyUrl = auth.proxyUrl;
+    this.data.project.apiUrl = auth.apiUrl;
     // TODO: i18n
     this.toastMessage('保存成功');
     this.dumpsData();

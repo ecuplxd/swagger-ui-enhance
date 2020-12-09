@@ -8,8 +8,8 @@
   <p class="mt-32" tr="project-import-tip">导入 API（仅支持 .json 文件）</p>
 </div>
 
-<div class="api-items flex justify-between mb-16">
-  <div *ngIf="apiItems.length">
+<div *ngIf="apiItems.length" class="api-items flex justify-between mb-16">
+  <div>
     <mat-slide-toggle
       class="proxy-setting mr-8"
       color="primary"
@@ -55,7 +55,7 @@
 
 <div *ngIf="apiItems.length && showSetting" class="auth-setting">
   <mat-slide-toggle
-    class="mb-8"
+    class="mb-16"
     color="primary"
     [checked]="useProxy"
     (change)="toggleProxy($event)"
@@ -70,7 +70,7 @@
       <mat-form-field class="api-proxy-url">
         <label class="mb-8">API 转发地址</label>
 
-        <input matInput type="url" [(ngModel)]="auth.proxyUrl" />
+        <input matInput type="url" [(ngModel)]="auth.apiUrl" />
       </mat-form-field>
     </div>
 

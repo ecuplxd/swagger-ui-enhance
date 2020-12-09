@@ -22,6 +22,7 @@ export const STORE_DATA_EMPTY_MOCK: StoreData = {
     namespaceIndex: 0,
     apiIndex: 1,
   },
+  useProxy: true,
 };
 
 @Injectable()

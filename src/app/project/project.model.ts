@@ -22,7 +22,7 @@ export interface Project {
   display: string;
   namespaces: ProjectNamesapce[];
   auth: AuthInfo;
-  proxyUrl: string;
+  apiUrl: string;
 }
 
 export type ProjectDefinition = GObject<ProjectDefinitionValue>;

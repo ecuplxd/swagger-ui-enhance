@@ -185,7 +185,8 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
           if (kind !== 'Header') {
             stringify = stringify.replace(/"([^"]+)":/g, '$1:');
           } else {
-            type = type.replace(/  /gi, "  '").replace(/\:/gi, "':");
+            // tslint:disable-next-line: quotemark
+            type = type.replace(/  /gi, "$&'").replace(/\??\:/gi, "'$&");
           }
 
           this.editorValue += `/* ${kind} start */\nconst ${kindLower}: ${kind} = ${stringify}\n`;
@@ -219,9 +220,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
       height: height - 56,
     };
 
-    setTimeout(() => {
-      this.editorSize = JSON.parse(JSON.stringify(size));
-    }, 0);
+    this.editorSize = JSON.parse(JSON.stringify(size));
   }
 
   getText(text: string | undefined, type: RequestKind): string {
@@ -273,7 +272,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     const query = this.eval(this.getText(text, 'Query'));
     const body = this.eval(this.getText(text, 'Body'));
     const header = this.eval(this.getText(text, 'Header'));
-    const reqUrl = useProxy ? project.proxyUrl + url : url;
+    const reqUrl = useProxy ? project.apiUrl + url : url;
     const responseInfo: string[] = [
       '// Request URL',
       '// ' + reqUrl + '\n',
@@ -296,6 +295,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         );
         this.response = responseInfo.join('\n');
         this.updateEditorSize();
+        console.log(error);
       }
     );
   }

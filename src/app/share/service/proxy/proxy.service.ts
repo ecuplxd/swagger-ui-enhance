@@ -55,7 +55,7 @@ export class ProxyService {
       headers,
     };
 
-    url = useProxy ? '/proxy?url=' + url : location.origin + url;
+    url = useProxy ? '/proxy?url=' + url : url;
 
     switch (method) {
       case 'get':

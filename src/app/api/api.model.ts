@@ -150,7 +150,7 @@ export type RequestKind = 'Body' | 'Header' | 'Query';
 
 export interface AuthInfo {
   kind: AuthKind;
-  proxyUrl: string;
+  apiUrl: string;
   cookie: KeyValue[];
   token: string;
 }

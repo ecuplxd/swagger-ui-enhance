@@ -1,6 +1,7 @@
 import { Any, StoreData } from 'src/app/share/share.model';
 
 export const STORE_DATA_MOCK = ({
+  useProxy: true,
   projects: [
     {
       swagger: '2.0',

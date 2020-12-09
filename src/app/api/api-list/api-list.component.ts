@@ -30,7 +30,7 @@ export class ApiListComponent implements OnInit {
 
   auth: AuthInfo = {
     kind: 'cookie',
-    proxyUrl: '',
+    apiUrl: '',
     token: '',
     cookie: [
       {
