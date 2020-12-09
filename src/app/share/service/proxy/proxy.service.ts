@@ -45,7 +45,8 @@ export class ProxyService {
     method: ApiMethod,
     query: Object = {},
     body: Object = {},
-    headers: Object = {}
+    headers: Object = {},
+    useProxy: boolean = false
   ): Observable<Object> {
     // const urlInfo = this.parseUrl(url);
 
@@ -54,9 +55,8 @@ export class ProxyService {
       headers,
     };
 
-    url = '/proxy?url=' + url;
+    url = useProxy ? '/proxy?url=' + url : location.origin + url;
 
-    console.log(url);
     switch (method) {
       case 'get':
         return this.get(url, params);

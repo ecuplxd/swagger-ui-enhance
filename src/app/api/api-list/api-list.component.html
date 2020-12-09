@@ -53,7 +53,7 @@
   </div>
 </div>
 
-<div *ngIf="showSetting" class="auth-setting">
+<div *ngIf="apiItems.length && showSetting" class="auth-setting">
   <mat-slide-toggle
     class="mb-8"
     color="primary"
@@ -67,7 +67,7 @@
     <div>以下配置只针对当前 Project：</div>
 
     <div>
-      <mat-form-field>
+      <mat-form-field class="api-proxy-url">
         <label class="mb-8">API 转发地址</label>
 
         <input matInput type="url" [(ngModel)]="auth.proxyUrl" />

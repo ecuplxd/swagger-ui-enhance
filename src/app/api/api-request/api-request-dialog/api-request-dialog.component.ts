@@ -169,7 +169,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     ['Header', 'Query', 'Body', 'FormData']
       .map((kind) => {
         const kindLower = kind[0].toLowerCase() + kind.substring(1);
-        const type = parameters
+        let type = parameters
           .filter((param) => param.in === kindLower)
           .map((param) => param.display)
           .join('\n');
@@ -177,11 +177,16 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         if (type) {
           let stringify = JSON.stringify(mocks[kindLower], null, 2);
           stringify = stringify
-            .replace(/"([^"]+)":/g, '$1:')
             .replace(/\uFFFF/g, '\\"')
             // tslint:disable-next-line: quotemark
             .replace(/"/g, "'")
             .replace(/'(__undefined__)'/g, 'undefined');
+
+          if (kind !== 'Header') {
+            stringify = stringify.replace(/"([^"]+)":/g, '$1:');
+          } else {
+            type = type.replace(/  /gi, "  '").replace(/\:/gi, "':");
+          }
 
           this.editorValue += `/* ${kind} start */\nconst ${kindLower}: ${kind} = ${stringify}\n`;
           this.editorValue += `/* ${kind} end */\n\n\n`;
@@ -214,7 +219,9 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
       height: height - 56,
     };
 
-    this.editorSize = JSON.parse(JSON.stringify(size));
+    setTimeout(() => {
+      this.editorSize = JSON.parse(JSON.stringify(size));
+    }, 0);
   }
 
   getText(text: string | undefined, type: RequestKind): string {
@@ -258,6 +265,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   }
 
   doRequest(): void {
+    const useProxy = this.store.isPorxyMode();
     const url = this.urlParams.map((item) => item.value || item.path).join('');
     const method = this.apiItem.__info.method;
     const project = this.store.getCurPorject();
@@ -265,7 +273,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     const query = this.eval(this.getText(text, 'Query'));
     const body = this.eval(this.getText(text, 'Body'));
     const header = this.eval(this.getText(text, 'Header'));
-    const reqUrl = 'https://' + project.host + url;
+    const reqUrl = useProxy ? project.proxyUrl + url : url;
     const responseInfo: string[] = [
       '// Request URL',
       '// ' + reqUrl + '\n',
@@ -273,7 +281,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     ];
 
     this.historyService.add(this.apiItem.__id, url, this.urlParams, text);
-    this.proxy.proxy(reqUrl, method, query, body, header).subscribe(
+    this.proxy.proxy(reqUrl, method, query, body, header, useProxy).subscribe(
       (res) => {
         responseInfo.push('// code: 200\n');
         responseInfo.push('// Response body：');
@@ -282,7 +290,12 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         this.updateEditorSize();
       },
       (error) => {
-        console.log(error);
+        responseInfo.push('// Response body：');
+        responseInfo.push(
+          'const res = ' + JSON.stringify(error.error, null, 2)
+        );
+        this.response = responseInfo.join('\n');
+        this.updateEditorSize();
       }
     );
   }

@@ -100,20 +100,26 @@ export class StoreService {
     return this.data.namespaces;
   }
 
+  isPorxyMode(): boolean {
+    return this.data.useProxy;
+  }
+
   fetchProject(url: string): Promise<Object> {
     const promise = new Promise<Object>((resolve, reject) => {
-      this.proxy.proxy(url, 'get').subscribe(
-        (res) => {
-          this.importProject(res as Project, url);
-          resolve(res);
-        },
-        (error) => {
-          // TODO: i18n
-          this.toastMessage(`更新失败：${error.status} ${error.statusText}`);
-          console.log(error);
-          reject(error);
-        }
-      );
+      this.proxy
+        .proxy(url, 'get', undefined, undefined, undefined, this.isPorxyMode())
+        .subscribe(
+          (res) => {
+            this.importProject(res as Project, url);
+            resolve(res);
+          },
+          (error) => {
+            // TODO: i18n
+            this.toastMessage(`更新失败：${error.status} ${error.statusText}`);
+            console.log(error);
+            reject(error);
+          }
+        );
     });
 
     return promise;
@@ -391,9 +397,15 @@ export class StoreService {
   setProjectAuth(auth: AuthInfo, useProxy: boolean): void {
     this.data.project.auth = auth;
     this.data.useProxy = useProxy;
+    this.data.project.proxyUrl = auth.proxyUrl;
     // TODO: i18n
     this.toastMessage('保存成功');
     this.dumpsData();
+
+    document.cookie = '';
+    auth.cookie.forEach(
+      (item) => (document.cookie = item.key + '=' + item.value)
+    );
   }
 
   addProject(project: Project): this {
