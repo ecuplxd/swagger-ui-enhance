@@ -9,6 +9,7 @@ import {
   ApiResponses,
   ApiResponsesValue,
   API_METHODS,
+  AuthInfo,
 } from 'src/app/api/api.model';
 import {
   Project,
@@ -23,6 +24,7 @@ import {
   StoreIndexKey,
 } from '../../share.model';
 import { ProxyService } from '../proxy/proxy.service';
+import { TranslateService } from '../tr/translate.service';
 import { TypeService } from '../type/type.service';
 
 @Injectable({
@@ -49,6 +51,7 @@ export class StoreService {
       apiIndex: 0,
     },
     expandeds: [],
+    useProxy: false,
   };
 
   private projectSubject$$ = new Subject<StoreData>();
@@ -63,7 +66,8 @@ export class StoreService {
   constructor(
     private typeService: TypeService,
     private snackBar: MatSnackBar,
-    private proxy: ProxyService
+    private proxy: ProxyService,
+    private tr: TranslateService
   ) {
     this.loadDumpsData();
   }
@@ -98,19 +102,26 @@ export class StoreService {
     return this.data.namespaces;
   }
 
+  isPorxyMode(): boolean {
+    return this.data.useProxy;
+  }
+
   fetchProject(url: string): Promise<Object> {
     const promise = new Promise<Object>((resolve, reject) => {
-      this.proxy.proxy(url, 'get').subscribe(
-        (res) => {
-          this.importProject(res as Project, url);
-          resolve(res);
-        },
-        (error) => {
-          this.toastMessage(`更新失败：${error.status} ${error.statusText}`);
-          console.log(error);
-          reject(error);
-        }
-      );
+      this.proxy
+        .proxy(url, 'get', undefined, undefined, undefined, this.isPorxyMode())
+        .subscribe(
+          (res) => {
+            this.importProject(res as Project, url);
+            resolve(res);
+          },
+          (error) => {
+            const msg = this.tr.tr('update-fail', '更新失败：');
+
+            this.toastMessage(`${msg}${error.status} ${error.statusText}`);
+            reject(error);
+          }
+        );
     });
 
     return promise;
@@ -118,8 +129,10 @@ export class StoreService {
 
   parseFile(file: File): Promise<Any> {
     const promise = new Promise((resolve, reject) => {
-      const prefix = '导入失败：';
-      let errorMessage = prefix + '未知的文件类型';
+      const prefix = this.tr.tr('import-fail', '导入失败：');
+      let reason = this.tr.tr('unknown-file-type', '未知的文件类型');
+
+      let errorMessage = prefix + reason;
 
       if (!file.type) {
         this.toastMessage(errorMessage);
@@ -128,7 +141,8 @@ export class StoreService {
       }
 
       if (file.type !== 'application/json') {
-        errorMessage = prefix + '请导入 JSON 文件';
+        reason = this.tr.tr('unknown-file-type', '请导入 JSON 文件');
+        errorMessage = prefix + reason;
         this.toastMessage(errorMessage);
         reject(errorMessage);
 
@@ -142,8 +156,8 @@ export class StoreService {
           this.importProject(JSON.parse(text));
           resolve(true);
         } catch (error) {
-          console.log(error);
-          errorMessage = prefix + '解析错误';
+          reason = this.tr.tr('parse-json-error', '解析错误');
+          errorMessage = prefix + reason;
           this.toastMessage(errorMessage);
           reject(errorMessage);
         }
@@ -167,7 +181,8 @@ export class StoreService {
 
   toastImportResult(): this {
     if (!this.projectExit) {
-      this.toastMessage('导入成功');
+      const msg = this.tr.tr('import-success', '导入成功');
+      this.toastMessage(msg);
     }
 
     return this;
@@ -309,7 +324,8 @@ export class StoreService {
       __id: url + '|' + method,
       __produce: api.produces && api.produces[0],
       __info: {
-        description: api.summary || '该 API 缺少描述',
+        description:
+          api.summary || this.tr.tr('api-loss-description', '该 API 缺少描述'),
         method,
         url,
         deprecated: api.deprecated,
@@ -322,7 +338,10 @@ export class StoreService {
   transformTag(tag: string): ProjectTag {
     return {
       name: tag,
-      description: tag === this.DEAFULT_NAMESPACE ? '默认 namespace' : '--',
+      description:
+        tag === this.DEAFULT_NAMESPACE
+          ? this.tr.tr('project-default-namespace', '默认 namespace')
+          : '--',
     };
   }
 
@@ -375,7 +394,21 @@ export class StoreService {
       verticalPosition: 'top',
       panelClass: 'copy-snack-bar',
     });
+
     return this;
+  }
+
+  setProjectAuth(auth: AuthInfo, useProxy: boolean): void {
+    this.data.project.auth = auth;
+    this.data.useProxy = useProxy;
+    this.data.project.apiUrl = auth.apiUrl;
+    this.toastMessage(this.tr.tr('save-success', '保存成功'));
+    this.dumpsData();
+
+    document.cookie = '';
+    auth.cookie.forEach(
+      (item) => (document.cookie = item.key + '=' + item.value)
+    );
   }
 
   addProject(project: Project): this {
@@ -391,7 +424,9 @@ export class StoreService {
     this.dumpsData();
 
     if (this.projectExit) {
-      this.toastMessage('导入的 API 配置已经存在，更新成功。');
+      this.toastMessage(
+        this.tr.tr('project-exits', '导入的 API 配置已经存在，更新成功。')
+      );
     }
 
     return this;

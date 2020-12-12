@@ -34,7 +34,9 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private _size!: Size;
   @Input() set size(size: Size) {
     this._size = size;
-    this.reLayoutBySize(size);
+    setTimeout(() => {
+      this.reLayoutBySize(size);
+    }, 0);
   }
 
   get size(): Size {

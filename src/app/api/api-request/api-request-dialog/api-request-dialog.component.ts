@@ -45,6 +45,8 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
 
   subscription!: Subscription;
 
+  scale = 1.5;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) data: ApiRequestModalData,
     private typeService: TypeService,
@@ -169,7 +171,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     ['Header', 'Query', 'Body', 'FormData']
       .map((kind) => {
         const kindLower = kind[0].toLowerCase() + kind.substring(1);
-        const type = parameters
+        let type = parameters
           .filter((param) => param.in === kindLower)
           .map((param) => param.display)
           .join('\n');
@@ -177,11 +179,17 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         if (type) {
           let stringify = JSON.stringify(mocks[kindLower], null, 2);
           stringify = stringify
-            .replace(/"([^"]+)":/g, '$1:')
             .replace(/\uFFFF/g, '\\"')
             // tslint:disable-next-line: quotemark
             .replace(/"/g, "'")
             .replace(/'(__undefined__)'/g, 'undefined');
+
+          if (kind !== 'Header') {
+            stringify = stringify.replace(/"([^"]+)":/g, '$1:');
+          } else {
+            // tslint:disable-next-line: quotemark
+            type = type.replace(/  /gi, "$&'").replace(/\??\:/gi, "'$&");
+          }
 
           this.editorValue += `/* ${kind} start */\nconst ${kindLower}: ${kind} = ${stringify}\n`;
           this.editorValue += `/* ${kind} end */\n\n\n`;
@@ -201,8 +209,8 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   }
 
   updateEditorSize(size?: Size): void {
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    let width = window.innerWidth / this.scale;
+    let height = window.innerHeight / this.scale;
 
     if (size) {
       width = size.width;
@@ -211,7 +219,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
 
     size = {
       width: width / 2,
-      height: height - 56,
+      height,
     };
 
     this.editorSize = JSON.parse(JSON.stringify(size));
@@ -258,6 +266,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   }
 
   doRequest(): void {
+    const useProxy = this.store.isPorxyMode();
     const url = this.urlParams.map((item) => item.value || item.path).join('');
     const method = this.apiItem.__info.method;
     const project = this.store.getCurPorject();
@@ -265,7 +274,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     const query = this.eval(this.getText(text, 'Query'));
     const body = this.eval(this.getText(text, 'Body'));
     const header = this.eval(this.getText(text, 'Header'));
-    const reqUrl = 'https://' + project.host + url;
+    const reqUrl = useProxy ? project.apiUrl + url : url;
     const responseInfo: string[] = [
       '// Request URL',
       '// ' + reqUrl + '\n',
@@ -273,7 +282,7 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
     ];
 
     this.historyService.add(this.apiItem.__id, url, this.urlParams, text);
-    this.proxy.proxy(reqUrl, method, query, body, header).subscribe(
+    this.proxy.proxy(reqUrl, method, query, body, header, useProxy).subscribe(
       (res) => {
         responseInfo.push('// code: 200\n');
         responseInfo.push('// Response body：');
@@ -282,6 +291,12 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
         this.updateEditorSize();
       },
       (error) => {
+        responseInfo.push('// Response body：');
+        responseInfo.push(
+          'const res = ' + JSON.stringify(error.error, null, 2)
+        );
+        this.response = responseInfo.join('\n');
+        this.updateEditorSize();
         console.log(error);
       }
     );

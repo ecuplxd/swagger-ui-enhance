@@ -42,8 +42,8 @@ describe('DialogService', () => {
 
   it('should set dialog size base on window width/height', () => {
     expect(service.getDialogSize()).toEqual({
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: window.innerWidth / service.scale,
+      height: window.innerHeight / service.scale,
     });
   });
 

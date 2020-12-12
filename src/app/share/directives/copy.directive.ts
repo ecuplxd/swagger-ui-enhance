@@ -41,7 +41,7 @@ export class CopyDirective implements OnInit, OnDestroy {
       const instance = componentRef.instance as CopyComponent;
 
       instance.value = this.appCopyValue;
-      instance.title = this.translate.getTranslateText(this.appCopyTitle);
+      instance.title = this.translate.tr(this.appCopyTitle);
       instance.selector = this.appCopySelector;
     }
   }

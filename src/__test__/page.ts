@@ -15,7 +15,6 @@ class Componnet implements OnInit {
 
   ngOnInit(): void {
     Componnet.usePage++;
-    // console.log('use Page: ' + Componnet.usePage);
   }
 }
 

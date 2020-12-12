@@ -147,3 +147,17 @@ export interface ApiRequestModalData {
 }
 
 export type RequestKind = 'Body' | 'Header' | 'Query';
+
+export interface AuthInfo {
+  kind: AuthKind;
+  apiUrl: string;
+  cookie: KeyValue[];
+  token: string;
+}
+
+export type AuthKind = 'cookie' | 'token' | 'other';
+
+export interface KeyValue {
+  key: string;
+  value: string;
+}

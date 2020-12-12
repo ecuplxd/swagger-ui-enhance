@@ -103,7 +103,7 @@ describe('ApiListComponent', () => {
       'only 1 item expanded'
     );
 
-    const btnDe = fixture.debugElement.query(By.css('.open-all'));
+    const btnDe = fixture.debugElement.query(By.css('.expand-all'));
     btnDe.triggerEventHandler('click', null);
     fixture.detectChanges();
 

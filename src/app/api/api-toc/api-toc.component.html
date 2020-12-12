@@ -1,6 +1,7 @@
 <div class="pt-8 pl-12 toc flex flex-column flex-1-h">
   <h3 class="y-center mb-8 fw-normal">
     <button
+      *ngIf="apiItems?.length"
       class="sort-toc mr-8"
       (click)="sortToc()"
       mat-icon-button

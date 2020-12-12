@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiMethod } from 'src/app/api/api.model';
@@ -45,7 +45,8 @@ export class ProxyService {
     method: ApiMethod,
     query: Object = {},
     body: Object = {},
-    headers: Object = {}
+    headers: Object = {},
+    useProxy: boolean = false
   ): Observable<Object> {
     // const urlInfo = this.parseUrl(url);
 
@@ -54,7 +55,8 @@ export class ProxyService {
       headers,
     };
 
-    url = '/proxy?url=' + url;
+    url = useProxy ? '/proxy?url=' + url : url;
+
     switch (method) {
       case 'get':
         return this.get(url, params);
