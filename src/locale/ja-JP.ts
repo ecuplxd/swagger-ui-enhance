@@ -13,6 +13,19 @@ export default {
   remove: '削除する',
   search: '検索する',
   type: 'の種類',
+  other: 'その他',
+  expand: '展開する',
+  collapse: '片付け',
+  add: '追加',
+  save: '保存する',
+  'update-fail': '更新失敗：',
+  'import-fail': 'インポートに失敗しました：',
+  'unknown-file-type': '不明なファイルタイプ',
+  'should-import-json': 'JSONファイルをインポートしてください',
+  'parse-json-error': '解析エラー',
+  'import-success': '正常にインポートされました',
+  'save-success': '正常に保存',
+  'copy-success': '正常にコピー',
 
   /* project */
   'project-change': 'プロジェクトの切り替え',
@@ -24,6 +37,8 @@ export default {
   'project-import-tip-1': '1.左側のプラス記号をクリックします。',
   'project-import-tip-2': '2.または左上のアドレスバー。',
   'project-import-tip-3': '3.または、ファイルをここにドラッグします。',
+  'project-exits': 'インポートされたAPI構成はすでに存在し、更新は成功しました。',
+  'project-default-namespace': 'デフォルトの名前名',
 
   /* api */
   'api-copy-all-fileds': 'すべてのフィールドをコピーします',
@@ -44,4 +59,10 @@ export default {
   'api-try-it-out': 'リクエストを開始します',
   'api-type-example': '例',
   'api-type-remove-partial': 'Partial<T> -> T',
+  'api-request-config': '設定をリクエストする',
+  'api-request-use-proxy': 'プロキシを使用（グローバル）',
+  'api-auth-kind': '認証方法：',
+  'api-auth-tip': '次の構成は、現在のプロジェクト専用です。',
+  'api-proxy-url': 'API転送アドレス',
+  'api-loss-description': 'APIに説明がありません',
 };

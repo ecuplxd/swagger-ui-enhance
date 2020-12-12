@@ -13,6 +13,19 @@ export default {
   remove: 'Удалять',
   search: 'ищи',
   type: 'Виды',
+  other: '其他',
+  expand: '展开',
+  collapse: '收起',
+  add: '添加',
+  save: '保存',
+  'update-fail': '更新失败：',
+  'import-fail': '导入失败：',
+  'unknown-file-type': '未知的文件类型',
+  'should-import-json': '请导入 JSON 文件',
+  'parse-json-error': '解析错误',
+  'import-success': '导入成功',
+  'save-success': '保存成功',
+  'copy-success': '复制成功',
 
   /* project */
   'project-change': 'Переключить элемент',
@@ -23,6 +36,8 @@ export default {
   'project-import-tip-1': '1 щелкните значок плюса слева. ',
   'project-import-tip-2': '2 или в адресной строке вверху слева. ',
   'project-import-tip-3': '3, или перетащите файл сюда. ',
+  'project-exits': '导入的 API 配置已经存在，更新成功。',
+  'project-default-namespace': '默认 namespace',
 
   /* api */
   'api-copy-all-fileds': 'Скопируйте все поля',
@@ -43,4 +58,10 @@ export default {
   'api-try-it-out': 'Инициировать запрос',
   'api-type-example': 'Пример',
   'api-type-remove-partial': 'Partial<T> -> T',
+  'api-request-config': '请求设置',
+  'api-request-use-proxy': '使用代理（全局）',
+  'api-auth-kind': '鉴权方式：',
+  'api-auth-tip': '以下配置只针对当前 Project：',
+  'api-proxy-url': 'API 转发地址',
+  'api-loss-description': '该 API 缺少描述',
 };

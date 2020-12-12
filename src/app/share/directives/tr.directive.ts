@@ -9,6 +9,6 @@ export class TrDirective implements OnInit {
   constructor(private el: ElementRef, private translate: TranslateService) {}
 
   ngOnInit(): void {
-    this.translate.tr(this.el.nativeElement as HTMLElement);
+    this.translate.trEl(this.el.nativeElement as HTMLElement);
   }
 }

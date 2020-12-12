@@ -7,9 +7,10 @@
     {{ description }}
   </div>
 
-  <!-- TODO: i18n -->
   <div class="description-action" (click)="toggle()">
-    {{ expanded ? "收起" : "展开" }}
+    <span *ngIf="expanded" tr="collapse">收起</span>
+
+    <span *ngIf="!expanded" tr="expand">展开</span>
   </div>
 
   <div class="text-caption">[ Base URL: {{ shortUrl }} ]</div>

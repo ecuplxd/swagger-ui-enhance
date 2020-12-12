@@ -16,7 +16,7 @@ describe('TranslateService', () => {
   it('should not tr el if no i18n mark', () => {
     const div = document.createElement('div');
     div.innerText = 'haha';
-    service.tr(div);
+    service.trEl(div);
 
     expect(div.innerText).toEqual('haha');
   });
@@ -27,7 +27,7 @@ describe('TranslateService', () => {
     div.innerText = '复制';
 
     service.locale = 'en-US';
-    service.tr(div);
+    service.trEl(div);
 
     expect(div.innerText).toEqual('Copy');
   });
@@ -37,7 +37,7 @@ describe('TranslateService', () => {
     div.setAttribute('tr', 'copy|title');
 
     service.locale = 'en-US';
-    service.tr(div);
+    service.trEl(div);
 
     expect(div.getAttribute('title')).toEqual('Copy');
   });
@@ -45,16 +45,16 @@ describe('TranslateService', () => {
   it('should #getTranslateText() get undefined if invalid locale & key', () => {
     service.locale = 'invalid';
 
-    expect(service.getTranslateText('not exits')).toBeUndefined('not exits');
+    expect(service.tr('not exits')).toBeUndefined('not exits');
   });
 
   it('should reload page change lang', () => {
     const div = document.createElement('div');
     div.setAttribute('tr', 'copy|title');
     document.body.appendChild(div);
-    spyOn(service, 'tr');
+    spyOn(service, 'trEl');
     service.reload();
 
-    expect(service.tr).toHaveBeenCalled();
+    expect(service.trEl).toHaveBeenCalled();
   });
 });

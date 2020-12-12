@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { API_ID_PREFIX } from 'src/app/share/const';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { StoreData } from 'src/app/share/share.model';
-import { ApiItem, AuthInfo } from '../api.model';
+import { ApiItem } from '../api.model';
 
 @Component({
   selector: 'app-api-list',
@@ -24,22 +23,6 @@ export class ApiListComponent implements OnInit {
 
   start!: number;
 
-  showSetting = false;
-
-  useProxy = false;
-
-  auth: AuthInfo = {
-    kind: 'cookie',
-    apiUrl: '',
-    token: '',
-    cookie: [
-      {
-        key: '',
-        value: '',
-      },
-    ],
-  };
-
   constructor(
     private store: StoreService,
     private scroll: ScrollInoViewService
@@ -47,7 +30,6 @@ export class ApiListComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data: StoreData) => {
-      this.useProxy = data.useProxy || false;
       this.apiItems = data.apiItems;
       this.expandeds = data.expandeds;
       this.expandeds[data.index.apiIndex] = true;
@@ -55,12 +37,6 @@ export class ApiListComponent implements OnInit {
       this.scroll.tick_then(() => {
         this.scroll.to(this.ID_PREFIX + this.activedIndex);
       });
-
-      const project = this.store.getCurPorject();
-
-      if (project.auth) {
-        this.auth = project.auth;
-      }
     });
   }
 
@@ -79,28 +55,5 @@ export class ApiListComponent implements OnInit {
       // true -> false -> click 后 true
       this.expandeds[index] = !this.expandeds[index];
     }
-  }
-
-  addCookie(): void {
-    this.auth.cookie.push({
-      key: '',
-      value: '',
-    });
-  }
-
-  removeCookie(index: number): void {
-    this.auth.cookie.splice(index, 1);
-  }
-
-  toggleSetting(toggle: MatSlideToggleChange): void {
-    this.showSetting = toggle.checked;
-  }
-
-  toggleProxy(toggle: MatSlideToggleChange): void {
-    this.useProxy = toggle.checked;
-  }
-
-  save(): void {
-    this.store.setProjectAuth(this.auth, this.useProxy);
   }
 }

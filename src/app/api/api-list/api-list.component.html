@@ -9,26 +9,7 @@
 </div>
 
 <div *ngIf="apiItems.length" class="api-items flex justify-between mb-16">
-  <div>
-    <mat-slide-toggle
-      class="proxy-setting mr-8"
-      color="primary"
-      [checked]="showSetting"
-      (change)="toggleSetting($event)"
-    >
-      请求设置
-    </mat-slide-toggle>
-
-    <button
-      *ngIf="showSetting"
-      mat-flat-button
-      color="primary"
-      class="outlined"
-      (click)="save()"
-    >
-      保存
-    </button>
-  </div>
+  <app-api-auth></app-api-auth>
 
   <div *ngIf="apiItems.length">
     <button
@@ -51,88 +32,6 @@
       收起全部
     </button>
   </div>
-</div>
-
-<div *ngIf="apiItems.length && showSetting" class="auth-setting">
-  <mat-slide-toggle
-    class="mb-16"
-    color="primary"
-    [checked]="useProxy"
-    (change)="toggleProxy($event)"
-  >
-    使用代理（全局）
-  </mat-slide-toggle>
-
-  <ng-container *ngIf="useProxy">
-    <div>以下配置只针对当前 Project：</div>
-
-    <div>
-      <mat-form-field class="api-proxy-url">
-        <label class="mb-8">API 转发地址</label>
-
-        <input matInput type="url" [(ngModel)]="auth.apiUrl" />
-      </mat-form-field>
-    </div>
-
-    <mat-radio-group class="flex y-center" [(ngModel)]="auth.kind">
-      <label>鉴权方式：</label>
-
-      <mat-radio-button color="primary" value="cookie">
-        Cookie
-      </mat-radio-button>
-
-      <mat-radio-button class="mx-20" color="primary" value="token">
-        Token
-      </mat-radio-button>
-
-      <mat-radio-button color="primary" value="other">其它</mat-radio-button>
-    </mat-radio-group>
-
-    <div class="mt-10">
-      <div *ngIf="auth.kind === 'cookie'">
-        <div
-          class="cookie-item"
-          *ngFor="let cookie of auth.cookie; let i = index"
-        >
-          <mat-form-field>
-            <input matInput placeholder="Key" [(ngModel)]="cookie.key" />
-          </mat-form-field>
-
-          <mat-form-field class="mx-10 cookie-input">
-            <input matInput placeholder="Value" [(ngModel)]="cookie.value" />
-          </mat-form-field>
-
-          <button
-            *ngIf="i === 0"
-            mat-stroked-button
-            color="primary"
-            class="outlined mr-8"
-            (click)="addCookie()"
-          >
-            添加
-          </button>
-
-          <button
-            *ngIf="i !== 0"
-            mat-stroked-button
-            color="warn"
-            class="outlined"
-            (click)="removeCookie(i)"
-          >
-            移除
-          </button>
-        </div>
-      </div>
-
-      <div *ngIf="auth.kind === 'token'">
-        <mat-form-field class="full-width">
-          <input matInput [(ngModel)]="auth.token" />
-        </mat-form-field>
-      </div>
-
-      <div *ngIf="auth.kind === 'other'" class="mb-8">其它我就不知道了</div>
-    </div>
-  </ng-container>
 </div>
 
 <mat-accordion multi hideToggle>

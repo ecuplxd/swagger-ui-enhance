@@ -32,24 +32,24 @@ export class TranslateService {
 
   reload(): this {
     Array.from(document.querySelectorAll(`[${this.I18N_MARK}]`)).forEach((el) =>
-      this.tr(el as HTMLElement)
+      this.trEl(el as HTMLElement)
     );
     return this;
   }
 
-  getTranslateText(key: string): string {
+  tr(key: string, fallBack: string = ''): string {
     const i18n = i18ns[this.locale] || {};
 
     let value: string = i18n[key];
     if (!value) {
-      value = i18ns[this.FALLBACK_LOCALE][key];
+      value = fallBack || i18ns[this.FALLBACK_LOCALE][key];
       console.warn(`${this.locale}: ${key} loss i18n`);
     }
 
     return value;
   }
 
-  tr(el: HTMLElement): void {
+  trEl(el: HTMLElement): void {
     const i18nAttr = el.getAttribute(this.I18N_MARK);
 
     if (!i18nAttr) {
@@ -57,7 +57,7 @@ export class TranslateService {
     }
 
     const [key, attr] = i18nAttr.split(this.I18N_ATTR_SPLIT);
-    const trText = this.getTranslateText(key);
+    const trText = this.tr(key);
 
     if (attr) {
       el.setAttribute(attr, trText);

@@ -13,6 +13,19 @@ export default {
   remove: 'Entfernen',
   search: 'suchen nach',
   type: 'Arten von',
+  other: '其他',
+  expand: '展开',
+  collapse: '收起',
+  add: '添加',
+  save: '保存',
+  'update-fail': '更新失败：',
+  'import-fail': '导入失败：',
+  'unknown-file-type': '未知的文件类型',
+  'should-import-json': '请导入 JSON 文件',
+  'parse-json-error': '解析错误',
+  'import-success': '导入成功',
+  'save-success': '保存成功',
+  'copy-success': '复制成功',
 
   /* project */
   'project-change': 'Gegenstand wechseln',
@@ -23,6 +36,8 @@ export default {
   'project-import-tip-1': '1, klicken Sie auf das Pluszeichen links. ',
   'project-import-tip-2': '2, oder die Adressleiste oben links. ',
   'project-import-tip-3': '3, oder ziehen Sie die Datei hierher. ',
+  'project-exits': '导入的 API 配置已经存在，更新成功。',
+  'project-default-namespace': '默认 namespace',
 
   /* api */
   'api-copy-all-fileds': 'Kopieren Sie alle Felder',
@@ -43,4 +58,10 @@ export default {
   'api-try-it-out': 'Anfrage einleiten',
   'api-type-example': 'Beispiel',
   'api-type-remove-partial': 'Partial<T> -> T',
+  'api-request-config': '请求设置',
+  'api-request-use-proxy': '使用代理（全局）',
+  'api-auth-kind': '鉴权方式：',
+  'api-auth-tip': '以下配置只针对当前 Project：',
+  'api-proxy-url': 'API 转发地址',
+  'api-loss-description': '该 API 缺少描述',
 };

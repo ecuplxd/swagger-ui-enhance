@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '../tr/translate.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +9,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class CopyService {
   COPY_ICON_TEXT = 'content_copy';
 
-  constructor(private clipboard: Clipboard, private snackBar: MatSnackBar) {}
+  constructor(
+    private clipboard: Clipboard,
+    private snackBar: MatSnackBar,
+    private tr: TranslateService
+  ) {}
 
   copy(value: string, valueUseForSelector: boolean = false): void {
     if (valueUseForSelector) {
@@ -35,8 +40,9 @@ export class CopyService {
   }
 
   toastMessage(): void {
-    // TODO: i18n
-    this.snackBar.open('复制成功', '', {
+    const msg = this.tr.tr('copy-success', '复制成功');
+
+    this.snackBar.open(msg, '', {
       duration: 2000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
