@@ -490,6 +490,11 @@ export class StoreService {
   updateUrl(apiIndex: number = 0): void {
     const { projectIndex: i, namespaceIndex: j } = this.data.index;
     const apiItem = this.data.apiItems[apiIndex];
+
+    if (!apiItem) {
+      return;
+    }
+
     const operationId = apiItem.__info.operationId;
 
     this.location.replaceState(`index#${operationId}-${i}-${j}-${apiIndex}`);
@@ -500,7 +505,7 @@ export class StoreService {
 
     if (hash) {
       const [projectIndex, namespaceIndex, apiIndex] = hash
-        .split('#')
+        .split('-')
         .slice(1)
         .map((item) => parseInt(item, 10) || 0);
 
@@ -521,6 +526,7 @@ export class StoreService {
       this.data = config;
     }
 
+    this.getIndexFromUrl();
     this.updateData({ ...this.data.index });
 
     return this;

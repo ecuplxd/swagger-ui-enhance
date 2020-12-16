@@ -243,4 +243,11 @@ describe('ApiListComponent', () => {
       );
     });
   }));
+
+  it('should update api operationId in url', () => {
+    spyOn(store, 'updateUrl').and.callThrough();
+    component.updateUrl(1);
+
+    expect(store.updateUrl).toHaveBeenCalledWith(1);
+  });
 });
