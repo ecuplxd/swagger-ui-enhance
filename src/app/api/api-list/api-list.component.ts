@@ -56,4 +56,8 @@ export class ApiListComponent implements OnInit {
       this.expandeds[index] = !this.expandeds[index];
     }
   }
+
+  updateUrl(apiIndex: number): void {
+    this.store.updateUrl(apiIndex);
+  }
 }

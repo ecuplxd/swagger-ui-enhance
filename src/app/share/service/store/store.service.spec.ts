@@ -13,6 +13,10 @@ class MatSnackBarStub {
   open(): void {}
 }
 
+class LocationStub {
+  replaceState(): void {}
+}
+
 class ProxyServiceStub {
   proxy(): Observable<Project> {
     return of(STORE_DATA_MOCK2.project);
@@ -38,6 +42,10 @@ describe('StoreService', () => {
         {
           provide: ProxyService,
           useClass: ProxyServiceStub,
+        },
+        {
+          provide: Location,
+          useClass: LocationStub,
         },
       ],
     });
