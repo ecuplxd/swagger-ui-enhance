@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, of } from 'rxjs';
@@ -13,6 +14,10 @@ class MatSnackBarStub {
   open(): void {}
 }
 
+class LocationStub {
+  replaceState(): void {}
+}
+
 class ProxyServiceStub {
   proxy(): Observable<Project> {
     return of(STORE_DATA_MOCK2.project);
@@ -21,6 +26,7 @@ class ProxyServiceStub {
 
 describe('StoreService', () => {
   let service: StoreService;
+  let location2: Location;
 
   const setData = () => {
     // tslint:disable-next-line: no-string-literal
@@ -39,9 +45,15 @@ describe('StoreService', () => {
           provide: ProxyService,
           useClass: ProxyServiceStub,
         },
+        {
+          provide: Location,
+          useClass: LocationStub,
+        },
       ],
     });
+
     service = TestBed.inject(StoreService);
+    location2 = TestBed.inject(Location);
     setData();
   });
 
@@ -202,5 +214,26 @@ describe('StoreService', () => {
     } as ApiItem;
 
     service.addApiIntoNamespace(project, api, apiIndex);
+  });
+
+  it('should update api operationId in url', () => {
+    spyOn(location2, 'replaceState');
+    service.updateUrl();
+
+    expect(location2.replaceState).toHaveBeenCalled();
+  });
+
+  it('should get index data from url', () => {
+
+    location.hash = `index#aaaa-0-0-1`;
+
+    service.getIndexFromUrl();
+
+    // tslint:disable-next-line: no-string-literal
+    const { projectIndex, namespaceIndex, apiIndex } = service['data'].index;
+
+    expect(projectIndex).toEqual(0);
+    expect(namespaceIndex).toEqual(0);
+    expect(apiIndex).toEqual(1);
   });
 });

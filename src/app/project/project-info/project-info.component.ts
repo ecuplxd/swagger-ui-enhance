@@ -10,7 +10,10 @@ export class ProjectInfoComponent implements OnInit {
   @Input() project!: Project;
 
   get shortUrl(): string {
-    return this.project.host + this.project.basePath;
+    const { host = '', basePath = '' } = this.project;
+    const shortUrl = host + basePath;
+
+    return shortUrl || '--';
   }
 
   get description(): string {

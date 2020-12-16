@@ -76,7 +76,9 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   setHistory(item: RequestHistory): void {

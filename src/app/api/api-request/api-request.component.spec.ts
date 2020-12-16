@@ -14,6 +14,10 @@ class StoreServiceStub {
   getApiItem(): ApiItem {
     return STORE_DATA_MOCK.apiItems[0];
   }
+
+  updateUrl(): void {}
+
+  getIndexFromUrl(): void {}
 }
 
 describe('ApiRequestComponent', () => {

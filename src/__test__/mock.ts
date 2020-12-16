@@ -58,4 +58,8 @@ export class StoreServiceStub extends StoreService {
 
     return this;
   }
+
+  updateUrl(_: number): void {}
+
+  getIndexFromUrl(): void {}
 }

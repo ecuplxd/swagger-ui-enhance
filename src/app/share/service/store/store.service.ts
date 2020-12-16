@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject } from 'rxjs';
@@ -67,7 +68,8 @@ export class StoreService {
     private typeService: TypeService,
     private snackBar: MatSnackBar,
     private proxy: ProxyService,
-    private tr: TranslateService
+    private tr: TranslateService,
+    private location: Location
   ) {
     this.loadDumpsData();
   }
@@ -480,8 +482,37 @@ export class StoreService {
 
     this.send();
     this.dumpsData();
+    this.updateUrl(newIndexs.apiIndex);
 
     return this;
+  }
+
+  updateUrl(apiIndex: number = 0): void {
+    const { projectIndex: i, namespaceIndex: j } = this.data.index;
+    const apiItem = this.data.apiItems[apiIndex];
+
+    if (!apiItem) {
+      return;
+    }
+
+    const operationId = apiItem.__info.operationId;
+
+    this.location.replaceState(`index#${operationId}-${i}-${j}-${apiIndex}`);
+  }
+
+  getIndexFromUrl(): void {
+    const hash = location.hash;
+
+    if (hash) {
+      const [projectIndex, namespaceIndex, apiIndex] = hash
+        .split('-')
+        .slice(1)
+        .map((item) => parseInt(item, 10) || 0);
+
+      this.data.index.projectIndex = projectIndex;
+      this.data.index.namespaceIndex = namespaceIndex;
+      this.data.index.apiIndex = apiIndex;
+    }
   }
 
   loadDumpsData(): this {
@@ -495,6 +526,7 @@ export class StoreService {
       this.data = config;
     }
 
+    this.getIndexFromUrl();
     this.updateData({ ...this.data.index });
 
     return this;

@@ -45,6 +45,7 @@
     }"
     [class]="apiItem.__info.method"
     [(expanded)]="expandeds[i]"
+    (click)="updateUrl(i)"
   >
     <mat-expansion-panel-header
       class="px-16"
