@@ -35,11 +35,14 @@ See preview part for detail.
 
 # TODO
 
-- [ ] Try it out
-- [ ] `WIP` unit test
+- [x] Try it out
+- [x] unit test
 - [x] i18n
-- [ ] change theme
-- [ ] toggle side nav
+- [ ] `WIP` change theme
+- [ ] `WIP` toggle side nav
+- [ ] add shortcut
+- [ ] global setting
+- [ ] favorite
 
 # DEV
 
