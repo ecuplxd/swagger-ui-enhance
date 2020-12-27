@@ -8,7 +8,11 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ScrollInoViewService, StoreService } from 'src/app/share/service';
+import {
+  CopyService,
+  ScrollInoViewService,
+  StoreService,
+} from 'src/app/share/service';
 import { Any } from 'src/app/share/share.model';
 import { StoreServiceStub } from 'src/__test__';
 import { ApiModule } from '../api.module';
@@ -55,6 +59,7 @@ describe('ApiListComponent', () => {
           useClass: StoreServiceStub,
         },
         ScrollInoViewService,
+        CopyService,
       ],
     }).compileComponents();
   });
@@ -63,7 +68,7 @@ describe('ApiListComponent', () => {
     fixture = TestBed.createComponent(ApiListComponent);
     nativeElement = fixture.nativeElement;
     component = fixture.componentInstance;
-    store = TestBed.inject(StoreService) as StoreServiceStub;
+    store = (TestBed.inject(StoreService) as unknown) as StoreServiceStub;
     fixture.detectChanges();
   });
 

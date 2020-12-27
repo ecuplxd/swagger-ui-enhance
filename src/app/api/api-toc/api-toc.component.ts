@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TOC_ID_PREFIX } from 'src/app/share/const';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
@@ -19,8 +20,17 @@ export class ApiTocComponent implements OnInit {
 
   constructor(
     private store: StoreService,
-    private scroll: ScrollInoViewService
-  ) {}
+    private scroll: ScrollInoViewService,
+    private location: Location
+  ) {
+    this.location.onUrlChange(() => {
+      const index = this.store.getIndexFromUrl();
+
+      if (index.apiIndex !== this.activedIndex) {
+        this.activedIndex = index.apiIndex;
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data) => {

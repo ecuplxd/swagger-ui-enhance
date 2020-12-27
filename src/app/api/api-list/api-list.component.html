@@ -41,6 +41,7 @@
     [ngClass]="{
       'api-item': true,
       'my-10': true,
+      'api-item-actived': i === activedIndex,
       deprecated: apiItem.deprecated
     }"
     [class]="apiItem.__info.method"
