@@ -12,6 +12,7 @@ import {
   CopyService,
   ScrollInoViewService,
   StoreService,
+  TypeService,
 } from 'src/app/share/service';
 import { Any } from 'src/app/share/share.model';
 import { StoreServiceStub } from 'src/__test__';
@@ -60,6 +61,7 @@ describe('ApiListComponent', () => {
         },
         ScrollInoViewService,
         CopyService,
+        TypeService,
       ],
     }).compileComponents();
   });

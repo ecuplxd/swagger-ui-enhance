@@ -15,6 +15,17 @@
     <button
       mat-stroked-button
       color="primary"
+      class="outlined mr-10"
+      (click)="genService()"
+      title="For Angular"
+      [disabled]="!disabled"
+    >
+      生成 Service
+    </button>
+
+    <button
+      mat-stroked-button
+      color="primary"
       class="outlined expand-all mr-10"
       (click)="accordion.openAll()"
       tr="expand-all"
@@ -34,6 +45,15 @@
   </div>
 </div>
 
+<div class="check-all-api pl-16" *ngIf="apiItems.length">
+  <mat-checkbox
+    color="primary"
+    [checked]="selectAll"
+    [indeterminate]="someSelected()"
+    (change)="selectAllApi($event.checked)"
+  ></mat-checkbox>
+</div>
+
 <mat-accordion multi hideToggle>
   <mat-expansion-panel
     *ngFor="let apiItem of apiItems; let i = index"
@@ -49,13 +69,21 @@
     (click)="updateUrl(i)"
   >
     <mat-expansion-panel-header
-      class="px-16"
+      class="pl-0 pr-16"
       expandedHeight="48px"
       [class.actived]="i === activedIndex"
       (mousedown)="recordStart()"
       (mouseup)="shouldAvoidSelect(i)"
     >
-      <div class="y-center justify-between flex-1">
+      <div class="pl-16 y-center justify-between flex-1">
+        <mat-checkbox
+          color="primary"
+          class="mr-16"
+          appStopClick
+          [(ngModel)]="selectedApis[i]"
+          (ngModelChange)="updateAllComplete()"
+        ></mat-checkbox>
+
         <app-api-info class="flex-1" [api]="apiItem.__info"></app-api-info>
 
         <app-api-request [apiItem]="apiItem"></app-api-request>

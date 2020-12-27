@@ -7,9 +7,10 @@ import {
   CopyService,
   ScrollInoViewService,
   StoreService,
+  TypeService,
 } from 'src/app/share/service';
 import { Any, StoreData } from 'src/app/share/share.model';
-import { ApiItem } from '../api.model';
+import { ApiItem, ApiParameters } from '../api.model';
 
 @Component({
   selector: 'app-api-list',
@@ -31,14 +32,24 @@ export class ApiListComponent implements OnInit {
 
   allowKeys = new Set(['KeyU', 'KeyD', 'KeyP']);
 
+  selectedApis: boolean[] = [];
+
+  selectAll = false;
+
+  get disabled(): boolean {
+    return this.selectedApis.some(Boolean);
+  }
+
   constructor(
     private store: StoreService,
     private scroll: ScrollInoViewService,
-    private copyService: CopyService
+    private copyService: CopyService,
+    private typeService: TypeService
   ) {}
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data: StoreData) => {
+      this.selectedApis = data.apiItems.map(() => false);
       this.apiItems = data.apiItems;
       this.expandeds = data.expandeds;
       this.expandeds[data.index.apiIndex] = true;
@@ -83,6 +94,19 @@ export class ApiListComponent implements OnInit {
     this.copyService.copy(pEl.dataset.copyselector || '', true);
   }
 
+  selectAllApi(checked: boolean): void {
+    this.selectAll = checked;
+    this.selectedApis = this.apiItems.map(() => checked);
+  }
+
+  someSelected(): boolean {
+    return this.selectedApis.filter(Boolean).length > 0 && !this.selectAll;
+  }
+
+  updateAllComplete(): void {
+    this.selectAll = this.selectedApis.every(Boolean);
+  }
+
   recordStart(): void {
     this.start = +new Date();
   }
@@ -103,5 +127,43 @@ export class ApiListComponent implements OnInit {
   updateUrl(apiIndex: number): void {
     this.activedIndex = apiIndex;
     this.store.updateUrl(apiIndex);
+  }
+
+  genService(): string {
+    const codes = this.apiItems
+      .filter((_, index) => this.selectedApis[index])
+      .map((api) => {
+        const {
+          parameters,
+          responses,
+          __info: { operationId, method, urlForCopy },
+        } = api;
+
+        let resType = 'any';
+        const res200 = (responses[200] as unknown) as ApiParameters;
+
+        if (res200) {
+          resType = this.typeService.getType(res200);
+        }
+
+        const params = parameters
+          .filter((item) => item.in === 'path')
+          .map((item) => {
+            return item.name + ': ' + this.typeService.getType(item);
+          })
+          .join(', ');
+
+        const code = `${operationId}(${params}): Observable<${resType}> {
+  return this.api.${method}(${urlForCopy});
+}`;
+
+        return code;
+      });
+
+    const service = codes.join('\n\n');
+
+    this.copyService.copy(service);
+
+    return service;
   }
 }
