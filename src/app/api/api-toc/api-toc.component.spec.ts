@@ -1,9 +1,14 @@
+import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { TestBed } from '@angular/core/testing';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { click, hasClass, Page, StoreServiceStub } from 'src/__test__';
 import { ApiModule } from '../api.module';
 import { ApiTocComponent } from './api-toc.component';
+
+class LocationStub {
+  onUrlChange(): void {}
+}
 
 describe('ApiTocComponent', () => {
   let component: ApiTocComponent;
@@ -20,6 +25,10 @@ describe('ApiTocComponent', () => {
           useClass: StoreServiceStub,
         },
         ScrollInoViewService,
+        {
+          provide: Location,
+          useClass: LocationStub,
+        },
       ],
     }).compileComponents();
   });
@@ -46,8 +55,14 @@ describe('ApiTocComponent', () => {
     page.installData();
     const lis = page.queryAll<HTMLLIElement>('li');
 
-    expect(hasClass(lis[0], 'deprecated')).toBe(false, '0 not a deprecated api');
-    expect(hasClass(lis[1], 'deprecated')).toBe(false, '1 not a deprecated api');
+    expect(hasClass(lis[0], 'deprecated')).toBe(
+      false,
+      '0 not a deprecated api'
+    );
+    expect(hasClass(lis[1], 'deprecated')).toBe(
+      false,
+      '1 not a deprecated api'
+    );
     expect(hasClass(lis[3], 'deprecated')).toBe(true, '3 is a deprecated api');
   });
 
@@ -71,7 +86,10 @@ describe('ApiTocComponent', () => {
     lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(1, 'after click still 1');
-    expect(hasClass(lis[1], 'actived')).toBe(true, 'after click, still 1 actived');
+    expect(hasClass(lis[1], 'actived')).toBe(
+      true,
+      'after click, still 1 actived'
+    );
   });
 
   it('should change actived toc item by click', () => {
@@ -79,7 +97,10 @@ describe('ApiTocComponent', () => {
     let lis = page.queryAll<HTMLLIElement>('li');
 
     expect(component.activedIndex).toEqual(1, 'before click');
-    expect(hasClass(lis[0], 'actived')).toBe(false, 'before click, 0 not actived');
+    expect(hasClass(lis[0], 'actived')).toBe(
+      false,
+      'before click, 0 not actived'
+    );
     expect(hasClass(lis[1], 'actived')).toBe(true, 'before click, 1 actived');
 
     page.click(lis[0]).doNgOnInit().detectChanges();
@@ -87,7 +108,10 @@ describe('ApiTocComponent', () => {
 
     expect(component.activedIndex).toEqual(0, 'after click');
     expect(hasClass(lis[0], 'actived')).toBe(true, 'after click, 1 actived');
-    expect(hasClass(lis[1], 'actived')).toBe(false, 'after click, 1 not actived');
+    expect(hasClass(lis[1], 'actived')).toBe(
+      false,
+      'after click, 1 not actived'
+    );
   });
 
   it('should sort tocs', () => {

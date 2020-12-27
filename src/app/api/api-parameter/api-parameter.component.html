@@ -7,7 +7,10 @@
     <thead>
       <tr class="no-hover">
         <th class="pa-8 text-left" style="width: 70%">
-          <div class="parameter-fields inline-flex align-center">
+          <div
+            class="parameter-fields inline-flex align-center"
+            [attr.data-copyselector]="copyItemClass"
+          >
             <span
               *appCopy="
                 hadParameters;

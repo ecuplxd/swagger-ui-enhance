@@ -104,6 +104,16 @@ export class StoreService {
     return this.data.namespaces;
   }
 
+  getCurApiItem(): ApiItem | undefined {
+    const {
+      apiItems,
+      index: { apiIndex },
+    } = this.data;
+    const apiItem = apiItems[apiIndex];
+
+    return apiItem;
+  }
+
   isPorxyMode(): boolean {
     return this.data.useProxy;
   }
@@ -497,10 +507,11 @@ export class StoreService {
 
     const operationId = apiItem.__info.operationId;
 
+    this.data.index.apiIndex = apiIndex;
     this.location.replaceState(`index#${operationId}-${i}-${j}-${apiIndex}`);
   }
 
-  getIndexFromUrl(): void {
+  getIndexFromUrl(): StoreIndex {
     const hash = location.hash;
 
     if (hash) {
@@ -513,6 +524,8 @@ export class StoreService {
       this.data.index.namespaceIndex = namespaceIndex;
       this.data.index.apiIndex = apiIndex;
     }
+
+    return this.data.index;
   }
 
   loadDumpsData(): this {

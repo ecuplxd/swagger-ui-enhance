@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Project } from 'src/app/project/project.model';
 import { StoreService } from 'src/app/share/service';
-import { StoreData } from 'src/app/share/share.model';
+import { StoreData, StoreIndex } from 'src/app/share/share.model';
 import { STORE_DATA_MOCK } from './storeData';
 
 export const STORE_DATA_EMPTY_MOCK: StoreData = {
@@ -61,5 +61,8 @@ export class StoreServiceStub extends StoreService {
 
   updateUrl(_: number): void {}
 
-  getIndexFromUrl(): void {}
+  getIndexFromUrl(): StoreIndex {
+    // tslint:disable-next-line: no-string-literal
+    return this['data'].index;
+  }
 }
