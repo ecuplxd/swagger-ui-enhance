@@ -15,19 +15,28 @@ export class CopyService {
     private tr: TranslateService
   ) {}
 
+  getTexts(selector: string = ''): string {
+    if (!selector) {
+      return '';
+    }
+
+    const els = document.querySelectorAll('.' + selector);
+    // content_copy copy icon
+    const value = Array.from(els)
+      .map((el) =>
+        (el as HTMLElement).innerText
+          .trim()
+          .replace('\n', '')
+          .replace(this.COPY_ICON_TEXT, '')
+      )
+      .join(', ');
+
+    return value;
+  }
+
   copy(value: string, valueUseForSelector: boolean = false): void {
     if (valueUseForSelector) {
-      const els = document.querySelectorAll('.' + value);
-
-      // content_copy copy icon
-      value = Array.from(els)
-        .map((el) =>
-          (el as HTMLElement).innerText
-            .trim()
-            .replace('\n', '')
-            .replace(this.COPY_ICON_TEXT, '')
-        )
-        .join(', ');
+      value = this.getTexts(value);
     }
 
     if (!value) {

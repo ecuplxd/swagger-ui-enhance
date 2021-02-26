@@ -134,9 +134,8 @@ export class ApiListComponent implements OnInit {
       .filter((_, index) => this.selectedApis[index])
       .map((api) => {
         const {
-          parameters,
           responses,
-          __info: { operationId, method, urlForCopy },
+          __info: { operationId, method, urlForCopy, description },
         } = api;
 
         let resType = 'any';
@@ -146,14 +145,10 @@ export class ApiListComponent implements OnInit {
           resType = this.typeService.getType(res200);
         }
 
-        const params = parameters
-          .filter((item) => item.in === 'path')
-          .map((item) => {
-            return item.name + ': ' + this.typeService.getType(item);
-          })
-          .join(', ');
-
-        const code = `${operationId}(${params}): Observable<${resType}> {
+        const fnName = operationId.replace(/Using.*/, '');
+        const params = this.copyService.getTexts(api.argSelector);
+        const code = `// ${description}
+        ${fnName}(${params}): Observable<${resType}> {
   return this.api.${method}(${urlForCopy});
 }`;
 
@@ -165,5 +160,9 @@ export class ApiListComponent implements OnInit {
     this.copyService.copy(service);
 
     return service;
+  }
+
+  setCopyClass(argSelector: string, apiItem: ApiItem): void {
+    apiItem.argSelector = argSelector;
   }
 }
