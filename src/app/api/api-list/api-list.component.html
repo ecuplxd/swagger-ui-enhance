@@ -20,14 +20,17 @@
   ></mat-checkbox>
 
   <div class="flex">
-    <app-hover-menu [closeOnContentClick]="true">
+    <app-hover-menu
+      [closeOnContentClick]="true"
+      [menuClass]="disabled ? 'hidden' : ''"
+    >
       <button
         mat-stroked-button
         color="primary"
         class="outlined mr-10"
         trigger
         title="For Angular"
-        [disabled]="!disabled"
+        [disabled]="disabled"
       >
         代码
       </button>
@@ -69,7 +72,8 @@
       'api-item': true,
       'my-10': true,
       'api-item-actived': i === activedIndex,
-      deprecated: apiItem.deprecated
+      deprecated: apiItem.deprecated,
+      hidden: !apiItem.matched
     }"
     [class]="apiItem.__info.method"
     [(expanded)]="expandeds[i]"

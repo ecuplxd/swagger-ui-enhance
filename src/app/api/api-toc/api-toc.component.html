@@ -1,23 +1,62 @@
 <div class="pt-8 pl-12 toc flex flex-column flex-1-h">
   <h3 class="y-center mb-8 fw-normal">
-    <button
-      *ngIf="apiItems?.length"
-      class="sort-toc mr-8"
-      (click)="sortToc()"
-      mat-icon-button
-      title="排序"
-      color="primary"
-      tr="api-sort|title"
-    >
-      <mat-icon>sort</mat-icon>
-    </button>
+    <ng-container *ngIf="apiItems?.length">
+      <button
+        disableRipple
+        class="sort-toc"
+        (click)="sortToc()"
+        mat-icon-button
+        title="排序"
+        color="primary"
+        tr="api-sort|title"
+      >
+        <mat-icon>swap_vert</mat-icon>
+      </button>
+
+      <app-hover-menu>
+        <button
+          disableRipple
+          class="sort-toc mr-8"
+          mat-icon-button
+          title="过滤"
+          color="primary"
+          trigger
+        >
+          <mat-icon>filter_alt</mat-icon>
+        </button>
+
+        <div menuContent>
+          <div mat-menu-item class="method-item">
+            <mat-checkbox
+              color="primary"
+              appStopClick
+              [checked]="selectAll"
+              [indeterminate]="someSelected()"
+              (change)="selectAllMethod($event.checked)"
+            >
+              全选
+            </mat-checkbox>
+          </div>
+
+          <div
+            class="method-item"
+            mat-menu-item
+            *ngFor="let method of methods; let i = index"
+          >
+            <mat-checkbox
+              color="primary"
+              appStopClick
+              [(ngModel)]="selectedMethods[i]"
+              (ngModelChange)="updateAllComplete()"
+            >
+              {{ method | uppercase }}
+            </mat-checkbox>
+          </div>
+        </div>
+      </app-hover-menu>
+    </ng-container>
 
     <span class="toc-title text-ellipsis" [title]="title">{{ title }}</span>
-
-    <!-- TODO -->
-    <!-- <button mat-icon-button title="过滤" color="primary">
-      <mat-icon>filter_alt</mat-icon>
-    </button> -->
   </h3>
 
   <ul class="flex-1-h ma-0 pb-10 scroll-y">
@@ -31,6 +70,7 @@
         'pr-12': true,
         'pl-4': true,
         'text-ellipsis': true,
+        hidden: !api.matched,
         deprecated: api.deprecated
       }"
       (click)="changeActivedIndex(i)"

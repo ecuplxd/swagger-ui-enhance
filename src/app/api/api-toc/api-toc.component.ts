@@ -1,8 +1,8 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { TOC_ID_PREFIX } from 'src/app/share/const';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
-import { ApiItem } from '../api.model';
+import { ApiItem, ApiMethod, API_METHODS } from '../api.model';
 
 @Component({
   selector: 'app-api-toc',
@@ -10,6 +10,8 @@ import { ApiItem } from '../api.model';
   styleUrls: ['./api-toc.component.less'],
 })
 export class ApiTocComponent implements OnInit {
+  @HostBinding('style.width') private width = '256px';
+
   title = '';
 
   apiItems: ApiItem[] = [];
@@ -17,6 +19,12 @@ export class ApiTocComponent implements OnInit {
   activedIndex!: number;
 
   ID_PREFIX = TOC_ID_PREFIX;
+
+  selectAll = false;
+
+  selectedMethods: boolean[] = [];
+
+  methods: ApiMethod[] = (API_METHODS as unknown) as ApiMethod[];
 
   constructor(
     private store: StoreService,
@@ -34,6 +42,11 @@ export class ApiTocComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data) => {
+      if (data.namespace.name !== this.title) {
+        this.selectAll = false;
+        this.selectedMethods = API_METHODS.map(() => false);
+      }
+
       this.title = data.namespace.name;
       this.apiItems = data.apiItems;
       this.activedIndex = data.index.apiIndex;
@@ -53,5 +66,28 @@ export class ApiTocComponent implements OnInit {
 
   sortToc(): void {
     this.store.sortApiItems();
+  }
+
+  getSelectedMethods(): Set<ApiMethod> {
+    const methods = this.methods.filter(
+      (_, index) => this.selectedMethods[index]
+    );
+
+    return new Set(methods);
+  }
+
+  selectAllMethod(checked: boolean): void {
+    this.selectAll = checked;
+    this.selectedMethods = this.methods.map(() => checked);
+    this.store.filterApiItems(this.getSelectedMethods());
+  }
+
+  someSelected(): boolean {
+    return this.selectedMethods.filter(Boolean).length > 0 && !this.selectAll;
+  }
+
+  updateAllComplete(): void {
+    this.selectAll = this.selectedMethods.every(Boolean);
+    this.store.filterApiItems(this.getSelectedMethods());
   }
 }

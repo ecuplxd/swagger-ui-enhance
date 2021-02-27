@@ -18,3 +18,21 @@ ul {
 .sort-toc {
   width: initial;
 }
+
+.method-item {
+  height: 28px;
+  line-height: 25px;
+  padding: 0 0 0 10px;
+
+  mat-checkbox {
+    width: 100%;
+
+    /deep/ .mat-checkbox-layout {
+      width: 100%;
+    }
+
+    /deep/ .mat-checkbox-label {
+      width: 100%;
+    }
+  }
+}
