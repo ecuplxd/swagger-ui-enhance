@@ -19,6 +19,7 @@ export interface ApiItem {
   summary: string;
   tags: string[];
   argSelector?: string;
+  matched?: boolean;
 
   __produce: string;
   __info: ApiInfo;
@@ -55,11 +56,11 @@ export const API_METHODS = [
   'patch',
   'head',
   'options',
+  'trace',
   'lock',
-  'mkcol',
   'move',
   'copy',
-  'trace',
+  'mkcol',
 ] as const;
 
 export type ApiMethod = typeof API_METHODS[number];

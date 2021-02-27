@@ -344,6 +344,7 @@ export class StoreService {
         urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
         operationId: api.operationId,
       },
+      matched: true,
     };
   }
 
@@ -576,6 +577,15 @@ export class StoreService {
       return aMethod === bMethod ? 0 : aMethod > bMethod ? -1 : 1;
     });
     this.sortIndex++;
+    this.send();
+  }
+
+  filterApiItems(methods: Set<ApiMethod>): void {
+    const empty = methods.size === 0;
+
+    this.data.apiItems.forEach((item) => {
+      item.matched = empty ? true : methods.has(item.__info.method);
+    });
     this.send();
   }
 }

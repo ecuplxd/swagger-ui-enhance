@@ -37,7 +37,7 @@ export class ApiListComponent implements OnInit {
   selectAll = false;
 
   get disabled(): boolean {
-    return this.selectedApis.some(Boolean);
+    return !this.selectedApis.some(Boolean);
   }
 
   constructor(
@@ -135,7 +135,7 @@ export class ApiListComponent implements OnInit {
       .map((api) => {
         const {
           responses,
-          __info: { operationId, method, urlForCopy, description },
+          __info: { operationId, method },
         } = api;
 
         let resType = 'any';
