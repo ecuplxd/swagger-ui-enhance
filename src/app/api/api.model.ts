@@ -18,6 +18,7 @@ export interface ApiItem {
   security: StringsObject[];
   summary: string;
   tags: string[];
+  argSelector?: string;
 
   __produce: string;
   __info: ApiInfo;

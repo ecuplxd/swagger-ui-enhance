@@ -1,6 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IdService } from 'src/app/share/service';
-
 import { ApiParameters } from '../api.model';
 
 @Component({
@@ -10,6 +9,8 @@ import { ApiParameters } from '../api.model';
 })
 export class ApiParameterComponent implements OnInit {
   @Input() parameters: ApiParameters[] = [];
+
+  @Output() genId = new EventEmitter<string>();
 
   copyItemClass!: string;
 
@@ -21,5 +22,6 @@ export class ApiParameterComponent implements OnInit {
 
   ngOnInit(): void {
     this.hadParameters = this.parameters && this.parameters.length !== 0;
+    this.genId.emit(this.copyItemClass);
   }
 }

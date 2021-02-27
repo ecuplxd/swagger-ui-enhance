@@ -8,10 +8,37 @@
   <p class="mt-32" tr="project-import-tip">导入 API（仅支持 .json 文件）</p>
 </div>
 
-<div *ngIf="apiItems.length" class="api-items flex justify-between mb-16">
-  <app-api-auth></app-api-auth>
+<div *ngIf="apiItems.length" class="api-items flex y-center justify-between">
+  <!-- <app-api-auth></app-api-auth> -->
 
-  <div *ngIf="apiItems.length">
+  <mat-checkbox
+    class="ml-18"
+    color="primary"
+    [checked]="selectAll"
+    [indeterminate]="someSelected()"
+    (change)="selectAllApi($event.checked)"
+  ></mat-checkbox>
+
+  <div class="flex">
+    <app-hover-menu [closeOnContentClick]="true">
+      <button
+        mat-stroked-button
+        color="primary"
+        class="outlined mr-10"
+        trigger
+        title="For Angular"
+        [disabled]="!disabled"
+      >
+        代码
+      </button>
+
+      <div menuContent>
+        <button mat-menu-item (click)="genService()">Service</button>
+
+        <button mat-menu-item (click)="genServiceCall()">Service 调用</button>
+      </div>
+    </app-hover-menu>
+
     <button
       mat-stroked-button
       color="primary"
@@ -49,13 +76,21 @@
     (click)="updateUrl(i)"
   >
     <mat-expansion-panel-header
-      class="px-16"
+      class="pl-0 pr-16"
       expandedHeight="48px"
       [class.actived]="i === activedIndex"
       (mousedown)="recordStart()"
       (mouseup)="shouldAvoidSelect(i)"
     >
-      <div class="y-center justify-between flex-1">
+      <div class="pl-16 y-center justify-between flex-1">
+        <mat-checkbox
+          color="primary"
+          class="mr-16"
+          appStopClick
+          [(ngModel)]="selectedApis[i]"
+          (ngModelChange)="updateAllComplete()"
+        ></mat-checkbox>
+
         <app-api-info class="flex-1" [api]="apiItem.__info"></app-api-info>
 
         <app-api-request [apiItem]="apiItem"></app-api-request>
@@ -67,6 +102,7 @@
         <app-api-parameter
           class="px-10 flex-1"
           [parameters]="apiItem.parameters"
+          (genId)="setCopyClass($event, apiItem)"
         ></app-api-parameter>
 
         <app-api-response
