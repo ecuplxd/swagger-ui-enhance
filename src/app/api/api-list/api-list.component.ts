@@ -129,6 +129,61 @@ export class ApiListComponent implements OnInit {
     this.store.updateUrl(apiIndex);
   }
 
+  genServiceCall(): string {
+    const codes = this.apiItems
+      .filter((_, index) => this.selectedApis[index])
+      .map((api) => {
+        const {
+          responses,
+          __info: { operationId, method, urlForCopy, description },
+        } = api;
+
+        let resType = 'any';
+        const res200 = (responses[200] as unknown) as ApiParameters;
+
+        if (res200) {
+          resType = this.typeService.getType(res200);
+        }
+
+        const fnName = operationId.replace(/Using.*/, '');
+        let params = this.copyService.getTexts(api.argSelector);
+
+        if (params) {
+          params = `/* ${params} */`;
+        }
+
+        return method === 'get'
+          ? `${fnName}() {
+  this.loading = true;
+  this.apiService.${fnName}(${params}).subscribe((res) => {
+    // this.xxx = res.data;
+    this.loading = false;
+  });
+}`
+          : `
+        ${fnName}() {
+    this.loading = true;
+    this.apiService.${fnName}(${params}).subscribe(
+      (res: any) => {
+        // this.xxx = res.data;
+        this.loading = false;
+      },
+      (error) => {
+        this.loading = false;
+        this.modal.error({ message: error.message });
+      }
+    );
+  }
+        `;
+      });
+
+    const code = codes.join('\n\n');
+
+    this.copyService.copy(code);
+
+    return code;
+  }
+
   genService(): string {
     const codes = this.apiItems
       .filter((_, index) => this.selectedApis[index])
@@ -148,7 +203,7 @@ export class ApiListComponent implements OnInit {
         const fnName = operationId.replace(/Using.*/, '');
         const params = this.copyService.getTexts(api.argSelector);
         const code = `// ${description}
-        ${fnName}(${params}): Observable<${resType}> {
+${fnName}(${params}): Observable<${resType}> {
   return this.api.${method}(${urlForCopy});
 }`;
 

@@ -5,7 +5,6 @@ import {
   HostListener,
   Output,
 } from '@angular/core';
-import { Any } from '../share.model';
 
 @Directive({
   selector: '[appDragDrop]',

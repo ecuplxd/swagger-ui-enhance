@@ -19,17 +19,25 @@
     (change)="selectAllApi($event.checked)"
   ></mat-checkbox>
 
-  <div>
-    <button
-      mat-stroked-button
-      color="primary"
-      class="outlined mr-10"
-      (click)="genService()"
-      title="For Angular"
-      [disabled]="!disabled"
-    >
-      生成 Service
-    </button>
+  <div class="flex">
+    <app-hover-menu [closeOnContentClick]="true">
+      <button
+        mat-stroked-button
+        color="primary"
+        class="outlined mr-10"
+        trigger
+        title="For Angular"
+        [disabled]="!disabled"
+      >
+        代码
+      </button>
+
+      <div menuContent>
+        <button mat-menu-item (click)="genService()">Service</button>
+
+        <button mat-menu-item (click)="genServiceCall()">Service 调用</button>
+      </div>
+    </app-hover-menu>
 
     <button
       mat-stroked-button
