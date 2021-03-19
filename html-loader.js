@@ -1,24 +1,34 @@
+const path = require('path');
+
 module.exports = function (source) {
   if (this.cacheable) {
     this.cacheable();
   }
 
-  console.log(this.resourcePath);
+  if (this.resourcePath.includes('api-toc.component.html')) {
+    console.log(111);
+  }
 
-  const parse = new Parse(source);
+  const parse = new Parse(source, this.resourcePath);
 
   return parse.transform();
 };
 
 class Parse {
-  static SPLIT_CHARTS = [".", "!", "[", "|", "?", "("];
+  static SPLIT_CHARTS = ['!', '[', '|', '?', '('];
 
-  source = "";
+  source = '';
+
+  resourcePath = '';
+
+  basename = '';
 
   inserts = {};
 
-  constructor(source) {
+  constructor(source, resourcePath) {
     this.source = source;
+    this.resourcePath = resourcePath;
+    this.basename = path.basename(resourcePath);
   }
 
   transform() {
@@ -47,7 +57,7 @@ class Parse {
     return this.source;
   }
 
-  findInsertIndex(last, sep = ">") {
+  findInsertIndex(last, sep = '>') {
     for (let i = last; i > 0; i--) {
       if (this.source[i] === sep) {
         return i;
@@ -57,18 +67,29 @@ class Parse {
     return -1;
   }
 
-  getName(name) {
+  getName(name, key) {
     Parse.SPLIT_CHARTS.forEach((chart) => {
       name = name.split(chart)[0];
     });
 
     name = name.trim();
 
-    return ` ng-var-${name}=${name} `;
+    return ` ng-bind-${key || name}=${name} `;
+  }
+
+  getLine(source) {
+    const match = source.match(/\\n/gi);
+    const line = (match ? match.length : 0) + 1;
+
+    return ` ng-html-line=${this.basename}:${line} `;
   }
 
   /*
     <div>{{ xx }}</div>
+    <div>{{ !xx }}</div>
+    <div>{{ xx.xx }}</div>
+    <div>{{ xx ? a : b }}</div>
+    <div>{{ xx | date: xxx }}</div>
   */
   parseMustache() {
     const reg = /\{\{(.+?)\}\}/g;
@@ -77,7 +98,9 @@ class Parse {
     matches.forEach((match) => {
       const insertIndex = this.findInsertIndex(match.index);
 
-      this.inserts[insertIndex] = this.getName(match[1]);
+      this.inserts[insertIndex] =
+        this.getName(match[1]) +
+        this.getLine(this.source.substr(0, match.index + match[0].length));
     });
 
     return this;
@@ -104,16 +127,22 @@ class Parse {
   */
   parseEventBinding() {
     // source 已被转译
-    const reg = /\s+?\(.+?\)\s*=\\"\s*(.+?)\s*\\"\s*/g;
+    const reg = /\s+?\(.+?\)\s*=\\"\s*(.+?)\s*\\"\s*?/g;
     const matches = [...this.source.matchAll(reg)];
 
     matches.forEach((match) => {
-      const insertIndex = this.findInsertIndex(match.index, "(");
-
-      this.inserts[insertIndex] = this.getName(match[1]);
+      this.inserts[match.index] =
+        this.getName(match[1], this.getKey(match[0])) +
+        this.getLine(this.source.substr(0, match.index + match[0].length));
     });
 
     return this;
+  }
+
+  getKey(template) {
+    const key = template.split('=')[0].trim();
+
+    return key.replace('(', '').replace(')', '');
   }
 
   /*
