@@ -4,8 +4,12 @@
   title="切换项目"
   tr="project-change|title"
 >
-  <div class="flex y-center">
-    <span class="flex-1 cur-project">{{ projects[selected]?.display }}</span>
+  <div
+    class="flex y-center"
+    [matTooltip]="expand ? '' : projects[selected]?.display || ''"
+    matTooltipPosition="above"
+  >
+    <span class="flex-1 cur-project">{{ display }}</span>
 
     <mat-icon class="mf-8">arrow_drop_down</mat-icon>
   </div>

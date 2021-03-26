@@ -20,11 +20,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
 import {
   CopyComponent,
   EditorComponent,
   HoverMenuComponent,
+  ToggleElComponent,
 } from './components';
 import {
   CopyDirective,
@@ -63,7 +63,12 @@ const directives = [
   TrDirective,
 ];
 
-const components = [CopyComponent, HoverMenuComponent, EditorComponent];
+const components = [
+  CopyComponent,
+  HoverMenuComponent,
+  EditorComponent,
+  ToggleElComponent,
+];
 
 const matModules = [
   MatSidenavModule,
@@ -99,6 +104,7 @@ const matModules = [
     ClipboardModule,
     MatSnackBarModule,
     MatMenuModule,
+    MatTooltipModule,
   ],
   exports: [
     CommonModule,

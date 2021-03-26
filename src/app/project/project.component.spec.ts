@@ -92,6 +92,9 @@ describe('ProjectComponent', () => {
   });
 
   it('should hvae app-project-info child', () => {
+    component.expand = true;
+    fixture.detectChanges();
+
     const el = fixture.nativeElement.querySelector('app-project-info');
 
     expect(el).toBeTruthy('app-project-info');

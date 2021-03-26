@@ -21,9 +21,17 @@ export class ChooseProjectComponent implements OnInit {
 
   @Input() selected = 0;
 
+  @Input() expand = true;
+
   @Output() projectChanged = new EventEmitter<number>();
 
   @Output() projectRemove = new EventEmitter<number>();
+
+  get display(): string {
+    const display = this.projects[this.selected]?.display || '';
+
+    return this.expand ? display : display[0] || '';
+  }
 
   get empty(): boolean {
     return this.projects.length === 0;

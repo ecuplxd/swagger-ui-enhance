@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { StoreService } from '../share/service';
 
 import { Project } from './project.model';
@@ -9,6 +9,8 @@ import { Project } from './project.model';
   styleUrls: ['./project.component.less'],
 })
 export class ProjectComponent implements OnInit {
+  @Input() expand = true;
+
   projects: Project[] = [];
 
   project: Project = {} as Project;

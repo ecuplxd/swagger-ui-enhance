@@ -1,4 +1,10 @@
-<div class="pt-8 pl-12 toc flex flex-column flex-1-h">
+<div
+  class="pt-8 toc flex flex-column flex-1-h"
+  [class.expand]="expand"
+  [ngClass]="{
+    'pl-12': expand
+  }"
+>
   <h3 class="y-center mb-8 fw-normal">
     <ng-container *ngIf="apiItems?.length">
       <button
@@ -16,7 +22,10 @@
       <app-hover-menu>
         <button
           disableRipple
-          class="sort-toc mr-8"
+          class="sort-toc"
+          [ngClass]="{
+            'mr-8': expand
+          }"
           mat-icon-button
           title="过滤"
           color="primary"
@@ -56,7 +65,9 @@
       </app-hover-menu>
     </ng-container>
 
-    <span class="toc-title text-ellipsis" [title]="title">{{ title }}</span>
+    <span *ngIf="expand" class="toc-title text-ellipsis" [matTooltip]="title">
+      {{ title }}
+    </span>
   </h3>
 
   <ul class="flex-1-h ma-0 pb-10 scroll-y">
@@ -67,7 +78,8 @@
         actived: i === activedIndex,
         'sub-title': true,
         'mt-4': true,
-        'pr-12': true,
+        'pr-12': expand,
+        'pl-0': !expand,
         'pl-4': true,
         'text-ellipsis': true,
         hidden: !api.matched,
@@ -78,7 +90,13 @@
       [matTooltip]="api.__info.description"
       matTooltipPosition="left"
     >
-      {{ api.__info.description }}
+      {{ expand ? api.__info.description : api.__info.description[0] }}
     </li>
   </ul>
+
+  <app-toggle-el
+    class="mb-5 mr-5 footer"
+    [(expand)]="expand"
+    (expandChange)="handleExpand()"
+  ></app-toggle-el>
 </div>

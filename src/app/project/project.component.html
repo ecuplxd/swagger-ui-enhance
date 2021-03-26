@@ -1,12 +1,17 @@
 <app-choose-project
   [projects]="projects"
   [selected]="selected"
+  [expand]="expand"
   (projectChanged)="handleProjectChange($event)"
   (projectRemove)="handleProjectRemove($event)"
 ></app-choose-project>
 
 <div class="pb-12 pl-12 y-center justify-between">
-  <app-project-info class="flex-1" [project]="project"></app-project-info>
+  <app-project-info
+    *ngIf="expand"
+    class="flex-1"
+    [project]="project"
+  ></app-project-info>
 
   <app-import-project [byUrl]="false" [byLocal]="true"></app-import-project>
 </div>
@@ -14,4 +19,5 @@
 <app-project-namespaces
   class="flex-1"
   [namespaces]="project.namespaces"
+  [expand]="expand"
 ></app-project-namespaces>

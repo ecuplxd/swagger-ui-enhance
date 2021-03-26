@@ -1,6 +1,6 @@
 <mat-divider></mat-divider>
 
-<div class="flex search">
+<div class="flex search" [class.hidden]="!expand">
   <mat-icon inline class="mr-8">search</mat-icon>
 
   <input
@@ -13,7 +13,7 @@
   />
 </div>
 
-<mat-divider></mat-divider>
+<mat-divider [class.hidden]="!expand"></mat-divider>
 
 <mat-nav-list class="scroll-y flex-1 project-namespaces hidden-x">
   <ng-container *ngFor="let namespace of namespaces; let i = index">
@@ -25,11 +25,12 @@
     >
       <div class="y-center justify-between flex-1">
         <div class="flex-1">
-          <div class="namespace-name" mat-line [title]="namespace.name">
-            {{ namespace.name }}
+          <div class="namespace-name" mat-line [matTooltip]="namespace.name">
+            {{ expand ? namespace.name : namespace.name[0] }}
           </div>
 
           <div
+            *ngIf="expand"
             mat-line
             [title]="namespace.description"
             class="sub-title namespace-description"
