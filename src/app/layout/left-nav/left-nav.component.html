@@ -1,6 +1,15 @@
-<app-project></app-project>
+<app-project [expand]="expand"></app-project>
 
 <div class="f-16 text-center">
   <mat-divider></mat-divider>
-  <div class="py-16">© {{ year }} ecuplxd</div>
+
+  <div class="py-16">
+    <span *ngIf="expand">© {{ year }} ecuplxd (●'◡'●)</span>
+
+    <app-toggle-el
+      class="mr-5"
+      [(expand)]="expand"
+      (expandChange)="handleExpand()"
+    ></app-toggle-el>
+  </div>
 </div>

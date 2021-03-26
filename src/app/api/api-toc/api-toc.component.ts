@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { TOC_ID_PREFIX } from 'src/app/share/const';
 import { ScrollInoViewService, StoreService } from 'src/app/share/service';
 import { ApiItem, ApiMethod, API_METHODS } from '../api.model';
@@ -10,7 +10,13 @@ import { ApiItem, ApiMethod, API_METHODS } from '../api.model';
   styleUrls: ['./api-toc.component.less'],
 })
 export class ApiTocComponent implements OnInit {
-  @HostBinding('style.width') private width = '256px';
+  @HostBinding('style.width') get width(): string {
+    return this.WIDTH[+this.expand];
+  }
+
+  @Input() expand = true;
+
+  WIDTH = ['48px', '256px'];
 
   title = '';
 
@@ -89,5 +95,21 @@ export class ApiTocComponent implements OnInit {
   updateAllComplete(): void {
     this.selectAll = this.selectedMethods.every(Boolean);
     this.store.filterApiItems(this.getSelectedMethods());
+  }
+
+  // TODO: 优化
+  handleExpand(): void {
+    const mainEl: HTMLDivElement | null = document.querySelector('.main');
+    const apiItemsEl: HTMLDivElement | null = document.querySelector(
+      '.api-items'
+    );
+
+    if (mainEl) {
+      mainEl.style.paddingRight = this.width;
+    }
+
+    if (apiItemsEl) {
+      apiItemsEl.style.right = this.width;
+    }
   }
 }

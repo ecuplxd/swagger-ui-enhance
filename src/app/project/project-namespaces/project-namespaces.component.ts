@@ -22,6 +22,8 @@ export class ProjectNamespacesComponent implements OnInit, AfterViewInit {
 
   @Input() namespaces: ProjectNamesapce[] = [];
 
+  @Input() expand = true;
+
   keyword = '';
 
   activedIndex!: number;
