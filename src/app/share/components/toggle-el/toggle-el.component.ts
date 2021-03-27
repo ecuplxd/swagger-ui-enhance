@@ -8,6 +8,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class ToggleElComponent implements OnInit {
   @Input() expand = true;
 
+  @Input() key!: string;
+
   @Output() expandChange = new EventEmitter<boolean>();
 
   constructor() {}
@@ -17,5 +19,7 @@ export class ToggleElComponent implements OnInit {
   toggle(): void {
     this.expand = !this.expand;
     this.expandChange.emit(this.expand);
+
+    localStorage.setItem(this.key, JSON.stringify(this.expand));
   }
 }

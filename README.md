@@ -39,7 +39,7 @@ See preview part for detail.
 - [x] unit test
 - [x] i18n
 - [ ] `WIP` change theme
-- [ ] `WIP` toggle side nav
+- [x] toggle side nav
 - [ ] add shortcut
 - [ ] global setting
 - [ ] favorite

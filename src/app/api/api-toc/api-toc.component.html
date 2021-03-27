@@ -95,7 +95,9 @@
   </ul>
 
   <app-toggle-el
+    *ngIf="apiItems?.length"
     class="mb-5 mr-5 footer"
+    [key]="KEY"
     [(expand)]="expand"
     (expandChange)="handleExpand()"
   ></app-toggle-el>
