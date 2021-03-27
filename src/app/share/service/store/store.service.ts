@@ -38,7 +38,7 @@ export class StoreService {
 
   private DEAFULT_NAMESPACE = '__default__';
 
-  private FAVORITE_NAMESPACE = 'Favorite';
+  private FAVORITE_NAMESPACE = '__favorite__';
 
   private namespacesMap: Map<string, number> = new Map();
 
@@ -67,6 +67,18 @@ export class StoreService {
   sortIndex = 0;
 
   sortMethods!: ApiMethod[] | null;
+
+  favoriteNamespace: ProjectNamesapce = {
+    id: this.FAVORITE_NAMESPACE,
+    name: 'Favorite',
+    description: 'Favorite',
+    apiItems: [],
+    matched: true,
+  };
+
+  get favoriteEmpty(): boolean {
+    return this.favoriteNamespace.apiItems.length === 0;
+  }
 
   constructor(
     private typeService: TypeService,
@@ -189,6 +201,7 @@ export class StoreService {
     }
 
     this.transformProject(project);
+    this.projectExit = false;
     this.selectProject(project);
     this.toastImportResult();
 
@@ -217,7 +230,7 @@ export class StoreService {
 
     this.updateData({
       projectIndex,
-      namespaceIndex: 0,
+      namespaceIndex: this.favoriteEmpty ? 1 : 0,
       apiIndex: 0,
     });
 
@@ -293,7 +306,13 @@ export class StoreService {
       this.iterObj(methods, (method: ApiMethod, api: ApiItem) => {
         // 处理不合法的请求方法
         if (API_METHODS.includes(method)) {
-          apiItems.push(this.transformApi(api, method, url));
+          const apiItem = this.transformApi(api, method, url);
+
+          apiItems.push(apiItem);
+
+          if (apiItem.__favorite) {
+            this.favoriteNamespace.apiItems.push(apiItem);
+          }
         }
       });
     });
@@ -456,7 +475,7 @@ export class StoreService {
     this.data.projects.splice(index, 1);
     this.updateData({
       projectIndex: 0,
-      namespaceIndex: 0,
+      namespaceIndex: this.favoriteEmpty ? 1 : 0,
       apiIndex: 0,
     });
 
@@ -505,16 +524,24 @@ export class StoreService {
     return this;
   }
 
-  addToFavorite(apiIndex: number): void {
+  apiFavoriteIndex(id: string): number {
+    return this.favoriteNamespace.apiItems.findIndex((api) => api.__id === id);
+  }
+
+  toggleFavorite(apiIndex: number): void {
     const apiItem = this.data.apiItems[apiIndex];
 
     if (apiItem) {
+      const id = apiItem.__id;
+
       apiItem.__favorite = !apiItem.__favorite;
 
       if (apiItem.__favorite) {
-        this.favoriteAPI.add(apiItem.__id);
+        this.favoriteAPI.add(id);
+        this.favoriteNamespace.apiItems.push(apiItem);
       } else {
-        this.favoriteAPI.delete(apiItem.__id);
+        this.favoriteAPI.delete(id);
+        this.favoriteNamespace.apiItems.splice(this.apiFavoriteIndex(id), 1);
       }
 
       this.send();
@@ -553,6 +580,12 @@ export class StoreService {
     return this.data.index;
   }
 
+  addFavoriteNamespace(): void {
+    this.data.projects.forEach((project) => {
+      project.namespaces.unshift(this.favoriteNamespace);
+    });
+  }
+
   loadDumpsData(): this {
     const configString = localStorage.getItem(this.DUMP_KEY);
 
@@ -564,6 +597,7 @@ export class StoreService {
       this.data.projects = config.projects.map((project) =>
         this.transformProject(project)
       );
+      this.addFavoriteNamespace();
       this.data = config;
     }
 

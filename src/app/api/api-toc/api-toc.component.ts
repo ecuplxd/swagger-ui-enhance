@@ -118,6 +118,6 @@ export class ApiTocComponent implements OnInit {
   }
 
   toggleFavorite(index: number): void {
-    this.store.addToFavorite(index);
+    this.store.toggleFavorite(index);
   }
 }

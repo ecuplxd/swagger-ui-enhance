@@ -118,7 +118,7 @@ describe('ProjectComponent', () => {
 
     expect(store.updateData).toHaveBeenCalledWith({
       projectIndex: 0,
-      namespaceIndex: 0,
+      namespaceIndex: 1,
       apiIndex: 0,
     });
   });

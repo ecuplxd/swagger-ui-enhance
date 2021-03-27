@@ -36,6 +36,8 @@ export class ApiListComponent implements OnInit {
 
   selectAll = false;
 
+  emptyData = true;
+
   get disabled(): boolean {
     return !this.selectedApis.some(Boolean);
   }
@@ -49,6 +51,7 @@ export class ApiListComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.getData$().subscribe((data: StoreData) => {
+      this.emptyData = data.projects.length === 0;
       this.selectedApis = data.apiItems.map(() => false);
       this.apiItems = data.apiItems;
       this.expandeds = data.expandeds;

@@ -54,6 +54,7 @@ export interface ProjectInfo {
 }
 
 export interface ProjectTag {
+  id?: string;
   name: string;
   description: string;
 }

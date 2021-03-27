@@ -218,13 +218,14 @@ describe('StoreService', () => {
 
   it('should update api operationId in url', () => {
     spyOn(location2, 'replaceState');
+    // tslint:disable-next-line: no-string-literal
+    service['data'].apiItems = service['data'].project.namespaces[0].apiItems;
     service.updateUrl();
 
     expect(location2.replaceState).toHaveBeenCalled();
   });
 
   it('should get index data from url', () => {
-
     location.hash = `index#aaaa-0-0-1`;
 
     service.getIndexFromUrl();
