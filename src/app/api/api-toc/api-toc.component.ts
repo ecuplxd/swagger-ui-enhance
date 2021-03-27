@@ -116,4 +116,8 @@ export class ApiTocComponent implements OnInit {
       apiItemsEl.style.right = this.width;
     }
   }
+
+  toggleFavorite(index: number): void {
+    this.store.toggleFavorite(index);
+  }
 }

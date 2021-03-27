@@ -30,7 +30,7 @@ export class ProjectComponent implements OnInit {
   handleProjectChange(projectIndex: number): void {
     this.store.updateData({
       projectIndex,
-      namespaceIndex: 0,
+      namespaceIndex: this.store.favoriteEmpty ? 1 : 0,
       apiIndex: 0,
     });
   }

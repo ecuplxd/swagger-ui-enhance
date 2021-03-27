@@ -81,16 +81,40 @@
         'pr-12': expand,
         'pl-0': !expand,
         'pl-4': true,
-        'text-ellipsis': true,
+        'y-center': true,
+        'x-center': !expand,
         hidden: !api.matched,
         deprecated: api.deprecated
       }"
       (click)="changeActivedIndex(i)"
       [id]="ID_PREFIX + i"
-      [matTooltip]="api.__info.description"
-      matTooltipPosition="left"
     >
-      {{ expand ? api.__info.description : api.__info.description[0] }}
+      <button mat-icon-button *ngIf="expand">
+        <mat-icon
+          appStopClick
+          *ngIf="api.__favorite"
+          (click)="toggleFavorite(i)"
+        >
+          star
+        </mat-icon>
+
+        <mat-icon
+          appStopClick
+          *ngIf="!api.__favorite"
+          (click)="toggleFavorite(i)"
+        >
+          star_border
+        </mat-icon>
+      </button>
+
+      <span
+        class="text-ellipsis"
+        [class.favorite]="!expand && api.__favorite"
+        [matTooltip]="api.__info.description"
+        matTooltipPosition="left"
+      >
+        {{ expand ? api.__info.description : api.__info.description[0] }}
+      </span>
     </li>
   </ul>
 

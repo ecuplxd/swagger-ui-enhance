@@ -38,6 +38,8 @@ export class StoreService {
 
   private DEAFULT_NAMESPACE = '__default__';
 
+  private FAVORITE_NAMESPACE = '__favorite__';
+
   private namespacesMap: Map<string, number> = new Map();
 
   private data: StoreData = {
@@ -55,6 +57,8 @@ export class StoreService {
     useProxy: false,
   };
 
+  private favoriteAPI: Set<string> = new Set();
+
   private projectSubject$$ = new Subject<StoreData>();
 
   // TODO
@@ -63,6 +67,18 @@ export class StoreService {
   sortIndex = 0;
 
   sortMethods!: ApiMethod[] | null;
+
+  favoriteNamespace: ProjectNamesapce = {
+    id: this.FAVORITE_NAMESPACE,
+    name: 'Favorite',
+    description: 'Favorite',
+    apiItems: [],
+    matched: true,
+  };
+
+  get favoriteEmpty(): boolean {
+    return this.favoriteNamespace.apiItems.length === 0;
+  }
 
   constructor(
     private typeService: TypeService,
@@ -185,6 +201,7 @@ export class StoreService {
     }
 
     this.transformProject(project);
+    this.projectExit = false;
     this.selectProject(project);
     this.toastImportResult();
 
@@ -213,7 +230,7 @@ export class StoreService {
 
     this.updateData({
       projectIndex,
-      namespaceIndex: 0,
+      namespaceIndex: this.favoriteEmpty ? 1 : 0,
       apiIndex: 0,
     });
 
@@ -289,7 +306,13 @@ export class StoreService {
       this.iterObj(methods, (method: ApiMethod, api: ApiItem) => {
         // 处理不合法的请求方法
         if (API_METHODS.includes(method)) {
-          apiItems.push(this.transformApi(api, method, url));
+          const apiItem = this.transformApi(api, method, url);
+
+          apiItems.push(apiItem);
+
+          if (apiItem.__favorite) {
+            this.favoriteNamespace.apiItems.push(apiItem);
+          }
         }
       });
     });
@@ -331,9 +354,11 @@ export class StoreService {
   }
 
   transformApi(api: ApiItem, method: ApiMethod, url: string): ApiItem {
+    const apiId = url + '|' + method;
+
     return {
       ...api,
-      __id: url + '|' + method,
+      __id: apiId,
       __produce: api.produces && api.produces[0],
       __info: {
         description:
@@ -344,6 +369,7 @@ export class StoreService {
         urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
         operationId: api.operationId,
       },
+      __favorite: this.favoriteAPI.has(apiId),
       matched: true,
     };
   }
@@ -449,7 +475,7 @@ export class StoreService {
     this.data.projects.splice(index, 1);
     this.updateData({
       projectIndex: 0,
-      namespaceIndex: 0,
+      namespaceIndex: this.favoriteEmpty ? 1 : 0,
       apiIndex: 0,
     });
 
@@ -498,6 +524,31 @@ export class StoreService {
     return this;
   }
 
+  apiFavoriteIndex(id: string): number {
+    return this.favoriteNamespace.apiItems.findIndex((api) => api.__id === id);
+  }
+
+  toggleFavorite(apiIndex: number): void {
+    const apiItem = this.data.apiItems[apiIndex];
+
+    if (apiItem) {
+      const id = apiItem.__id;
+
+      apiItem.__favorite = !apiItem.__favorite;
+
+      if (apiItem.__favorite) {
+        this.favoriteAPI.add(id);
+        this.favoriteNamespace.apiItems.push(apiItem);
+      } else {
+        this.favoriteAPI.delete(id);
+        this.favoriteNamespace.apiItems.splice(this.apiFavoriteIndex(id), 1);
+      }
+
+      this.send();
+      this.dumpsData();
+    }
+  }
+
   updateUrl(apiIndex: number = 0): void {
     const { projectIndex: i, namespaceIndex: j } = this.data.index;
     const apiItem = this.data.apiItems[apiIndex];
@@ -529,14 +580,24 @@ export class StoreService {
     return this.data.index;
   }
 
+  addFavoriteNamespace(): void {
+    this.data.projects.forEach((project) => {
+      project.namespaces.unshift(this.favoriteNamespace);
+    });
+  }
+
   loadDumpsData(): this {
     const configString = localStorage.getItem(this.DUMP_KEY);
 
     if (configString) {
       const config: StoreData = JSON.parse(configString);
+
+      this.favoriteAPI = new Set(config.favoriteAPI || []);
+
       this.data.projects = config.projects.map((project) =>
         this.transformProject(project)
       );
+      this.addFavoriteNamespace();
       this.data = config;
     }
 
@@ -547,7 +608,16 @@ export class StoreService {
   }
 
   dumpsData(): this {
-    localStorage.setItem(this.DUMP_KEY, JSON.stringify(this.data));
+    const data: Any = Object.assign({}, this.data);
+
+    delete data.project;
+    delete data.namespaces;
+    delete data.namespace;
+    delete data.apiItems;
+
+    data.favoriteAPI = Array.from(this.favoriteAPI);
+
+    localStorage.setItem(this.DUMP_KEY, JSON.stringify(data));
 
     return this;
   }

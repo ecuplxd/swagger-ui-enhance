@@ -28,6 +28,7 @@ export interface ApiItem {
   __id: string;
   __matched?: boolean;
   __matchedIndex?: number; // matched index
+  __favorite?: boolean;
 }
 
 export interface ApiRequestHistory {

@@ -42,7 +42,7 @@ See preview part for detail.
 - [x] toggle side nav
 - [ ] add shortcut
 - [ ] global setting
-- [ ] favorite
+- [x] favorite
 
 # DEV
 
