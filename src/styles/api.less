@@ -40,9 +40,21 @@ button.method.deprecated {
       border-color: ~"@{@{colorName}}" !important;
     }
 
-    &::first-letter {
-      text-transform: uppercase;
-      font-weight: bold;
+    span {
+      &::first-letter {
+        color: ~"@{@{colorName}}";
+      }
+    }
+
+    span {
+      &::first-letter {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+    }
+
+    .favorite {
+      border-color: ~"@{@{colorName}}" !important;
     }
   }
 }

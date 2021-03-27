@@ -2,14 +2,6 @@
   height: 100%;
 }
 
-.toc {
-  &:not(.expand) {
-    li {
-      text-align: center;
-    }
-  }
-}
-
 ul,
 li {
   list-style: none;
@@ -20,6 +12,25 @@ ul {
   li {
     border-left: 2px solid transparent;
     cursor: pointer;
+
+    /deep/ .mat-icon-button {
+      position: relative;
+      bottom: 2px;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+    }
+
+    .favorite {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 

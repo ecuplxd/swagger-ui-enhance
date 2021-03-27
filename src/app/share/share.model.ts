@@ -18,6 +18,7 @@ export interface StoreData {
   index: StoreIndex;
   expandeds: boolean[];
   useProxy: boolean;
+  favoriteAPI?: string[];
 }
 
 export interface GObject<T> {

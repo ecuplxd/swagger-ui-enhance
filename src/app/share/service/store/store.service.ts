@@ -38,6 +38,8 @@ export class StoreService {
 
   private DEAFULT_NAMESPACE = '__default__';
 
+  private FAVORITE_NAMESPACE = 'Favorite';
+
   private namespacesMap: Map<string, number> = new Map();
 
   private data: StoreData = {
@@ -54,6 +56,8 @@ export class StoreService {
     expandeds: [],
     useProxy: false,
   };
+
+  private favoriteAPI: Set<string> = new Set();
 
   private projectSubject$$ = new Subject<StoreData>();
 
@@ -331,9 +335,11 @@ export class StoreService {
   }
 
   transformApi(api: ApiItem, method: ApiMethod, url: string): ApiItem {
+    const apiId = url + '|' + method;
+
     return {
       ...api,
-      __id: url + '|' + method,
+      __id: apiId,
       __produce: api.produces && api.produces[0],
       __info: {
         description:
@@ -344,6 +350,7 @@ export class StoreService {
         urlForCopy: '`' + url.replace(/\{/gi, '${') + '`',
         operationId: api.operationId,
       },
+      __favorite: this.favoriteAPI.has(apiId),
       matched: true,
     };
   }
@@ -498,6 +505,23 @@ export class StoreService {
     return this;
   }
 
+  addToFavorite(apiIndex: number): void {
+    const apiItem = this.data.apiItems[apiIndex];
+
+    if (apiItem) {
+      apiItem.__favorite = !apiItem.__favorite;
+
+      if (apiItem.__favorite) {
+        this.favoriteAPI.add(apiItem.__id);
+      } else {
+        this.favoriteAPI.delete(apiItem.__id);
+      }
+
+      this.send();
+      this.dumpsData();
+    }
+  }
+
   updateUrl(apiIndex: number = 0): void {
     const { projectIndex: i, namespaceIndex: j } = this.data.index;
     const apiItem = this.data.apiItems[apiIndex];
@@ -534,6 +558,9 @@ export class StoreService {
 
     if (configString) {
       const config: StoreData = JSON.parse(configString);
+
+      this.favoriteAPI = new Set(config.favoriteAPI || []);
+
       this.data.projects = config.projects.map((project) =>
         this.transformProject(project)
       );
@@ -547,7 +574,16 @@ export class StoreService {
   }
 
   dumpsData(): this {
-    localStorage.setItem(this.DUMP_KEY, JSON.stringify(this.data));
+    const data: Any = Object.assign({}, this.data);
+
+    delete data.project;
+    delete data.namespaces;
+    delete data.namespace;
+    delete data.apiItems;
+
+    data.favoriteAPI = Array.from(this.favoriteAPI);
+
+    localStorage.setItem(this.DUMP_KEY, JSON.stringify(data));
 
     return this;
   }
