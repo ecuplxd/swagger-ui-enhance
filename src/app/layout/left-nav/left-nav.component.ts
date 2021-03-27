@@ -12,13 +12,19 @@ export class LeftNavComponent implements OnInit {
 
   expand = true;
 
+  KEY = 'LEFT_NAV';
+
   WIDTH = ['66px', '300px'];
 
   year = new Date().getFullYear();
 
-  constructor() {}
+  constructor() {
+    this.expand = JSON.parse(localStorage.getItem(this.KEY) || 'true');
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.handleExpand();
+  }
 
   // TODO: 优化
   handleExpand(): void {

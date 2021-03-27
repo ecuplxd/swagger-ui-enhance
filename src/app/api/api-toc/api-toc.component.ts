@@ -16,6 +16,8 @@ export class ApiTocComponent implements OnInit {
 
   @Input() expand = true;
 
+  KEY = 'TOC';
+
   WIDTH = ['48px', '256px'];
 
   title = '';
@@ -37,6 +39,7 @@ export class ApiTocComponent implements OnInit {
     private scroll: ScrollInoViewService,
     private location: Location
   ) {
+    this.expand = JSON.parse(localStorage.getItem(this.KEY) || 'true');
     this.location.onUrlChange(() => {
       const index = this.store.getIndexFromUrl();
 
@@ -47,6 +50,7 @@ export class ApiTocComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.handleExpand();
     this.store.getData$().subscribe((data) => {
       if (data.namespace.name !== this.title) {
         this.selectAll = false;
