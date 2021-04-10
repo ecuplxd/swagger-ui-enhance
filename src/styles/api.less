@@ -1,5 +1,4 @@
-@import "color.less";
-@import "vars.less";
+@methods: get, post, put, delete, patch;
 
 li.deprecated,
 div.deprecated {
@@ -7,28 +6,28 @@ div.deprecated {
 }
 
 button.method.deprecated {
-  background-color: @deprecated;
+  background-color: var(--main-deprecated);
 }
 
 .apiMethod(@methodName, @colorName) {
   /* API List */
   .api-item.@{methodName} {
     box-shadow: none;
-    border: 1px solid ~"@{@{colorName}}";
+    border: 1px solid ~"var(--main-@{colorName})";
 
     mat-expansion-panel-header.actived,
     mat-expansion-panel-header:hover {
-      background-color: hsla(color(~"@{@{colorName}}"), 0.1) !important;
+      background-color: ~"var(--main-@{colorName}-hover)" !important;
     }
 
     .api-detail {
-      border-top: 1px solid ~"@{@{colorName}}";
+      border-top: 1px solid ~"var(--main-@{colorName})";
     }
   }
 
   /* API Method */
   button.@{methodName} {
-    background-color: ~"@{@{colorName}}";
+    background-color: ~"var(--main-@{colorName})";
   }
 
   /* API TOC */
@@ -36,13 +35,13 @@ button.method.deprecated {
     &::first-letter,
     &:hover,
     &.actived {
-      color: ~"@{@{colorName}}";
-      border-color: ~"@{@{colorName}}" !important;
+      color: ~"var(--main-@{colorName})";
+      border-color: ~"var(--main-@{colorName})" !important;
     }
 
     span {
       &::first-letter {
-        color: ~"@{@{colorName}}";
+        color: ~"var(--main-@{colorName})";
       }
     }
 
@@ -54,7 +53,56 @@ button.method.deprecated {
     }
 
     .favorite {
-      border-color: ~"@{@{colorName}}" !important;
+      border-color: ~"var(--main-@{colorName})" !important;
+    }
+  }
+}
+
+.apiMethod(@methodName, @colorName) {
+  /* API List */
+  .custom-theme .api-item.@{methodName} {
+    box-shadow: none;
+    border: 1px solid ~"var(--theme-@{colorName})";
+
+    mat-expansion-panel-header.actived,
+    mat-expansion-panel-header:hover {
+      background-color: ~"var(--theme-@{colorName}-hover)" !important;
+    }
+
+    .api-detail {
+      border-top: 1px solid ~"var(--theme-@{colorName})";
+    }
+  }
+
+  /* API Method */
+  .custom-theme button.@{methodName} {
+    background-color: ~"var(--theme-@{colorName})";
+  }
+
+  /* API TOC */
+  .custom-theme li.@{methodName} {
+    &::first-letter,
+    &:hover,
+    &.actived {
+      color: ~"var(--theme-@{colorName})";
+      border-color: ~"var(--theme-@{colorName})" !important;
+    }
+
+    span {
+      &::first-letter {
+        color: ~"var(--theme-@{colorName})";
+      }
+    }
+
+    span {
+      &::first-letter {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+    }
+
+    .favorite {
+      border-color: ~"var(--theme-@{colorName})" !important;
     }
   }
 }

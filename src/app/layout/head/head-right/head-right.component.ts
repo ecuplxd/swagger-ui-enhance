@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from 'src/app/share/service';
+import { MatDialog } from '@angular/material/dialog';
+import { ThemeService, TranslateService } from 'src/app/share/service';
+import { ThemeComponent } from 'src/app/share/components/theme/theme.component';
 import { Language } from '../../layout.model';
 
 @Component({
@@ -53,7 +55,11 @@ export class HeadRightComponent implements OnInit {
 
   language: Language = this.languages[0];
 
-  constructor(private translate: TranslateService) {
+  constructor(
+    private translate: TranslateService,
+    private theme: ThemeService,
+    public dialog: MatDialog
+  ) {
     const locale = this.translate.getLocale();
     // tslint:disable-next-line: no-non-null-assertion
     const language = this.languages.find((item) => item.locale === locale)!;
@@ -67,21 +73,11 @@ export class HeadRightComponent implements OnInit {
     this.translate.setLocale(language.locale).reload();
   }
 
-  // TODO
-  changeTheme(type: string): void {
-    switch (type) {
-      case 'light':
-        document.body.classList.remove('dark-theme');
-        break;
-
-      case 'dark':
-        document.body.classList.add('dark-theme');
-        break;
-
-      default:
-        break;
+  changeTheme(type?: string): void {
+    if (type === 'custom') {
+      this.dialog.open(ThemeComponent);
+    } else {
+      this.theme.change(type);
     }
-
-    localStorage.setItem('THEME', type + '-theme');
   }
 }

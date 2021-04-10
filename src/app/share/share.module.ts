@@ -24,6 +24,7 @@ import {
   CopyComponent,
   EditorComponent,
   HoverMenuComponent,
+  ThemeComponent,
   ToggleElComponent,
 } from './components';
 import {
@@ -68,6 +69,7 @@ const components = [
   HoverMenuComponent,
   EditorComponent,
   ToggleElComponent,
+  ThemeComponent,
 ];
 
 const matModules = [
@@ -98,6 +100,7 @@ const matModules = [
   ],
   imports: [
     CommonModule,
+    FormsModule,
 
     MatDividerModule,
     MatIconModule,
@@ -105,6 +108,7 @@ const matModules = [
     MatSnackBarModule,
     MatMenuModule,
     MatTooltipModule,
+    MatButtonModule,
   ],
   exports: [
     CommonModule,

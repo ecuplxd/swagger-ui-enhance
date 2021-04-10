@@ -11,9 +11,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   @HostBinding('class.mat-app-background')
   title = 'swagger-ui';
 
-  constructor(private store: StoreService) {
-    document.body.classList.add(localStorage.getItem('THEME') || 'light');
-  }
+  constructor(private store: StoreService) {}
 
   ngOnInit(): void {}
 

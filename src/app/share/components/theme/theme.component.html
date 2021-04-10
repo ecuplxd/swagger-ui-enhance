@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>自定义主题</h1>
+
+<div class="theme-items mat-dialog-content">
+  <div class="theme-item y-center mb-10" *ngFor="let key of keys">
+    <div class="label">{{ key }}</div>
+
+    <div class="value">
+      <input
+        type="color"
+        [name]="key"
+        [(ngModel)]="theme[key]"
+        (ngModelChange)="update()"
+      />
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions class="x-center">
+  <button mat-button class="mr-10" (click)="rest()">取消</button>
+
+  <button mat-button color="primary" (click)="apply()">确定</button>
+</div>
