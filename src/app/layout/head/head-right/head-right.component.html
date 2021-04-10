@@ -1,6 +1,7 @@
 <button
   class="change-theme"
   mat-icon-button
+  [matMenuTriggerFor]="themeRef"
   title="切换主题"
   tr="change-themed|title"
 >
@@ -40,6 +41,18 @@
   <span class="cur-lang">{{ language.name }}</span>
   <mat-icon class="mf-8">arrow_drop_down</mat-icon>
 </button>
+
+<mat-menu #themeRef="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item class="lang-item" (click)="changeTheme('light')">
+      亮色主题
+    </button>
+
+    <button mat-menu-item class="lang-item" (click)="changeTheme('dark')">
+      暗色主题
+    </button>
+  </ng-template>
+</mat-menu>
 
 <mat-menu #langRef="matMenu">
   <ng-template matMenuContent>

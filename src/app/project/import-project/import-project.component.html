@@ -1,5 +1,6 @@
 <div *ngIf="byUrl" class="import-by-url y-center">
   <input
+    type="text"
     [title]="url"
     #inputRef
     (focus)="inputRef.select()"

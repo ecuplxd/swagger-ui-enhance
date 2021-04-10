@@ -1,0 +1,95 @@
+@font-color: #768390;
+@title-color: #adbac7;
+@nav-bg: #2d333b;
+@body-bg: #22272e;
+@input-color: #cdd9e5;
+@selected-color: #539bf5;
+@border-color: #444c56;
+
+.theme.dark-theme {
+  swagger-ui-app {
+    background: @body-bg;
+    color: @font-color;
+
+    // body
+    .api-items,
+    .mat-expansion-panel,
+    app-left-nav {
+      background: @body-bg;
+    }
+
+    // 边框
+    mat-divider {
+      background: @border-color;
+    }
+
+    app-choose-project button {
+      border-color: @border-color;
+    }
+
+    // 输入框
+    input[type="text"] {
+      background: @body-bg;
+      outline: none;
+      border: 0;
+      color: @input-color;
+    }
+
+    // nav
+    .mat-mini-fab.mat-primary,
+    table tr:hover,
+    app-head {
+      background: @nav-bg;
+    }
+
+    // 标题
+    app-right-nav,
+    api-url,
+    .title,
+    .mat-mini-fab.mat-primary,
+    button.mat-primary,
+    app-api-parameter,
+    app-api-response,
+    th,
+    .namespace-item:not(.selected) {
+      color: @title-color;
+    }
+
+    // 字体
+    app-project-info,
+    .mat-icon,
+    td,
+    .text--disabled,
+    button[disabled="true"],
+    .sub-title {
+      color: @font-color !important;
+    }
+  }
+
+  .url,
+  .url-container,
+  .mat-menu-panel {
+    background: @body-bg !important;
+    color: @font-color;
+
+    button.mat-menu-item,
+    .project-item,
+    .api-url,
+    .method-item {
+      color: @title-color;
+    }
+
+    .api-description,
+    .sub-title {
+      color: @font-color;
+    }
+  }
+
+  .url {
+    border-color: @border-color;
+  }
+
+  .github-href svg {
+    fill: @font-color;
+  }
+}

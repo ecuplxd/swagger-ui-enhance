@@ -68,5 +68,20 @@ export class HeadRightComponent implements OnInit {
   }
 
   // TODO
-  changeTheme(color: string): void {}
+  changeTheme(type: string): void {
+    switch (type) {
+      case 'light':
+        document.body.classList.remove('dark-theme');
+        break;
+
+      case 'dark':
+        document.body.classList.add('dark-theme');
+        break;
+
+      default:
+        break;
+    }
+
+    localStorage.setItem('THEME', type + '-theme');
+  }
 }
