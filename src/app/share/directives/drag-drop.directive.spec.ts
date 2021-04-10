@@ -9,27 +9,6 @@ describe('DragDropDirective', () => {
     expect(directive).toBeTruthy();
   });
 
-  it('should #dragover set bg actived', () => {
-    spyOn(directive, 'setBackgroudColor').and.callThrough();
-    directive.onDragOver(new DragEvent('dragover'));
-
-    expect(directive.setBackgroudColor).toHaveBeenCalledWith('#9ecbec', 0.8);
-  });
-
-  it('should dragleave restore color', () => {
-    spyOn(directive, 'setBackgroudColor').and.callThrough();
-    directive.onDragLeave(new DragEvent('dragleave'));
-
-    expect(directive.setBackgroudColor).toHaveBeenCalledWith('#fafafa');
-  });
-
-  it('should drop restore color', () => {
-    spyOn(directive, 'setBackgroudColor').and.callThrough();
-    directive.ondrop(new DragEvent('drop'));
-
-    expect(directive.setBackgroudColor).toHaveBeenCalledWith('#fafafa');
-  });
-
   it('should drop not emit fileDropped if no file', () => {
     const event = {
       dataTransfer: {

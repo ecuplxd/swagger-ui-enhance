@@ -38,7 +38,7 @@ See preview part for detail.
 - [x] Try it out
 - [x] unit test
 - [x] i18n
-- [ ] `WIP` change theme
+- [x] change theme
 - [x] toggle side nav
 - [ ] add shortcut
 - [ ] global setting
