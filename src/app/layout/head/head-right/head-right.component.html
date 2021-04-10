@@ -44,12 +44,16 @@
 
 <mat-menu #themeRef="matMenu">
   <ng-template matMenuContent>
-    <button mat-menu-item class="lang-item" (click)="changeTheme('light')">
+    <button mat-menu-item class="lang-item" (click)="changeTheme()">
       亮色主题
     </button>
 
     <button mat-menu-item class="lang-item" (click)="changeTheme('dark')">
       暗色主题
+    </button>
+
+    <button mat-menu-item class="lang-item" (click)="changeTheme('custom')">
+      自定义
     </button>
   </ng-template>
 </mat-menu>

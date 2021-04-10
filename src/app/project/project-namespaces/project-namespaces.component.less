@@ -1,5 +1,4 @@
 @import "src/styles/flex.less";
-@import "src/styles/color.less";
 
 :host {
   .flex;
@@ -11,8 +10,8 @@
 
   input {
     .flex-1;
-    border: 0;
-    outline: 0;
+    border: 0 !important;
+    outline: none;
 
     &:focus,
     &:active {
@@ -25,11 +24,11 @@ mat-list-item {
   height: 60px !important;
 
   &.selected {
-    color: @primary-selected;
-    background-color: @primary-bg;
+    color: var(--main-primary-selected);
+    background-color: var(--main-primary-bg);
 
     &:hover {
-      background-color: @primary-hover;
+      background-color: var(--main-primary-hover);
     }
   }
 }

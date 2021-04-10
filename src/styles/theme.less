@@ -1,95 +1,146 @@
-@font-color: #768390;
-@title-color: #adbac7;
-@nav-bg: #2d333b;
-@body-bg: #22272e;
-@input-color: #cdd9e5;
-@selected-color: #539bf5;
-@border-color: #444c56;
+:root {
+  --main-box-shadow: rgba(0, 0, 0, 0.1);
+  --main-border-color: rgba(0, 0, 0, 0.12);
+  --main-scroll-color: rgba(0, 0, 0, 0.26);
+  --main-text-disabled: rgba(0, 0, 0, 0.38);
+  --main-border-color-4: rgba(0, 0, 0, 0.42);
+  --main-sub-title: rgba(0, 0, 0, 0.6);
+  --main-table-head: rgba(0, 0, 0, 0.6);
+  --main-primary: #1976d2;
+  --main-primary-bg: rgba(63, 81, 181, 0.15);
+  --main-primary-hover: rgba(63, 81, 181, 0.3);
+  --main-primary-selected: #3f51b5;
+  --main-btn-foucs-outline: #3f51b5;
+  --main-border-primary: #3f51b5;
+  --main-white: #fff;
+  --main-border-grey: #ccc;
+  --main-input-border: #d1d1d1;
+  --main-table-hover: #f8f9fa;
+  --main-background-grey: #f0f0f0;
+  --main-background-nav: #fafafa;
 
-.theme.dark-theme {
-  swagger-ui-app {
-    background: @body-bg;
-    color: @font-color;
+  --main-get: #61affe;
+  --main-post: #49cc90;
+  --main-put: #fca130;
+  --main-delete: #f93e3e;
+  --main-patch: #50e3c2;
+  --main-deprecated: #ebebeb;
 
-    // body
-    .api-items,
-    .mat-expansion-panel,
-    app-left-nav {
-      background: @body-bg;
+  --main-get-hover: #61affe1a;
+  --main-post-hover: #49cc901a;
+  --main-put-hover: #fca1301a;
+  --main-delete-hover: #f93e3e1a;
+  --main-patch-hover: #50e3c21a;
+  --main-deprecated-hover: #ebebeb1a;
+
+  --main-matched: #174d8c;
+  --main-matched-bg: rgba(143, 187, 237, 0.1);
+  --main-matched-border: rgba(69, 142, 225, 0.8);
+  --main-matched-hover: rgba(69, 142, 225, 0.05);
+}
+
+.theme {
+  &.custom-theme {
+    swagger-ui-app {
+      background: var(--theme-body-bg);
+      color: var(--theme-font-color);
+
+      // body
+      .api-items,
+      .mat-expansion-panel,
+      app-left-nav {
+        background: var(--theme-body-bg);
+      }
+
+      // 边框
+      mat-divider {
+        background: var(--theme-border-color);
+      }
+
+      .border,
+      app-left-nav,
+      app-choose-project button {
+        border-color: var(--theme-border-color);
+      }
+
+      // 输入框
+      input[type="text"] {
+        background: var(--theme-body-bg);
+        outline: none;
+        border: 1px solid var(--theme-border-color);
+        color: var(--theme-input-color);
+      }
+
+      // nav
+      .mat-mini-fab.mat-primary,
+      table tr:hover,
+      app-head {
+        background: var(--theme-nav-bg);
+      }
+
+      // 标题
+      app-right-nav,
+      api-url,
+      .title,
+      .mat-mini-fab.mat-primary,
+      button.mat-primary,
+      app-api-parameter,
+      app-api-response,
+      th,
+      .namespace-item:not(.selected) {
+        color: var(--theme-title-color);
+      }
+
+      // 字体
+      app-project-info,
+      .mat-icon,
+      td,
+      .text--disabled,
+      button[disabled="true"],
+      .sub-title {
+        color: var(--theme-font-color) !important;
+      }
     }
 
-    // 边框
-    mat-divider {
-      background: @border-color;
+    .url,
+    .url-container,
+    .mat-menu-panel {
+      background: var(--theme-body-bg) !important;
+      color: var(--theme-font-color);
+
+      .title,
+      .suggestions .method,
+      .header,
+      button.mat-menu-item,
+      .project-item,
+      .api-url,
+      .method-item {
+        color: var(--theme-title-color);
+      }
+
+      .api-description,
+      .sub-title {
+        color: var(--theme-font-color);
+      }
     }
 
-    app-choose-project button {
-      border-color: @border-color;
+    mat-divider,
+    .suggestion-item,
+    .url {
+      border-color: var(--theme-border-color) !important;
     }
 
-    // 输入框
-    input[type="text"] {
-      background: @body-bg;
-      outline: none;
-      border: 0;
-      color: @input-color;
+    .github-href svg {
+      fill: var(--theme-font-color);
     }
 
-    // nav
-    .mat-mini-fab.mat-primary,
-    table tr:hover,
-    app-head {
-      background: @nav-bg;
+    .token.matched {
+      color: var(--theme-selected-color);
     }
 
-    // 标题
-    app-right-nav,
-    api-url,
-    .title,
-    .mat-mini-fab.mat-primary,
-    button.mat-primary,
-    app-api-parameter,
-    app-api-response,
-    th,
-    .namespace-item:not(.selected) {
-      color: @title-color;
+    li.deprecated,
+    div.deprecated {
+      text-decoration-color: var(--theme-font-color);
     }
-
-    // 字体
-    app-project-info,
-    .mat-icon,
-    td,
-    .text--disabled,
-    button[disabled="true"],
-    .sub-title {
-      color: @font-color !important;
-    }
-  }
-
-  .url,
-  .url-container,
-  .mat-menu-panel {
-    background: @body-bg !important;
-    color: @font-color;
-
-    button.mat-menu-item,
-    .project-item,
-    .api-url,
-    .method-item {
-      color: @title-color;
-    }
-
-    .api-description,
-    .sub-title {
-      color: @font-color;
-    }
-  }
-
-  .url {
-    border-color: @border-color;
-  }
-
-  .github-href svg {
-    fill: @font-color;
   }
 }

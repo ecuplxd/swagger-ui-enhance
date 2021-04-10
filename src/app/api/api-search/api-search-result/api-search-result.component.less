@@ -1,5 +1,3 @@
-@import "src/styles/color.less";
-
 .search-result {
   .suggestions {
     .method {
@@ -8,7 +6,7 @@
 
     .suggestion-item {
       padding: 4px 10px;
-      border-left: 1px solid @border-color;
+      border-left: 1px solid var(--main-border-color);
 
       app-api-request {
         opacity: 0;
@@ -16,7 +14,7 @@
 
       &.actived,
       &:hover {
-        background: @matched-hover;
+        background: var(--main-matched-hover);
         cursor: pointer;
 
         app-api-request {
@@ -28,13 +26,13 @@
 }
 
 /deep/ .token.matched {
-  color: @matched;
-  background: @matched-bg;
+  color: var(--main-matched);
+  background: var(--main-matched-bg);
 }
 
 /deep/ .token.title.matched {
   padding-bottom: 2px;
-  box-shadow: inset 0 -2px 0 0 @matched-border;
+  box-shadow: inset 0 -2px 0 0 var(--main-matched-border);
 }
 
 app-api-request {

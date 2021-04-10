@@ -1,5 +1,3 @@
-@import "color.less";
-
 .text-center {
   text-align: center;
 }
@@ -15,7 +13,7 @@
 .sub-title {
   .f-14;
   .fw-normal;
-  color: @sub-title;
+  color: var(--main-sub-title);
 }
 
 .code {
@@ -40,7 +38,7 @@
 }
 
 .text--disabled {
-  color: @text-disabled !important;
+  color: var(--main-text-disabled) !important;
 }
 
 .text-ellipsis {

@@ -7,3 +7,4 @@ export * from './proxy/proxy.service';
 export * from './history/history.service';
 export * from './scroll-ino-view/scroll-ino-view.service';
 export * from './tr/translate.service';
+export * from './theme/theme.service';
