@@ -25,18 +25,18 @@
   }
 }
 
-/deep/ .token.matched {
+::ng-deep .token.matched {
   color: var(--main-matched);
   background: var(--main-matched-bg);
 }
 
-/deep/ .token.title.matched {
+::ng-deep .token.title.matched {
   padding-bottom: 2px;
   box-shadow: inset 0 -2px 0 0 var(--main-matched-border);
 }
 
 app-api-request {
-  /deep/ button {
+  ::ng-deep button {
     line-height: initial !important;
     font-size: 13px !important;
     padding: 2px 5px !important;
