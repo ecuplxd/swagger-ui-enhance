@@ -32,6 +32,9 @@
               "./node_modules/monaco-editor/min/vs/editor/editor.main.css",
               "src/styles.less"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
             "scripts": [],
             "customWebpackConfig": {
               "path": "./webpack-editor-worker.js",
@@ -50,7 +53,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -59,7 +61,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "3.5mb"
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -100,6 +102,9 @@
               "./node_modules/monaco-editor/min/vs/editor/editor.main.css",
               "src/styles.less"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
             "scripts": [],
             "codeCoverageExclude": [
               "src/app/share/components/editor/**",
