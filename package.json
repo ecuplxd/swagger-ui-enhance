@@ -6,6 +6,7 @@
     "start": "ng serve --proxyConfig=./proxy.config.json --liveReload=false",
     "build": "ng build --configuration production --aot",
     "build:gh-pages": "ng build --configuration production --aot --output-path docs --output-hashing none --base-href /swagger-ui-enhance/",
+    "compodoc": "npx compodoc -p tsconfig.doc.json",
     "test": "ng test --codeCoverage",
     "test:ci": "ng test --codeCoverage --watch=false --browsers=ChromeHeadlessCustom",
     "lint": "ng lint",
