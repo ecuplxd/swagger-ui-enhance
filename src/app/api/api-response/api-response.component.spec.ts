@@ -74,7 +74,6 @@ describe('ApiResponseComponent', () => {
         '.description'
       );
 
-      // tslint:disable
       expect(keyEl!.innerText.trim()).toBe(keys[i]);
       expect(typeEl).toBeTruthy('have response type el');
       expect(descriptionEl!.innerText.trim()).toBe(response.description);

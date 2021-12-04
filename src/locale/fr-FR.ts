@@ -1,4 +1,3 @@
-// tslint:disable
 export default {
   /* common */
   'change-lang': 'Changer de langue',

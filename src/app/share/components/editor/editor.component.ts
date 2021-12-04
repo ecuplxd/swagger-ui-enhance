@@ -19,7 +19,6 @@ import { IdService } from '../../service';
   styleUrls: ['./editor.component.less'],
 })
 export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
-  // tslint:disable-next-line: variable-name
   private _value!: string;
   @Input() set value(value: string) {
     this._value = value;
@@ -30,7 +29,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._value;
   }
 
-  // tslint:disable-next-line: variable-name
   private _size!: Size;
   @Input() set size(size: Size) {
     this._size = size;

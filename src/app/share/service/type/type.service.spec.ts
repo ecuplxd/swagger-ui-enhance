@@ -3,7 +3,6 @@ import { ApiParameters, Schema } from 'src/app/api/api.model';
 import { Any } from '../../share.model';
 import { TypeService } from './type.service';
 
-// tslint:disable-next-line: typedef
 class Properties {
   [x: string]: string;
   type = 'string';

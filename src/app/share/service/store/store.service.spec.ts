@@ -29,7 +29,6 @@ describe('StoreService', () => {
   let location2: Location;
 
   const setData = () => {
-    // tslint:disable-next-line: no-string-literal
     service['data'] = STORE_DATA_MOCK2;
   };
 
@@ -152,13 +151,11 @@ describe('StoreService', () => {
   it('should handle load no dumps data', () => {
     localStorage.clear();
     spyOn(service, 'transformProject');
-    // tslint:disable-next-line: no-string-literal
     service['DUMP_KEY'] = 'test';
     service.loadDumpsData();
 
     expect(service.transformProject).not.toHaveBeenCalled();
 
-    // tslint:disable-next-line: no-string-literal
     service['DUMP_KEY'] = 'SWAGGER_UI_ENHANCE';
   });
 
@@ -193,7 +190,6 @@ describe('StoreService', () => {
 
   it('should toast import result', () => {
     spyOn(service, 'toastMessage').and.callThrough();
-    // tslint:disable-next-line: no-string-literal
     service['projectExit'] = false;
     service.toastImportResult();
 
@@ -218,7 +214,6 @@ describe('StoreService', () => {
 
   it('should update api operationId in url', () => {
     spyOn(location2, 'replaceState');
-    // tslint:disable-next-line: no-string-literal
     service['data'].apiItems = service['data'].project.namespaces[0].apiItems;
     service.updateUrl();
 
@@ -230,7 +225,6 @@ describe('StoreService', () => {
 
     service.getIndexFromUrl();
 
-    // tslint:disable-next-line: no-string-literal
     const { projectIndex, namespaceIndex, apiIndex } = service['data'].index;
 
     expect(projectIndex).toEqual(0);

@@ -69,7 +69,6 @@ export class ApiSummaryComponent implements OnInit, AfterViewInit {
       apiItem.__index = index;
 
       if (this.groups.get(method)) {
-        // tslint:disable-next-line: no-non-null-assertion
         this.groups.get(method)!.push(apiItem);
       } else {
         this.methods.push(method);

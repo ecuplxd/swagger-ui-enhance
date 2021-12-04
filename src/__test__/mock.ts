@@ -28,7 +28,6 @@ export const STORE_DATA_EMPTY_MOCK: StoreData = {
 @Injectable()
 export class StoreServiceStub extends StoreService {
   setMockData(data: StoreData): this {
-    // tslint:disable-next-line: no-string-literal
     this['data'] = data;
 
     return this;
@@ -47,7 +46,6 @@ export class StoreServiceStub extends StoreService {
   }
 
   getData$(): Observable<StoreData> {
-    // tslint:disable-next-line: no-string-literal
     return of(this['data']);
   }
 
@@ -62,7 +60,6 @@ export class StoreServiceStub extends StoreService {
   updateUrl(_: number): void {}
 
   getIndexFromUrl(): StoreIndex {
-    // tslint:disable-next-line: no-string-literal
     return this['data'].index;
   }
 }

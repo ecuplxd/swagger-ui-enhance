@@ -135,9 +135,18 @@
               "devServerTarget": "swagger-ui:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
         }
       }
     }
   },
-  "defaultProject": "swagger-ui"
+  "defaultProject": "swagger-ui",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

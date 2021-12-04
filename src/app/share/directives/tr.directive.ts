@@ -2,7 +2,7 @@ import { Directive, ElementRef, OnInit } from '@angular/core';
 import { TranslateService } from '../service';
 
 @Directive({
-  // tslint:disable-next-line: directive-selector
+  // eslint-disable-next-line
   selector: '[tr]',
 })
 export class TrDirective implements OnInit {
