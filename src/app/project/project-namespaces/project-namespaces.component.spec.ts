@@ -187,4 +187,21 @@ describe('ProjectNamespacesComponent', () => {
 
     flush();
   }));
+
+  it('should not show api summary if no apiItems', () => {
+    installData();
+
+    store.removeApiItems(0);
+
+    fixture.detectChanges();
+
+    const items: HTMLElement[] = fixture.nativeElement.querySelectorAll('.namespace-item');
+    const firstItem = items[0];
+    const secondItem = items[1];
+    const apiSummaryEl1 = firstItem.querySelector('app-api-summary');
+    const apiSummaryEl2 = secondItem.querySelector('app-api-summary');
+
+    expect(apiSummaryEl1).toBeFalsy();
+    expect(apiSummaryEl2).toBeTruthy();
+  });
 });

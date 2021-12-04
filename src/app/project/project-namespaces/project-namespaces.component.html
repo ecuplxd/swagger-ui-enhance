@@ -41,6 +41,7 @@
         </div>
 
         <app-api-summary
+          *ngIf="namespace.apiItems.length !== 0"
           [namespaceIndex]="i"
           [apiItems]="namespace.apiItems"
         ></app-api-summary>
