@@ -62,4 +62,10 @@ export class StoreServiceStub extends StoreService {
   getIndexFromUrl(): StoreIndex {
     return this['data'].index;
   }
+
+  removeApiItems(index: number) {
+    const namespaces = this.getCurNamespaces();
+
+    namespaces[index].apiItems = [];
+  }
 }
