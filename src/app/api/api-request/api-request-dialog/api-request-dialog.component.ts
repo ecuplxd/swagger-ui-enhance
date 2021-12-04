@@ -182,14 +182,12 @@ export class ApiRequestDialogComponent implements OnInit, OnDestroy {
           let stringify = JSON.stringify(mocks[kindLower], null, 2);
           stringify = stringify
             .replace(/\uFFFF/g, '\\"')
-            // tslint:disable-next-line: quotemark
             .replace(/"/g, "'")
             .replace(/'(__undefined__)'/g, 'undefined');
 
           if (kind !== 'Header') {
             stringify = stringify.replace(/"([^"]+)":/g, '$1:');
           } else {
-            // tslint:disable-next-line: quotemark
             type = type.replace(/  /gi, "$&'").replace(/\??\:/gi, "'$&");
           }
 

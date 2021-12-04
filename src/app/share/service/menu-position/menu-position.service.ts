@@ -88,7 +88,6 @@ export class MenuPositionService {
       originY,
       overlayX,
       overlayY,
-      // tslint:disable
       originFallbackX,
       originFallbackY,
       overlayFallbackX,

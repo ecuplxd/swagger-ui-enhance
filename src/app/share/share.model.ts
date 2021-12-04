@@ -32,5 +32,4 @@ export type StringObject = GObject<string>;
 export type StringsObject = GObject<string[]>;
 export type ObjectObject = GObject<ObjectObject>;
 
-// tslint:disable-next-line: no-any
 export type Any = any;

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, HostBinding, OnInit } from '@angular/core';
 import { StoreService } from './share/service/store/store.service';
 
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line
   selector: 'swagger-ui-app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less'],

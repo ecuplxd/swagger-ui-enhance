@@ -118,7 +118,6 @@ describe('ApiSearchResultComponent', () => {
       const item = matchedItems[i];
 
       const matched: HTMLSpanElement | null = item.querySelector('.matched');
-      // tslint:disable-next-line: no-non-null-assertion
       expect(matched!.innerText).toBe('pet');
     }
   });

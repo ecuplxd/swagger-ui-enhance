@@ -15,7 +15,6 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
   styleUrls: ['./api-type-hover.component.less'],
 })
 export class ApiTypeHoverComponent implements OnInit {
-  // tslint:disable-next-line: variable-name
   private _code!: string;
   @Input() set code(value: string) {
     if (!this.code && value) {

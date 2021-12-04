@@ -61,7 +61,6 @@ export class HeadRightComponent implements OnInit {
     public dialog: MatDialog
   ) {
     const locale = this.translate.getLocale();
-    // tslint:disable-next-line: no-non-null-assertion
     const language = this.languages.find((item) => item.locale === locale)!;
     this.language = language;
   }
