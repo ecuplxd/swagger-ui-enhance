@@ -1,11 +1,11 @@
 import {
-  ComponentFactoryResolver,
+  Directive,
   Input,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import { Directive, TemplateRef } from '@angular/core';
 import { CopyComponent } from '../components/copy/copy.component';
 import { TranslateService } from '../service';
 import { Any } from '../share.model';
@@ -25,7 +25,6 @@ export class CopyDirective implements OnInit, OnDestroy {
   constructor(
     private templateRef: TemplateRef<Any>,
     private viewContainer: ViewContainerRef,
-    private componentFactoryResolver: ComponentFactoryResolver,
     private translate: TranslateService
   ) {}
 
@@ -33,11 +32,7 @@ export class CopyDirective implements OnInit, OnDestroy {
     this.viewContainer.createEmbeddedView(this.templateRef);
 
     if (this.appCopy) {
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
-        CopyComponent
-      );
-
-      const componentRef = this.viewContainer.createComponent(componentFactory);
+      const componentRef = this.viewContainer.createComponent(CopyComponent);
       const instance = componentRef.instance as CopyComponent;
 
       instance.value = this.appCopyValue;
