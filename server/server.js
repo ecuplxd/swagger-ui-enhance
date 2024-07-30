@@ -50,6 +50,11 @@ function proxyRequest(target, req, res) {
 }
 
 function handleRequest(req, res) {
+    if (path.normalize(decodeURI(req.url)) !== decodeURI(req.url)) {
+        res.statusCode = 403;
+        res.end();
+        return;
+    }
   var { pathname } = url.parse(req.url, true);
   if (pathname.startsWith("/proxy")) {
     var { target } = getTargetInfo(req.url);
